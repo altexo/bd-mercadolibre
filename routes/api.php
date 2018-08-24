@@ -20,3 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/products/create', 'ProductsController@create');
 
 Route::post('dummy/test', 'ProductsController@dummy');
+Route::get('dummy/get', function(){
+	return response()->json(['Success' => 'ok']);
+});
