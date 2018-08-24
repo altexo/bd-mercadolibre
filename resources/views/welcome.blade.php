@@ -81,7 +81,28 @@
                 <div class="title m-b-md">
                     Laravel
                 </div>
-
+                <div>
+                   
+                        <table>
+                            <caption>table title and/or explanatory text</caption>
+                            <thead>
+                                <tr>
+                                    <th>Productos: </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                 @foreach($data as $d)
+                                    <tr>
+                                        <td>{{$d->id}}</td>
+                                        <td>{{$d->category_id}}</td>
+                                        <td>{{$d->buying_mode}}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                  
+                    
+                </div>
                 <div class="links">
                     <a href="https://laravel.com/docs">Documentation</a>
                     <a href="https://laracasts.com">Laracasts</a>

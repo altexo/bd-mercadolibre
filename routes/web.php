@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\DB;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,9 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	$ml = DB::table('ml_data')->get();
+	//return $ml;
+    return view('welcome', ['data' => $ml]);
 });
 
-Auth::routes();
+
 
 Route::get('/home', 'HomeController@index')->name('home');
