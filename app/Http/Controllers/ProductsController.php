@@ -23,14 +23,17 @@ class ProductsController extends Controller
      */
     public function create(Request $request)
     {
-   
+    if (!$r->category_id) {
+        return response()->json(['fail'=> 'Ok', 'posted' => $r], 500);
+    }
         $r = $this->convert_from_latin1_to_utf8_recursively($request);
     
      
         try{
             DB::transaction(function () use($r) {
                 $ml_data_id = DB::table('ml_data')->insertGetId(
-                    ['category_id' => $r->category_id, 
+                    [   'ml_id' => $r->ml_id,
+                        'category_id' => $r->category_id, 
                         'price' => $r->price,
                         'currency_id' => $r->currency_id,
                         'available_quantity' => $r->available_quantity,
