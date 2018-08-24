@@ -50,40 +50,29 @@ class ProductsController extends Controller
                 $json_shipping = json_encode($r->shipping);
                 $shipping_id = DB::table('shipping')->insertGetId(
                     [
-                        // 'mode' => $r->shipping['mode'],
-                        // 'dimensions' => $r->shipping['dimensions'],
-                        // 'local_pickup' => $r->shipping['local_pickup'],
-                        // 'free_shipping' => $r->shipping['free_shipping'],
-                        // 'logistic_type' => $r->shipping['logistic_type'],
-                        // 'store_pickup' => $r->shipping['store_pickup'],
+
                         'ml_data_id' => $ml_data_id,
                         'full_atts' => $json_shipping
                     ]
                 );
-                //Insertamos 
-              // $free_methods_id = DB::table('free_methods')->insert(['free_methods_id' =>  $r->shipping['free_methods'][0]['id'] ,'shipping_id' => $shipping_id]);
 
-               //Obtebenemos los datos del arreglo rule dentro de shipping
-              // $rules = $r->shipping['free_methods'][0]['rule'];
-               //Insertamos en la tabla rules con su free method id de la insercion anterior
-            //   DB::('rule')->insert(['default' =>]);
 
                //Ciclo para recorrer el arreglo de atributos
-                foreach ($r->attributes as $att) {
-                    //Insertar cada arreglo de atributos por filas
+                 $json_attributes = json_encode($r->attributes);
+              
                         DB::table('attributes')->insert(
                             [
-                                'att_id' => $att->id,
-                                'name' => $att->name,
-                                'value_id' => $att->value_id,
-                                'value_name' => $att->value_name,
-                                'value_struct' => $att->value_struct,
-                                'attribute_group_id' => $att->attribute_group_id,
-                                'attribute_group_name' => $att->attribute_group_name,
+                                'attribbutes_details' => $json_attributes,
                                 'ml_data_id' => $ml_data_id,
                             ]
                     );
-                }
+
+                $json_tags = json_encode($r->tags);
+                DB::table('tags')->insert([
+                    'tags_object' => $json_tags,
+                    'ml_data_id' => $ml_data_id
+                ]);
+                
                 DB::table('products')->insert([
                     'title' => $r->title,
                     'type_id' => 1,
