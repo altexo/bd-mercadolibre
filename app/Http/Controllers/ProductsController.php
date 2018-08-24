@@ -23,6 +23,7 @@ class ProductsController extends Controller
      */
     public function create(Request $request)
     {
+         return response()->json(['fail'=> 'Ok', 'posted' => $request->attributes], 500);
     if (!$request->category_id) {
         return response()->json(['fail'=> 'Ok', 'posted' => $request], 500);
     }
