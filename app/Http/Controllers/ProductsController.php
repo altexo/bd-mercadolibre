@@ -84,6 +84,11 @@ class ProductsController extends Controller
                             ]
                     );
                 }
+                DB::table('products')->insert([
+                    'title' => $r->title,
+                    'type_id' => 1,
+                    'ml_data_id' => $ml_data_id
+                ]);
             });
         }catch( PDOException $e ){
             return response()->json(['err PDO'=> $e],500);
