@@ -62,7 +62,7 @@ class ProductsController extends Controller
               
                         DB::table('attributes')->insert(
                             [
-                                'attribbutes_details' => $json_attributes,
+                                'attributes_details' => $json_attributes,
                                 'ml_data_id' => $ml_data_id,
                             ]
                     );
