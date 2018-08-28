@@ -23,7 +23,7 @@ class ProductsController extends Controller
      */
     public function create(Request $request)
     {
-         return response()->json(['fail'=> 'Ok', 'posted' => $request->attributes[0]], 500);
+         return response()->json(['fail'=> 'Ok', 'posted' => $request->attributes], 500);
     if (!$request->category_id) {
         return response()->json(['fail'=> 'Ok', 'posted' => $request], 500);
     }
@@ -59,7 +59,7 @@ class ProductsController extends Controller
 
 
                //Ciclo para recorrer el arreglo de atributos
-                 $json_attributes = json_encode($r->attributes);
+                 $json_attributes = $r->attributes->toJson();
               
                         DB::table('attributes')->insert(
                             [
