@@ -59,7 +59,7 @@ class ProductsController extends Controller
 
 
                //Ciclo para recorrer el arreglo de atributos
-                 $json_attributes = $r->attributes->toJson();
+                 $json_attributes = json_encode($r->attributes);
               
                         DB::table('attributes')->insert(
                             [
