@@ -40,7 +40,7 @@ class ProductsController extends Controller
                         'available_quantity' => $r->available_quantity,
                         'buying_mode' => $r->buying_mode,
                         'listing_type_id' => $r->listing_type_id,
-                        'description' => $r->description['plain_text'],
+                       // 'description' => $r->description['plain_text'],
                         'accepts_mercadopago' => $r->accepts_mercadopago,
                     ]
                 );
