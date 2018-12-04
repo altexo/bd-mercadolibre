@@ -20,7 +20,9 @@ Route::get('/', function () {
 
 
 Route::get('/home', 'HomeController@index')->name('home');
-
+Route::get('/ml', function(){
+	return view('mercadojs');
+});
 Auth::routes();
 Route::post('import/asin', 'ProductsController@importProducts')->name('import.products');
 Route::get('/home', 'HomeController@index')->name('home');

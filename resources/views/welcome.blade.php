@@ -83,7 +83,7 @@
                 </div>
                 <div>
                    
-                        <table>
+      {{--                   <table>
                             <caption>table title and/or explanatory text</caption>
                             <thead>
                                 <tr>
@@ -99,7 +99,7 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table>
+                        </table> --}}
                   
                     
                 </div>
