@@ -83,7 +83,7 @@
                 </div>
                 <div>
                    
-                       {{--  <table>
+                        <table>
                             <caption>table title and/or explanatory text</caption>
                             <thead>
                                 <tr>
@@ -99,12 +99,12 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table> --}}
+                        </table>
                   
                     
                 </div>
                 <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
+                    <a href="{{route('scrap')}}">Init Scrap</a>
                     <a href="https://laracasts.com">Laracasts</a>
                     <a href="https://laravel-news.com">News</a>
                     <a href="https://forge.laravel.com">Forge</a>

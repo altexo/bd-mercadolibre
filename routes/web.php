@@ -22,5 +22,10 @@ Route::get('/', function () {
 Route::get('/home', 'HomeController@index')->name('home');
 
 Auth::routes();
-
+Route::post('import/asin', 'ProductsController@importProducts')->name('import.products');
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/import', function(){
+	return view('importProducts');
+});
+
+Route::get('/scrapper', 'ScrapperController@index')->name('scrap');

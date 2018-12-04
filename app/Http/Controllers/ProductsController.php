@@ -40,7 +40,7 @@ class ProductsController extends Controller
                         'available_quantity' => $r->available_quantity,
                         'buying_mode' => $r->buying_mode,
                         'listing_type_id' => $r->listing_type_id,
-                       // 'description' => $r->description['plain_text'],
+                        'description' => $r->description['plain_text'],
                         'accepts_mercadopago' => $r->accepts_mercadopago,
                     ]
                 );
@@ -145,6 +145,41 @@ class ProductsController extends Controller
     {
         //
     }
+
+        public function importProducts(Request $request){
+
+            $validator = \Validator::make($request->all(), [
+                'file' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                echo "Fail :(";
+                //return redirect()->back()->withErrors($validator);
+            }
+            
+            $file = $request->file;
+            $csvData = file_get_contents($file);
+            //dd($csvData);
+            $rows = array_map("str_getcsv", explode("\r\n", $csvData));
+            $header = array_shift($rows);
+            //return dd($header);
+           //dd($header);
+
+            foreach ($rows as $row) {
+                    $row = array_combine($header, $row);
+                    $provider_id = DB::table('provider')->insertGetId([
+                        'provider_link' => $row['provider_link'],
+                        'asin' => $row['asin'],
+                        'price' => $row['price']
+                    ]);
+                    $ml_data_id = DB::table('ml_data')->select('id')->where('ml_id', '=', $row['ml_id'])->get();
+
+                    DB::table('products')
+                        ->where('ml_data_id', $ml_data_id)
+                        ->update(['provider_id' => $provider_id]);
+                    
+                }
+        }
     public function dummy(Request $r){
          return response()->json(['success'=> $r->obj], 500);
     }
