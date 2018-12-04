@@ -13,6 +13,7 @@ $( document ).ready(function() {
 
 $("#login-button").click(function(){
 	 MELI.login(function() {
+	 	console.log(MELI.getToken());
 	  	// MELI.get("/users/me", {}, function(data) {
 	   //  	alert("Hello " + data[2].first_name);
 	  	// });
