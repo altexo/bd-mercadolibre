@@ -10,7 +10,8 @@ $( document ).ready(function() {
 		//console.log('Token: '+token)
 //	}
 if (!localStorage.getItem("token")) {
-	console.log("Token in localStorage: "+token)
+	var token = localStorage.getItem("token");
+	console.log("Token in localStorage: "+token);
 }
 
 });
