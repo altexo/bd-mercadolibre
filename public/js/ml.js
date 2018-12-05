@@ -22,11 +22,12 @@ $("#login-button").click(function(){
 	 	  	// MELI.get("/users/me", {}, function(data) {
 	   //  	alert("Hello " + data[2].first_name);
 	  	// });
+	  	localStorage.setItem("token", MELI.getToken());
 	  	MELI.get("/users/me", {}, function(data) {
 	    	console.log("Login data: "+data)
 	    	console.log("token: "+MELI.getToken());
 	    	var storage = {token: MELI.getToken()};
 	  	});
-	  	localStorage.setItem("token", storage);
+	  	
 	});
 });
