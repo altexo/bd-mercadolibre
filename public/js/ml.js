@@ -1,24 +1,22 @@
 $( document ).ready(function() {
     console.log( "ready!" );
     MELI.init({ client_id: 6677614414680820 });
-
-  //  if (!MELI.getToken()) {
-    	//var token = MELI.getToken();
-    // 	MELI.get("/users/me", {}, function(data) {
-	   //  	console.log("Hello " + data[2].first_name);
-	  	// });
-		//console.log('Token: '+token)
-//	}
-if (!localStorage.getItem("token")) {
-	var token = localStorage.getItem("token");
-	console.log("Token in localStorage: "+token);
-}
+	
+	if (localStorage.getItem("token") != null) {
+		$("#not-logged").hide();
+	 	$("#auth").show();
+		var token = localStorage.getItem("token");
+		console.log("Token in localStorage: "+token);
+	}else{
+		console.log("Aun no haz iniciado sesion amiwo")
+	}
 
 });
 
 $("#login-button").click(function(){
 	 MELI.login(function() {
-	 	
+	 	$("#not-logged").hide();
+	 	$("#auth").show();
 	 	  	// MELI.get("/users/me", {}, function(data) {
 	   //  	alert("Hello " + data[2].first_name);
 	  	// });
@@ -31,3 +29,12 @@ $("#login-button").click(function(){
 	  	
 	});
 });
+
+$("#get-user-button").click(function(){
+	var token = localStorage.getItem("token");
+	MELI.get("/users/6677614414680820", {access_token: token}, function(data) {
+		console.log(data[0]);
+		console.log(data);
+	});
+});
+

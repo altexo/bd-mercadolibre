@@ -15,10 +15,15 @@
 	      		</li>
 	    	</ul>
 	  	</div> --}}
-	 	<div class="card-body">
+	 	<div class="card-body" id="not-logged">
 	    	<h5 class="card-title">Aún no haz iniciado sesion en Mercado Libre</h5>
 	    	<p class="card-text">Para hacerlo comienza dando click en el siguiente boton:</p>
 	    	<a href="#" id="login-button" class="btn btn-primary">Iniciar Sesion</a>
+	  	</div>
+	  	<div class="card-body" id="auth">
+	    	<h5 class="card-title">Usuario: </h5>
+	    	{{-- <p class="card-text">Para hacerlo comienza dando click en el siguiente boton:</p> --}}
+	    	<a href="#" id="get-user-button" class="btn btn-primary">Obtener Usuario</a>
 	  	</div>
 	</div>
 @endsection
