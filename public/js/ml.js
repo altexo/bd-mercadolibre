@@ -3,16 +3,16 @@ $( document ).ready(function() {
     console.log( "ready!" );
     MELI.init({ client_id: 6677614414680820 });
 	
-	if (localStorage.getItem("token") != null) {
-		$("#not-logged").hide();
-	 	$("#auth").show();
-		var token = localStorage.getItem("token");
-		console.log("Token in localStorage: "+token);
-	}else{
-		console.log("Aun no haz iniciado sesion amiwo")
-	}
+// 	if (localStorage.getItem("token") != null) {
+// 		$("#not-logged").hide();
+// 	 	$("#auth").show();
+// 		var token = localStorage.getItem("token");
+// 		console.log("Token in localStorage: "+token);
+// 	}else{
+// 		console.log("Aun no haz iniciado sesion amiwo")
+// 	}
 
-});
+// });
 
 
 $("#login-button").click(function(){
