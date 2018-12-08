@@ -2,7 +2,7 @@ $( document ).ready(function() {
 	$("#auth").hide();
     console.log( "ready!" );
     MELI.init({ client_id: 6677614414680820 });
-	
+
 // 	if (localStorage.getItem("token") != null) {
 // 		$("#not-logged").hide();
 // 	 	$("#auth").show();
@@ -21,6 +21,7 @@ $("#login-button").click(function(){
 	 	$("#auth").show();
 	 	  	MELI.get("/users/me", {}, function(data) {
 	    	console.log(data);
+	    	localStorage.setItem("user_id", data[2].id);
 	  	});
 	  	// localStorage.setItem("token", MELI.getToken());
 	  	// MELI.get("/users/me", {}, function(data) {
@@ -33,9 +34,9 @@ $("#login-button").click(function(){
 });
 
 $("#get-user-button").click(function(){
-	var token = localStorage.getItem("token");
-	MELI.get("/users/6677614414680820", null, function(data) {
-		console.log(data[0]);
+	var user_id = localStorage.getItem("user_id");
+	MELI.get("/users/"+user_id, null, function(data) {
+		//console.log(data[0]);
 		console.log(data);
 	});
 });
