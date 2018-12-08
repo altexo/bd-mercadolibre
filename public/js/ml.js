@@ -1,4 +1,5 @@
 $( document ).ready(function() {
+	$("#auth").hide();
     console.log( "ready!" );
     MELI.init({ client_id: 6677614414680820 });
 	
