@@ -12,7 +12,7 @@ $( document ).ready(function() {
 // 		console.log("Aun no haz iniciado sesion amiwo")
 // 	}
 
-// });
+ });
 
 
 $("#login-button").click(function(){
