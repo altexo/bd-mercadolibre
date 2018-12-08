@@ -21,7 +21,11 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </head>
 <body>
-   
+    <nav class="navbar navbar-expand-sm navbar-dark bg-info mb-2">
+        <div class="container">
+            <a href="#" class="navbar-brand">ML SHIP</a>
+        </div>
+    </nav>
 
      @yield('content')
 
@@ -35,6 +39,7 @@
           <script src="{{ asset('js/app.js') }}"></script>
           <script src="{{asset('js/mercadolibre-1.0.4.js')}}"></script>
 <script src="https://a248.e.akamai.net/secure.mlstatic.com/org-img/sdk/mercadolibre-1.0.4.js"></script>
+
     @yield('scripts')
    </footer>
  

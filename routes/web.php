@@ -21,7 +21,7 @@ Route::get('/', function () {
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/ml', function(){
-	return view('mercado-app');
+	return view('mercadojs');
 });
 Auth::routes();
 Route::post('import/asin', 'ProductsController@importProducts')->name('import.products');
