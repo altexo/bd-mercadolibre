@@ -14,6 +14,7 @@ $( document ).ready(function() {
 
 });
 
+
 $("#login-button").click(function(){
 	 MELI.login(function() {
 	 	$("#not-logged").hide();
@@ -33,7 +34,7 @@ $("#login-button").click(function(){
 
 $("#get-user-button").click(function(){
 	var token = localStorage.getItem("token");
-	MELI.get("/users/6677614414680820?access_token="+token, null, function(data) {
+	MELI.get("/users/6677614414680820", null, function(data) {
 		console.log(data[0]);
 		console.log(data);
 	});
