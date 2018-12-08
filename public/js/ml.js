@@ -19,15 +19,15 @@ $("#login-button").click(function(){
 	 MELI.login(function() {
 	 	$("#not-logged").hide();
 	 	$("#auth").show();
-	 	  	// MELI.get("/users/me", {}, function(data) {
-	   //  	alert("Hello " + data[2].first_name);
-	  	// });
-	  	localStorage.setItem("token", MELI.getToken());
-	  	MELI.get("/users/me", {}, function(data) {
-	    	console.log("Login data: "+data)
-	    	console.log("token: "+MELI.getToken());
-	    	var storage = {token: MELI.getToken()};
+	 	  	MELI.get("/users/me", {}, function(data) {
+	    	console.log(data);
 	  	});
+	  	// localStorage.setItem("token", MELI.getToken());
+	  	// MELI.get("/users/me", {}, function(data) {
+	   //  	console.log("Login data: "+data)
+	   //  	console.log("token: "+MELI.getToken());
+	   //  	var storage = {token: MELI.getToken()};
+	  	// });
 	  	
 	});
 });
