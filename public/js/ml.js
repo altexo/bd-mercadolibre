@@ -1,35 +1,27 @@
 $( document ).ready(function() {
-	$("#auth").hide();
+	// $("#auth").hide();
     console.log( "ready!" );
-    MELI.init({ client_id: 6677614414680820 });
+    MELI.init({ 
+    	client_id: 6677614414680820, 
+    	xauth_protocol: "https://",
+  		xauth_domain: "secure.mlstatic.com",
+  		xd_url: "/org-img/sdk/xd-1.0.4.html"
+    });
 
-// 	if (localStorage.getItem("token") != null) {
-// 		$("#not-logged").hide();
-// 	 	$("#auth").show();
-// 		var token = localStorage.getItem("token");
-// 		console.log("Token in localStorage: "+token);
-// 	}else{
-// 		console.log("Aun no haz iniciado sesion amiwo")
-// 	}
-
+	MELI.getLoginStatus(function(data) {
+		console.log('LoginStatus: ')
+  		console.log(data);
+	});
  });
 
-
+//Login ML click Event
 $("#login-button").click(function(){
 	 MELI.login(function() {
 	 	$("#not-logged").hide();
 	 	$("#auth").show();
 	 	  	MELI.get("/users/me", {}, function(data) {
-	    	console.log(data);
 	    	localStorage.setItem("user_id", data[2].id);
 	  	});
-	  	// localStorage.setItem("token", MELI.getToken());
-	  	// MELI.get("/users/me", {}, function(data) {
-	   //  	console.log("Login data: "+data)
-	   //  	console.log("token: "+MELI.getToken());
-	   //  	var storage = {token: MELI.getToken()};
-	  	// });
-	  	
 	});
 });
 
@@ -40,4 +32,6 @@ $("#get-user-button").click(function(){
 		console.log(data);
 	});
 });
+
+$
 
