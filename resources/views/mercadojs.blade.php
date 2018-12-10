@@ -11,15 +11,16 @@
 <div class="container">
 	<div class="card text-center ">
 
-	 	<div class="card-body" id="not-logged">
-	    	<h5 class="card-title">Aún no haz iniciado sesion en Mercado Libre</h5>
+	 	<div class="card-body hidden" id="not-logged">
+	    	<h5 class="card-title">Aún no Esta autorizado para publicar en MercadoLibre</h5>
 	    	<p class="card-text">Para hacerlo comienza dando click en el siguiente boton:</p>
-	    	<a href="#" id="login-button" class="btn btn-primary">Iniciar Sesion</a>
+	    	<a href="#" id="login-button" class="btn btn-primary">Authorizar</a>
 	  	</div>
 	  	<div class="card-body hidden"  id="auth">
 	    	<h5 class="card-title">Usuario: </h5>
 	    	{{-- <p class="card-text">Para hacerlo comienza dando click en el siguiente boton:</p> --}}
 	    	<a href="#" id="get-user-button" class="btn btn-primary">Obtener Usuario</a>
+	    	<button type="button" class="btn btn-primary" id="publish-button">Publicar productos</button>
 	  	</div>
 	</div>
 </div>

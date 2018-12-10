@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-	// $("#auth").hide();
+	 $("#auth").show();
     console.log( "ready!" );
     MELI.init({ 
     	client_id: 6677614414680820, 
@@ -11,6 +11,11 @@ $( document ).ready(function() {
 	MELI.getLoginStatus(function(data) {
 		console.log('LoginStatus: ')
   		console.log(data);
+  		if (data.status =="AUTHORIZED") {
+  			$("#auth").show();
+  		}else{
+  			$("#not-logged").show();
+  		}
 	});
  });
 
@@ -33,5 +38,50 @@ $("#get-user-button").click(function(){
 	});
 });
 
-$
+$("#publish-button").click(function(){
+	 $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            type:'GET',
+            //url: 'http://127.0.0.1:8000/api/products',
+            url: "https://bd-mercadolibre.herokuapp.com/api/products",
+            success:function(response){
+            	var url = "https://api.mercadolibre.com/items";
+            	var data = response.response;
+            	var picturesArray = JSON.parse(data.pictures[0].url);
+            	var tagsArray = JSON.parse(data.tags[0].tags_object);
+            	var shippingArray = JSON.parse(data.shipping[0].full_atts);
+
+            	var title = data.products[0].title;
+            	var category_id = data.category_id;
+            	var price = data.price;
+            	var currency_id = data.currency_id;
+            	var available_quantity = data.available_quantity;
+            	var buying_mode = data.buying_mode;
+            	var listing_type_id = data.listing_type_id;
+            	var condition = "new"
+
+            	var productObj = {
+            		 title: title,
+            		 category_id: category_id,
+            		 price: price,
+            		 currency_id: currency_id,
+            		 available_quantity: available_quantity,
+            		 buying_mode: buying_mode,
+            		 listing_type_id: listing_type_id,
+            		 condition: condition,
+            		 tags: tagsArray,
+            		 pictures: picturesArray,
+
+            	}
+            	console.log(productObj);
+            	MELI.post(url, productObj, function(data) {
+            		console.log("ML response: ")
+					console.log(data);
+				});
+            },
+            error:function(response){
+
+            }
+        });
+});
 

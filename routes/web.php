@@ -22,7 +22,7 @@ Route::get('/', function () {
 //Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/ml', 'HomeController@index')->name('home');
 Auth::routes();
-// Route::get('/register', 'HomeController@index');
+Route::get('/register', 'HomeController@index');
 Route::post('import/asin', 'ProductsController@importProducts')->name('import.products');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/import', function(){

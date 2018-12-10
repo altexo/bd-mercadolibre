@@ -23,3 +23,4 @@ Route::post('dummy/test', 'ProductsController@dummy');
 Route::get('dummy/get', function(){
 	return response()->json(['Success' => 'ok']);
 });
+Route::get('products','ProductsController@publishAll');

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
-
+use App\Ml_data;
+use App\Pictures;
 class ProductsController extends Controller
 {
     /**
@@ -200,6 +201,14 @@ class ProductsController extends Controller
             return $dat;
         }
    }
+
+    public function publishAll(){
+        $response = "";
+        $error = false;
+        $response = Ml_data::with('pictures', 'shipping', 'tags', 'products')->first();
+        //$response = Pictures::first();
+        return response()->json(['error'=> $error,'response'=> $response]);
+    }
 
 
 }
