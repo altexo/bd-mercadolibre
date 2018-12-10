@@ -74,10 +74,15 @@ $("#publish-button").click(function(){
 
             	}
             	console.log(productObj);
-            	MELI.post(url, productObj, function(data) {
-            		console.log("ML response: ")
-					console.log(data);
-				});
+            	try{
+	            	MELI.post(url, productObj, function(data) {
+	            		console.log("ML response: ")
+						console.log(data);
+					});
+				} catch (e){
+					console.log('Error: ');
+					console.log(e);
+				}
             },
             error:function(response){
 
