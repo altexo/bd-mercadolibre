@@ -70,7 +70,7 @@ $("#publish-button").click(function(){
             		 listing_type_id: listing_type_id,
             		 condition: condition,
             		 tags: tagsArray,
-            		 pictures: [picturesArray],
+            		 pictures: picturesArray,
 
             	}
             	console.log(productObj);
