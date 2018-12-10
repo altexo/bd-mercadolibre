@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-	 $("#auth").show();
+	// $("#auth").show();
     console.log( "ready!" );
     MELI.init({ 
     	client_id: 6677614414680820, 
@@ -70,7 +70,7 @@ $("#publish-button").click(function(){
             		 listing_type_id: listing_type_id,
             		 condition: condition,
             		 tags: tagsArray,
-            		 pictures: picturesArray,
+            		 pictures: [picturesArray],
 
             	}
             	console.log(productObj);
@@ -84,4 +84,5 @@ $("#publish-button").click(function(){
             }
         });
 });
+
 
