@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-	// $("#auth").show();
+	 $("#auth").show();
     console.log( "ready!" );
     MELI.init({ 
     	client_id: 6677614414680820, 
@@ -43,7 +43,7 @@ $("#publish-button").click(function(){
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             type:'GET',
             //url: 'http://127.0.0.1:8000/api/products',
-            url: "https://bd-mercadolibre.herokuapp.com/api/products",
+           	url: "https://bd-mercadolibre.herokuapp.com/api/products",
             success:function(response){
             	var url = "/items";
             	var data = response.response;
@@ -59,7 +59,11 @@ $("#publish-button").click(function(){
             	var buying_mode = data.buying_mode;
             	var listing_type_id = data.listing_type_id;
             	var condition = "new"
-
+            	//Preparar lista de imagenes
+            	var picturesArrayList = [];
+            	$.each(picturesArray,function(index, pic) {
+            		picturesArrayList.push(pic);
+            	});
             	var productObj = {
             		 title: title,
             		 category_id: category_id,
@@ -70,10 +74,11 @@ $("#publish-button").click(function(){
             		 listing_type_id: listing_type_id,
             		 condition: condition,
             		 tags: tagsArray,
-            		 pictures: picturesArray,
+            		 pictures: picturesArrayList,
 
             	}
             	console.log(productObj);
+            	console.log(picturesArrayList);
             	try{
 	            	MELI.post(url, productObj, function(data) {
 	            		console.log("ML response: ")
