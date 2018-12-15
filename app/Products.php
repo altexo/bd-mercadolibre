@@ -8,5 +8,5 @@ class Products extends Model
 {
     protected $table = "products";
 
-    protected $visible = ['title'];
+   // protected $visible = ['title'];
 }

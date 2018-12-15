@@ -5,6 +5,7 @@ use DB;
 use Illuminate\Http\Request;
 use App\Ml_data;
 use App\Pictures;
+use App\Products;
 class ProductsController extends Controller
 {
     /**
@@ -165,21 +166,50 @@ class ProductsController extends Controller
             $header = array_shift($rows);
             //return dd($header);
            //dd($header);
-
+            $count = 0;
+            $not_found = [];
             foreach ($rows as $row) {
-                    $row = array_combine($header, $row);
-                    $provider_id = DB::table('provider')->insertGetId([
-                        'provider_link' => $row['provider_link'],
-                        'asin' => $row['asin'],
-                        'price' => $row['price']
-                    ]);
-                    $ml_data_id = DB::table('ml_data')->select('id')->where('ml_id', '=', $row['ml_id'])->get();
 
-                    DB::table('products')
-                        ->where('ml_data_id', $ml_data_id)
-                        ->update(['provider_id' => $provider_id]);
+                    $row = array_combine($header, $row);
+                    $title = utf8_encode($row['Nombre del Producto Mercado Libretab']);
+                    $provider_link = utf8_encode($row['Link Provedor']);
+                    $title = rtrim($title);
+                    // $product = DB::table('products')
+                    //     ->where('title', 'like', "%{$title}%")
+                    //     ->first();
+                    $product = Products::where('title', 'like', "%{$title}%")->first();
+                    if ($product != NULL) {
+                        $provider_id = DB::table('provider')->insertGetId([
+                            'provider_link' => $provider_link,
+                            'asin' => $row['ASIN'],
+                            'shipping_price' => $row['Envio'],
+                            'price' => $row['Precio Provedor']
+                        ]);
+
+                        $product->provider_id = $provider_id;
+                        $product->save();
+
+                        $count++;
+                            echo '<pre>';
+                            echo $product->title."<br>";
+                            echo '</pre>';
+                            
+                       }else{
+                            array_push($not_found, $title);
+                       }
+                       
+                  //  $provider = DB::table('provider')->where('')
+                  
+                    // $ml_data_id = DB::table('ml_data')->select('id')->where('ml_id', '=', $row['ml_id'])->get();
+
+                  
                     
                 }
+                echo $count;
+                echo "--Not Found--";
+                echo '<pre>';
+                print_r($not_found);
+                echo '</pre>';
         }
     public function dummy(Request $r){
          return response()->json(['success'=> $r->obj], 500);
