@@ -25,12 +25,12 @@ class ProductsController extends Controller
      */
     public function create(Request $request)
     {
-    //      return response()->json(['fail'=> 'Ok', 'posted' => $request->attributes], 500);
+         
     // if (!$request->category_id) {
     //     return response()->json(['fail'=> 'Ok', 'posted' => $request], 500);
     // }
         $r = $this->convert_from_latin1_to_utf8_recursively($request);
-    
+     return response()->json(['fail'=> 'Ok', 'posted' => $r->attributes], 500);
      
         try{
             DB::transaction(function () use($r) {
