@@ -30,7 +30,7 @@ class ProductsController extends Controller
     // if (!$request->category_id) {
     //     return response()->json(['fail'=> 'Ok', 'posted' => $request], 500);
     // }
-        $reponse = '';
+        $response = '';
         $r = $this->convert_from_latin1_to_utf8_recursively($request);
         $atts = $r->request;
      //return response()->json(['fail'=> 'Ok', 'posted' => $atts->attributes], 500);
