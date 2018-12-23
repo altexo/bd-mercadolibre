@@ -40,7 +40,7 @@ class ProductsController extends Controller
             $ml_attributes = Attributes::where('ml_data_id', $ml_data->id);
             $ml_attributes->attributes_details = $json_attributes;
             $ml_attributes->save();
-            $response = "Updated"
+            $response = "Updated";
         }
         else{    
             try{
