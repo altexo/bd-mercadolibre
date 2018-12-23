@@ -31,7 +31,7 @@ class ProductsController extends Controller
     // }
         $r = $this->convert_from_latin1_to_utf8_recursively($request);
         $atts = $r->request;
-     return response()->json(['fail'=> 'Ok', 'posted' => $r->attributes], 500);
+     return response()->json(['fail'=> 'Ok', 'posted' => $atts->attributes], 500);
      
         try{
             DB::transaction(function () use($r) {
