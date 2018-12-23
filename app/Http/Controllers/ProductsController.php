@@ -35,7 +35,7 @@ class ProductsController extends Controller
      //return response()->json(['fail'=> 'Ok', 'posted' => $atts->attributes], 500);
     $atts = $r->request;
     $json_attributes = json_encode($atts->attributes);
-     $ml_data = Ml_data::find($r->ml_id);
+     $ml_data = Ml_data::where('ml_id',$r->ml_id);
         if ($ml_data != NULL) {
             $ml_attributes = Attributes::where('ml_data_id', $ml_data->id);
             $ml_attributes->attributes_details = $json_attributes;
