@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Ml_data;
 use App\Pictures;
 use App\Products;
+use App\Attributes;
 class ProductsController extends Controller
 {
     /**
@@ -32,65 +33,78 @@ class ProductsController extends Controller
         $r = $this->convert_from_latin1_to_utf8_recursively($request);
         
      //return response()->json(['fail'=> 'Ok', 'posted' => $atts->attributes], 500);
-     
-        try{
-            DB::transaction(function () use($r) {
-                $atts = $r->request;
-                $ml_data_id = DB::table('ml_data')->insertGetId(
-                    [   'ml_id' => $r->ml_id,
-                        'category_id' => $r->category_id, 
-                        'price' => $r->price,
-                        'currency_id' => $r->currency_id,
-                        'available_quantity' => $r->available_quantity,
-                        'buying_mode' => $r->buying_mode,
-                        'listing_type_id' => $r->listing_type_id,
-                        'description' => $r->description['plain_text'],
-                        'accepts_mercadopago' => $r->accepts_mercadopago,
-                    ]
-                );
+    $atts = $r->request;
+    $json_attributes = json_encode($atts->attributes);
+     $ml_data = Ml_data::find($r->ml_id);
+        if ($ml_data != NULL) {
+            $ml_attributes = Attributes::where('ml_data_id', $ml_data->id);
+            $ml_attributes->attributes_details = $json_attributes;
+            $ml_attributes->save();
+            $response = "Updated"
+        }
+        else{    
+            try{
+                DB::transaction(function () use($r, $json_attributes) {
+                  //  $atts = $r->request;
 
-                $json_pictures = json_encode($r->pictures);
-
-                DB::table('pictures')->insert(['ml_data_id' => $ml_data_id, 'url'=> $json_pictures]);
-                $json_shipping = json_encode($r->shipping);
-                $shipping_id = DB::table('shipping')->insertGetId(
-                    [
-
-                        'ml_data_id' => $ml_data_id,
-                        'full_atts' => $json_shipping
-                    ]
-                );
-
-
-               //Ciclo para recorrer el arreglo de atributos
-                 $json_attributes = json_encode($atts->attributes);
-              
-                        DB::table('attributes')->insert(
-                            [
-                                'attributes_details' => $json_attributes,
-                                'ml_data_id' => $ml_data_id,
-                            ]
+                    $ml_data_id = DB::table('ml_data')->insertGetId(
+                        [   'ml_id' => $r->ml_id,
+                            'category_id' => $r->category_id, 
+                            'price' => $r->price,
+                            'currency_id' => $r->currency_id,
+                            'available_quantity' => $r->available_quantity,
+                            'buying_mode' => $r->buying_mode,
+                            'listing_type_id' => $r->listing_type_id,
+                            'description' => $r->description['plain_text'],
+                            'accepts_mercadopago' => $r->accepts_mercadopago,
+                        ]
                     );
 
-                $json_tags = json_encode($r->tags);
-                DB::table('tags')->insert([
-                    'tags_object' => $json_tags,
-                    'ml_data_id' => $ml_data_id
-                ]);
-                
-                DB::table('products')->insert([
-                    'title' => $r->title,
-                    'type_id' => 1,
-                    'ml_data_id' => $ml_data_id,
-                    'provider_id' => 1
-                ]);
-            });
-        }catch( PDOException $e ){
-            return response()->json(['err PDO'=> $e],500);
-        }catch (\Exception $e){
-            return response()->json(['err '=> new \Illuminate\Support\MessageBag(['catch_exception'=>$e])],500);
+                    $json_pictures = json_encode($r->pictures);
+
+                    DB::table('pictures')->insert(['ml_data_id' => $ml_data_id, 'url'=> $json_pictures]);
+                    $json_shipping = json_encode($r->shipping);
+                    $shipping_id = DB::table('shipping')->insertGetId(
+                        [
+
+                            'ml_data_id' => $ml_data_id,
+                            'full_atts' => $json_shipping
+                        ]
+                    );
+
+
+            
+                    
+                  
+                            DB::table('attributes')->insert(
+                                [
+                                    'attributes_details' => $json_attributes,
+                                    'ml_data_id' => $ml_data_id,
+                                ]
+                        );
+
+                    $json_tags = json_encode($r->tags);
+                    DB::table('tags')->insert([
+                        'tags_object' => $json_tags,
+                        'ml_data_id' => $ml_data_id
+                    ]);
+                    
+                    DB::table('products')->insert([
+                        'title' => $r->title,
+                        'type_id' => 1,
+                        'ml_data_id' => $ml_data_id,
+                        'provider_id' => 1
+                    ]);
+                    $response = 'Created';
+                });
+            }catch( PDOException $e ){
+                return response()->json(['err PDO'=> $e],500);
+            }catch (\Exception $e){
+                return response()->json(['err '=> new \Illuminate\Support\MessageBag(['catch_exception'=>$e])],500);
+            }
         }
-        return response()->json(['success'=> 'Ok'], 500);
+
+        return response()->json(['success'=> $response], 500);
     }
 
 
