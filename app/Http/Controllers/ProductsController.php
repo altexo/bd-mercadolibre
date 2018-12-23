@@ -30,11 +30,12 @@ class ProductsController extends Controller
     //     return response()->json(['fail'=> 'Ok', 'posted' => $request], 500);
     // }
         $r = $this->convert_from_latin1_to_utf8_recursively($request);
-        $atts = $r->request;
+        
      //return response()->json(['fail'=> 'Ok', 'posted' => $atts->attributes], 500);
      
         try{
             DB::transaction(function () use($r) {
+                $atts = $r->request;
                 $ml_data_id = DB::table('ml_data')->insertGetId(
                     [   'ml_id' => $r->ml_id,
                         'category_id' => $r->category_id, 
