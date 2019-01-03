@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome', ['data' => $ml]);
 });
 
-
+route::get('/scrap/get-by-asin', 'ScraperController@index');
 
 //Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/ml', 'HomeController@index')->name('home');

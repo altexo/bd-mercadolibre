@@ -257,5 +257,22 @@ class ProductsController extends Controller
         return response()->json(['error'=> $error,'response'=> $response]);
     }
 
+    public function getProductApiCall($asin)
+    {
+             $ch = curl_init();
+             $url = "https://scrapehero-amazon-product-info-v1.p.mashape.com/product-details
+";
+            curl_setopt($ch, CURLOPT_URL, $url . $method_request);
+            // SSL important
+            curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, FALSE );
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+            $output = curl_exec($ch);
+            curl_close($ch);
+
+
+            $this->response['response'] = json_decode($output);
+    }
 
 }
