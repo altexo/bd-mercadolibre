@@ -22,11 +22,11 @@ $( document ).ready(function() {
     //  price = price.slice(0,-3);
     //  console.log(price);
     //  console.log(newP);
-    // var prod = "Gatitos que explotan Juego de Cartas";
-    // var cat = "MLM1132";
-    // $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+prod+'&category_from='+cat, function(data){
-    //     console.log(data);
-    // });
+    var prod = "Exploding Kittens Card Game";
+    var cat = "MLM1132";
+    $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+prod+'&category_from='+cat, function(data){
+        console.log(data);
+    });
  });
 
 //Login ML click Event
