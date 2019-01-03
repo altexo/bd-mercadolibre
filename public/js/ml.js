@@ -77,6 +77,8 @@ $("#publish-button").click(function(){
             	$.each(picturesArray,function(index, pic) {
             		picturesArrayList.push(pic);
             	});
+                var desc_array = new Array();
+                desc_array['plain_text'] = data.description;
             	var productObj = {
             		 title: title,
             		 category_id: category_id,
@@ -86,6 +88,7 @@ $("#publish-button").click(function(){
             		 buying_mode: buying_mode,
             		 listing_type_id: listing_type_id,
             		 condition: condition,
+                     description: desc_array,
             		 tags: tagsArray,
             		 pictures: picturesArrayList,
                      shipping: shippingArray,
@@ -102,7 +105,7 @@ $("#publish-button").click(function(){
 					console.log('Error: ');
 					console.log(e);
 				}
-				console.log(price);
+			//	console.log(price);
             },
             error:function(response){
 
