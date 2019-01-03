@@ -17,15 +17,14 @@ $( document ).ready(function() {
   			$("#not-logged").show();
   		}
 	});
-    // MELI.get("/sites/MLM/category_predictor/predict", {'title': 'Gatitos que explotan Juego de Cartas'}, function(data){
-    //     console.log('Category Prediction');
+    price = "63400";
+     price = price.slice(0,-2);
+     console.log(price);
+    // var prod = "Gatitos que explotan Juego de Cartas";
+    // var cat = "MLM1132";
+    // $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+prod+'&category_from='+cat, function(data){
     //     console.log(data);
     // });
-    var prod = "Gatitos que explotan Juego de Cartas";
-    var cat = "MLM1132";
-    $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+prod+'&category_from='+cat, function(data){
-        console.log(data);
-    });
  });
 
 //Login ML click Event
@@ -64,7 +63,8 @@ $("#publish-button").click(function(){
 
             	var title = data.products[0].title;
             	var category_id = data.category_id;
-            	var price = data.price;
+            	var price = Math.ceil(data.price);
+                price = price.slice(0,-2);
             	var currency_id = data.currency_id;
             	var available_quantity = data.available_quantity;
             	var buying_mode = data.buying_mode;
@@ -86,6 +86,7 @@ $("#publish-button").click(function(){
             		 condition: condition,
             		 tags: tagsArray,
             		 pictures: picturesArrayList,
+                     shipping: shippingArray,
 
             	}
             	console.log(productObj);
