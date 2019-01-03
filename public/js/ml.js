@@ -35,6 +35,10 @@ $("#get-user-button").click(function(){
 	MELI.get("/users/"+user_id, null, function(data) {
 		//console.log(data[0]);
 		console.log(data);
+        MELI.get("/sites/MLM/category_predictor/predict", {'title': 'Gatitos que explotan Juego de Cartas', 'category_from': 'MLM1132'}, function(data){
+            console.log('Category Prediction');
+            console.log(data);
+        })
 	});
 });
 
