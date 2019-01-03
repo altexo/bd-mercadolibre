@@ -17,8 +17,13 @@ $( document ).ready(function() {
   			$("#not-logged").show();
   		}
 	});
-    MELI.get("/sites/MLM/category_predictor/predict", {'title': 'Gatitos que explotan Juego de Cartas'}, function(data){
-        console.log('Category Prediction');
+    // MELI.get("/sites/MLM/category_predictor/predict", {'title': 'Gatitos que explotan Juego de Cartas'}, function(data){
+    //     console.log('Category Prediction');
+    //     console.log(data);
+    // });
+    var prod = "Gatitos que explotan Juego de Cartas";
+    var cat = "MLM1132";
+    $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+prod+'&category_from='+cat, function(data){
         console.log(data);
     });
  });
