@@ -17,9 +17,11 @@ $( document ).ready(function() {
   			$("#not-logged").show();
   		}
 	});
-    price = "63400";
-     price = price.slice(0,-2);
-     console.log(price);
+    // var price = "634.00";
+    // var newP = Math.ceil(price)
+    //  price = price.slice(0,-3);
+    //  console.log(price);
+    //  console.log(newP);
     // var prod = "Gatitos que explotan Juego de Cartas";
     // var cat = "MLM1132";
     // $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+prod+'&category_from='+cat, function(data){
@@ -63,8 +65,8 @@ $("#publish-button").click(function(){
 
             	var title = data.products[0].title;
             	var category_id = data.category_id;
-            	var price = Math.ceil(data.price);
-                price = price.slice(0,-2);
+            	var price = data.price;
+                price = price.slice(0,-3);
             	var currency_id = data.currency_id;
             	var available_quantity = data.available_quantity;
             	var buying_mode = data.buying_mode;
