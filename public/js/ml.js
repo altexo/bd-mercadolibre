@@ -48,7 +48,7 @@ $("#publish-button").click(function(){
                 console.log(response);
             	var url = "/items";
             	var data = response.response;
-            	var picturesArray = JSON.parse(data.pictures.url);
+            	var picturesArray = JSON.parse(data.pictures[0].url);
             	var tagsArray = JSON.parse(data.tags[0].tags_object);
             	var shippingArray = JSON.parse(data.shipping[0].full_atts);
 
