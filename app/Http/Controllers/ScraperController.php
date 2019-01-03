@@ -7,7 +7,7 @@ use GuzzleHttp\Client;
 use App\Ml_data;
 use App\Provider;
 use App\Products;
-use App\Tags;
+use App\tags;
 use App\Pictures;
 use App\Shipping;
 use DB;
@@ -81,7 +81,7 @@ class ScraperController extends Controller
 				$shipping->save();
 
 				//Create Tags object
-				$tags = new Tags;
+				$tags = new tags;
 				$tags->tags_object = '["brand_verified","immediate_payment","cart_eligible"]';
 				$tags->ml_data_id = $ml_data->id;
 				$tags->save();
