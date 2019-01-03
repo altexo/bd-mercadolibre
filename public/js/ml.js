@@ -88,7 +88,7 @@ $("#publish-button").click(function(){
             		 buying_mode: buying_mode,
             		 listing_type_id: listing_type_id,
             		 condition: condition,
-                     description: desc_array,
+                     description: data.description,
             		 tags: tagsArray,
             		 pictures: picturesArrayList,
                      shipping: shippingArray,
