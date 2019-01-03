@@ -252,7 +252,7 @@ class ProductsController extends Controller
     public function publishAll(){
         $response = "";
         $error = false;
-        $response = Ml_data::with('pictures', 'shipping', 'tags', 'products')->first();
+        $response = Ml_data::with('pictures', 'shipping', 'tags', 'products')->where('ml_data.id', 6205)->get();
         //$response = Pictures::first();
         return response()->json(['error'=> $error,'response'=> $response]);
     }
