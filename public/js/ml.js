@@ -80,15 +80,15 @@ $("#publish-button").click(function(){
             	}
             	console.log(productObj);
             	console.log(picturesArrayList);
-    //         	try{
-	   //          	MELI.post(url, productObj, function(data) {
-	   //          		console.log("ML response: ")
-				// 		console.log(data);
-				// 	});
-				// } catch (e){
-				// 	console.log('Error: ');
-				// 	console.log(e);
-				// }
+            	try{
+	            	MELI.post(url, productObj, function(data) {
+	            		console.log("ML response: ")
+						console.log(data);
+					});
+				} catch (e){
+					console.log('Error: ');
+					console.log(e);
+				}
 				console.log(price);
             },
             error:function(response){
