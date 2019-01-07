@@ -2,7 +2,7 @@ $( document ).ready(function() {
 	 $("#auth").show();
     console.log( "ready!" );
     MELI.init({ 
-    	client_id: 6677614414680820, 
+    	client_id: 315787371, 
     	xauth_protocol: "https://",
   		xauth_domain: "secure.mlstatic.com",
   		xd_url: "/org-img/sdk/xd-1.0.4.html"
@@ -53,7 +53,7 @@ $("#publish-button").click(function(){
 	 $.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             type:'GET',
-           // url: 'http://127.0.0.1:8000/api/products',
+            //url: 'http://127.0.0.1:8000/api/products',
             url: "https://bd-mercadolibre.herokuapp.com/api/products",
             success:function(response){
                 console.log(response);
@@ -95,7 +95,7 @@ $("#publish-button").click(function(){
                 		 buying_mode: buying_mode,
                 		 listing_type_id: listing_type_id,
                 		 condition: condition,
-                         description: {plain_text: "ASIN: ***"+data.asin+"***\n"+data.description},
+                         description: {plain_text: "**Envío GRATIS pregunte por los tiempos de entrega.\n"+data.description+"\n\n ASIN: ***"+data.asin+"***"},
                 		 tags: tagsArray,
                 		 pictures: picturesArrayList,
                          shipping: shippingArray,
