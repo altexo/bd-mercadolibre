@@ -112,12 +112,13 @@ $("#publish-button").click(function(){
     						console.log(data);
                            
     					});
+                         estado = "Publicado";
     				} catch (e){
     					console.log('Error: ');
     					console.log(e);
                         estado = "No Publicado";
     				}
-                    estado = "Publicado";
+                   
                     $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
 			
                 });
