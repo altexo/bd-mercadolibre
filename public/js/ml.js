@@ -57,6 +57,7 @@ $("#publish-button").click(function(){
             //url: 'http://127.0.0.1:8000/api/products',
             url: "https://bd-mercadolibre.herokuapp.com/api/products",
             success:function(response){
+                var not_published = [];
                 console.log(response);
                 $.each(response.response, function(index, data){
                      if (data.asin == null) {
@@ -108,25 +109,27 @@ $("#publish-button").click(function(){
                 	console.log(productObj);
 
                 	//Publicar a ML
-        //         	try{
-    	   //          	MELI.post(url, productObj, function(data) {
-    	   //          		console.log("ML response: ")
-    				// 		console.log(data);
-        //                     estado = "Publicado";
-        //                    if (data[0] != 201) {
-        //                     estado = "No publicado";
-        //                    }
-    				// 	});
+                	try{
+    	            	MELI.post(url, productObj, function(data) {
+    	            		console.log("ML response: ")
+    						console.log(data);
+                            estado = "Publicado";
+                           if (data[0] != 201) {
+                            not_published.push({product:productObj, error: data});
+                            estado = "No publicado";
+                           }
+    					});
                         
-    				// } catch (e){
-    				// 	console.log('Error: ');
-    				// 	console.log(e);
-        //                 estado = "No Publicado";
-    				// }
+    				} catch (e){
+    					console.log('Error: ');
+    					console.log(e);
+                        estado = "No Publicado";
+    				}
                    
                     $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
 			
                 });
+                console.log(not_published);
             },
             error:function(response){
 
