@@ -96,7 +96,7 @@ $("#publish-button").click(function(){
                 		 buying_mode: buying_mode,
                 		 listing_type_id: listing_type_id,
                 		 condition: condition,
-                         description: {plain_text: "**Envío GRATIS pregunte por los tiempos de entrega.\n"+data.description+"\n\n ASIN: ***"+data.asin+"***"},
+                         description: {plain_text: "**Envío GRATIS pregunte por los tiempos de entrega.\n"+data.description+"\n\n ASIN: ****"+data.asin+"****"},
                 		 tags: tagsArray,
                 		 pictures: picturesArrayList,
                          shipping: shippingArray,
