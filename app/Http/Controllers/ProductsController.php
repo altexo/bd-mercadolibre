@@ -7,6 +7,7 @@ use App\Ml_data;
 use App\Pictures;
 use App\Products;
 use App\Attributes;
+use App\Provider;
 class ProductsController extends Controller
 {
     /**
@@ -254,6 +255,14 @@ class ProductsController extends Controller
         $error = false;
         $response = Ml_data::with('pictures', 'shipping', 'tags', 'products','attributes')->where('description','!=', '"NULL"')->take(20)->get();
         //$response = Pictures::first();
+    
+       // return response()->json(['error'=> $error,'response'=> $response]);
+        foreach ($response as $r) {
+          $prod = $r->products;
+          $asin = Provider::select('asin')->where('id', $prod[0]->provider_id)->first();
+          $r->asin = $asin->asin;    
+          
+        }
         return response()->json(['error'=> $error,'response'=> $response]);
     }
 

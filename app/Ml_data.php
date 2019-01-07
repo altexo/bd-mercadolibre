@@ -8,6 +8,7 @@ use App\Shipping;
 use App\tags;
 use App\Products;
 use App\Attributes;
+use App\Provider;
 use Date;
 class Ml_data extends Model
 {
@@ -28,6 +29,9 @@ class Ml_data extends Model
     }
     public function attributes(){
         return $this->hasMany(Attributes::class);
+    }
+    public function provider(){
+        return $this->products()->belongsTo(Provider::class);
     }
     public function productsWhereDate(){
         $current_date =  new \DateTime();

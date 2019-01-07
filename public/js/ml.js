@@ -53,11 +53,14 @@ $("#publish-button").click(function(){
 	 $.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             type:'GET',
-            //url: 'http://127.0.0.1:8000/api/products',
+           // url: 'http://127.0.0.1:8000/api/products',
             url: "https://bd-mercadolibre.herokuapp.com/api/products",
             success:function(response){
                 console.log(response);
                 $.each(response.response, function(index, data){
+                     if (data.asin == null) {
+                        return 'Skip';
+                    }
                     $("#published-table").show();
                     var estado = "";
                 	var url = "/items";
@@ -92,7 +95,7 @@ $("#publish-button").click(function(){
                 		 buying_mode: buying_mode,
                 		 listing_type_id: listing_type_id,
                 		 condition: condition,
-                         description: {plain_text: data.description},
+                         description: {plain_text: "ASIN: ***"+data.asin+"***\n"+data.description},
                 		 tags: tagsArray,
                 		 pictures: picturesArrayList,
                          shipping: shippingArray,
@@ -100,21 +103,21 @@ $("#publish-button").click(function(){
 
                 	}
                 	console.log(productObj);
-                   
-                 
+
                 	//Publicar a ML
                 	try{
     	            	MELI.post(url, productObj, function(data) {
     	            		console.log("ML response: ")
     						console.log(data);
-                            estado = "Publicado";
+                           
     					});
     				} catch (e){
     					console.log('Error: ');
     					console.log(e);
                         estado = "No Publicado";
     				}
-                     $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
+                    estado = "Publicado";
+                    $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
 			
                 });
             },
