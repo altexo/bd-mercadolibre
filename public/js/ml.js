@@ -73,7 +73,9 @@ $("#publish-button").click(function(){
                 	var title = data.products[0].title;
                 	var category_id = data.category_id;
                 	var price = data.price;
-                    price = price.slice(0,-3);
+                    price = Math.round(price*1.90);
+                   // price = 
+                   // price = price.slice(0,-3);
                 	var currency_id = data.currency_id;
                 	var available_quantity = data.available_quantity;
                 	var buying_mode = data.buying_mode;
@@ -106,18 +108,21 @@ $("#publish-button").click(function(){
                 	console.log(productObj);
 
                 	//Publicar a ML
-                	try{
-    	            	MELI.post(url, productObj, function(data) {
-    	            		console.log("ML response: ")
-    						console.log(data);
-                           
-    					});
-                         estado = "Publicado";
-    				} catch (e){
-    					console.log('Error: ');
-    					console.log(e);
-                        estado = "No Publicado";
-    				}
+        //         	try{
+    	   //          	MELI.post(url, productObj, function(data) {
+    	   //          		console.log("ML response: ")
+    				// 		console.log(data);
+        //                     estado = "Publicado";
+        //                    if (data[0] != 201) {
+        //                     estado = "No publicado";
+        //                    }
+    				// 	});
+                        
+    				// } catch (e){
+    				// 	console.log('Error: ');
+    				// 	console.log(e);
+        //                 estado = "No Publicado";
+    				// }
                    
                     $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
 			

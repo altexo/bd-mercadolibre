@@ -254,9 +254,7 @@ class ProductsController extends Controller
         $response = "";
         $error = false;
         $response = Ml_data::with('pictures', 'shipping', 'tags', 'products','attributes')->where('description','!=', '"NULL"')->get();
-        //$response = Pictures::first();
-    
-       // return response()->json(['error'=> $error,'response'=> $response]);
+
         foreach ($response as $r) {
           $prod = $r->products;
           $asin = Provider::select('asin')->where('id', $prod[0]->provider_id)->first();
