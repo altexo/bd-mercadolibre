@@ -2,7 +2,7 @@ $( document ).ready(function() {
 	 $("#auth").show();
     console.log( "ready!" );
     MELI.init({ 
-    	client_id: 315787371, 
+    	client_id: 3946071598469716, 
     	xauth_protocol: "https://",
   		xauth_domain: "secure.mlstatic.com",
   		xd_url: "/org-img/sdk/xd-1.0.4.html"
