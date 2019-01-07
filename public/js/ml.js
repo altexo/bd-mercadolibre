@@ -22,11 +22,11 @@ $( document ).ready(function() {
     //  price = price.slice(0,-3);
     //  console.log(price);
     //  console.log(newP);
-    var prod = "Exploding Kittens Card Game";
-    var cat = "MLM1132";
-    $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+prod+'&category_from='+cat, function(data){
-        console.log(data);
-    });
+    // var prod = "Exploding Kittens Card Game";
+    // var cat = "MLM1132";
+    // $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+prod+'&category_from='+cat, function(data){
+    //     console.log(data);
+    // });
  });
 
 //Login ML click Event
@@ -54,58 +54,69 @@ $("#publish-button").click(function(){
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             type:'GET',
             //url: 'http://127.0.0.1:8000/api/products',
-           	url: "https://bd-mercadolibre.herokuapp.com/api/products",
+            url: "https://bd-mercadolibre.herokuapp.com/api/products",
             success:function(response){
                 console.log(response);
-            	var url = "/items";
-            	var data = response.response[0];
-            	var picturesArray = JSON.parse(data.pictures[0].url);
-            	var tagsArray = JSON.parse(data.tags[0].tags_object);
-            	var shippingArray = JSON.parse(data.shipping[0].full_atts);
+                $.each(response.response, function(index, data){
+                    $("#published-table").show();
+                    var estado = "";
+                	var url = "/items";
+                	//var data = data.response[0];
+                	var picturesArray = JSON.parse(data.pictures[0].url);
+                	var tagsArray = JSON.parse(data.tags[0].tags_object);
+                	var shippingArray = JSON.parse(data.shipping[0].full_atts);
 
-            	var title = data.products[0].title;
-            	var category_id = data.category_id;
-            	var price = data.price;
-                price = price.slice(0,-3);
-            	var currency_id = data.currency_id;
-            	var available_quantity = data.available_quantity;
-            	var buying_mode = data.buying_mode;
-            	var listing_type_id = data.listing_type_id;
-            	var condition = "new"
-            	//Preparar lista de imagenes
-            	var picturesArrayList = [];
-            	$.each(picturesArray,function(index, pic) {
-            		picturesArrayList.push(pic);
-            	});
-                var desc_array = new Array();
-                desc_array['plain_text'] = data.description;
-            	var productObj = {
-            		 title: title,
-            		 category_id: category_id,
-            		 price: price,
-            		 currency_id: currency_id,
-            		 available_quantity: available_quantity,
-            		 buying_mode: buying_mode,
-            		 listing_type_id: listing_type_id,
-            		 condition: condition,
-                     description: {plain_text: data.description},
-            		 tags: tagsArray,
-            		 pictures: picturesArrayList,
-                     shipping: shippingArray,
+                	var title = data.products[0].title;
+                	var category_id = data.category_id;
+                	var price = data.price;
+                    price = price.slice(0,-3);
+                	var currency_id = data.currency_id;
+                	var available_quantity = data.available_quantity;
+                	var buying_mode = data.buying_mode;
+                	var listing_type_id = data.listing_type_id;
+                	var condition = "new";
+                	//Preparar lista de imagenes
+                    var attributes = JSON.parse(data.attributes[0].attributes_details);
+                	var picturesArrayList = [];
+                	$.each(picturesArray,function(index, pic) {
+                		picturesArrayList.push(pic);
+                	});
+                    var desc_array = new Array();
+                    desc_array['plain_text'] = data.description;
+                	var productObj = {
+                		 title: title,
+                		 category_id: category_id,
+                		 price: price,
+                		 currency_id: currency_id,
+                		 available_quantity: available_quantity,
+                		 buying_mode: buying_mode,
+                		 listing_type_id: listing_type_id,
+                		 condition: condition,
+                         description: {plain_text: data.description},
+                		 tags: tagsArray,
+                		 pictures: picturesArrayList,
+                         shipping: shippingArray,
+                         attributes: attributes,
 
-            	}
-            	console.log(productObj);
-            	console.log(picturesArrayList);
-            	try{
-	            	MELI.post(url, productObj, function(data) {
-	            		console.log("ML response: ")
-						console.log(data);
-					});
-				} catch (e){
-					console.log('Error: ');
-					console.log(e);
-				}
-			//	console.log(price);
+                	}
+                	console.log(productObj);
+                   
+                 
+                	//Publicar a ML
+                	try{
+    	            	MELI.post(url, productObj, function(data) {
+    	            		console.log("ML response: ")
+    						console.log(data);
+                            estado = "Publicado";
+    					});
+    				} catch (e){
+    					console.log('Error: ');
+    					console.log(e);
+                        estado = "No Publicado";
+    				}
+                     $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
+			
+                });
             },
             error:function(response){
 

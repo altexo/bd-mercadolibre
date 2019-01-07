@@ -23,6 +23,24 @@
 	    	<button type="button" class="btn btn-primary" id="publish-button">Publicar productos</button>
 	  	</div>
 	</div>
+	<table class="table table-hover hidden" id="published-table">
+	  	<thead>
+	    	<tr>
+	      		<th scope="col">#</th>
+	      		<th scope="col">Titulo</th>
+	      		<th scope="col">Precio Publicado</th>
+	      		<th scope="col">Estado</th>
+	    	</tr>
+	  	</thead>
+	 	<tbody id="table-rows">
+	    {{-- 	<tr>
+	      		<th scope="row">1</th>
+	      		<td>Mark</td>
+	      		<td>Otto</td>
+	      		<td>@mdo</td>
+	    	</tr> --}}
+	  </tbody>
+	</table>
 </div>
 @endsection
 @section('scripts')

@@ -24,3 +24,5 @@ Route::get('dummy/get', function(){
 	return response()->json(['Success' => 'ok']);
 });
 Route::get('products','ProductsController@publishAll');
+
+Route::get('products/update', 'ScraperController@updateProductsPrice');

@@ -11,12 +11,14 @@ use App\tags;
 use App\Pictures;
 use App\Shipping;
 use DB;
+use Date;
 
 class ScraperController extends Controller
 {
     public function index(){
+    	$asin = 'B07BDKQWCK';
     	$client = new Client([
-    		'base_uri'=> 'https://scrapehero-amazon-product-info-v1.p.mashape.com/product-details?asin=B010TQY7A8', 
+    		'base_uri'=> 'https://scrapehero-amazon-product-info-v1.p.mashape.com/product-details?asin='.$asin, 
     		'headers' => ['X-Mashape-Key' => 'zg0snQgYOimshgrnP0Mx5m9O3vlQp1cjQX1jsncrcfBCh3zcps', 'Accept' => 'application/json']]); 
 		$response = $client->request('GET');
 		//$body = $client->getBody();
@@ -40,12 +42,12 @@ class ScraperController extends Controller
 		
 		//Comienza transaccion de captura de nuevo producto 
 		try {
-			DB::transaction(function () use($providerPrice, $res, $pictures_array) {
+			DB::transaction(function () use($providerPrice, $res, $pictures_array, $asin) {
 	    		//Create new provider object
 				$provider = new Provider;
 				$provider->provider_link = $res['url'];
 				$provider->price = substr($res['price'],1);
-				$provider->asin = $res['product_information']['ASIN'];
+				$provider->asin = $asin;
 				$provider->save();
 
 				//Create new ml_data object
@@ -87,7 +89,7 @@ class ScraperController extends Controller
 				$tags->save();
 
 				//return $commited = ['provider' => $provider, 'ml'=> $ml_data];
-			}, 2);
+			}, 1);
 		} catch (Exception $e) {
 			dd($e);
 		}
@@ -96,5 +98,63 @@ class ScraperController extends Controller
     	return ['Succeed'];
     }
 
+    public function updateProductsPrice(){
+    	 $response = "";
+    	  $current_date =  new \DateTime();
+        $date = $current_date->format('Y-m-d');
 
-}
+    		$products = Ml_data::select('ml_data.id as ml_data_id','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
+    			->join('products','ml_data.id','=','products.ml_data_id')
+    			->join('provider', 'products.provider_id', '=', 'provider.id')
+    			->whereDate('ml_data.updated_at','2019-01-04')
+    			->get();
+	
+    		if ($products != NULL) {
+
+    			foreach ($products as $product) {
+    			
+    			   	$asin = $product->asin;
+			    	$client = new Client([
+			    		'base_uri'=> 'https://scrapehero-amazon-product-info-v1.p.mashape.com/product-details?asin='.$asin, 
+			    		'headers' => ['X-Mashape-Key' => 'zg0snQgYOimshgrnP0Mx5m9O3vlQp1cjQX1jsncrcfBCh3zcps', 'Accept' => 'application/json']]); 
+					$response = $client->request('GET');
+
+					$response = $response->getBody()->getContents();
+					$res = json_decode($response, true);//Arreglo de producto mediante asin
+
+					//Transform price
+					$providerPrice = $res['price'];
+					//verificamos el precio no venga en null
+					if ( ($res['price'] == NULL) || ($res['price'] == "") ) {
+						continue;
+					}
+					//Quitamos el signo de moneda del precio
+					$providerPrice = substr($providerPrice, 1);
+					//Convertims a peso y aumentamos el precio del producto
+					$sell_price = 1.60*($providerPrice*20);
+					//return response()->json($res);
+					//Comienza transaccion de captura de nuevo producto 
+					try {
+						$response = DB::transaction(function() use($res, $providerPrice, $product, $sell_price){
+							$ml_data = Ml_data::where('id',$product->ml_data_id)->first();
+							$ml_data->price = $providerPrice;
+							$ml_data->save();
+
+							$provider = Provider::where('id',$product->provider_id)->first();
+							$provider->price = substr($res['price'],1);
+							$provider->save();
+							return $response = ['ml_data'=> $ml_data, 'provider'=> $provider];
+
+						});
+					} catch (Exception $e) {
+						$response = $e;
+					}
+					}
+				}
+					//$response = $products;
+    	return response()->json($response);
+    		}
+
+    }
+
+	

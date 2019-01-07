@@ -7,6 +7,8 @@ use App\Pictures;
 use App\Shipping;
 use App\tags;
 use App\Products;
+use App\Attributes;
+use Date;
 class Ml_data extends Model
 {
     protected $table = "ml_data";
@@ -23,5 +25,13 @@ class Ml_data extends Model
 
     public function products(){
     	return $this->hasMany(Products::class);
+    }
+    public function attributes(){
+        return $this->hasMany(Attributes::class);
+    }
+    public function productsWhereDate(){
+        $current_date =  new \DateTime();
+        $date = $current_date->format('Y-m-d');
+        return $this->hasMany(Products::class)->whereDate('updated_at','2019-01-04');
     }
 }
