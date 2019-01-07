@@ -1,6 +1,7 @@
 $( document ).ready(function() {
 	 $("#auth").show();
     console.log( "ready!" );
+    //window.myVar = '{{ env('MY_VAR') }}';
     MELI.init({ 
     	client_id: 3946071598469716, 
     	xauth_protocol: "https://",
