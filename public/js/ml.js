@@ -131,7 +131,7 @@ $("#publish-button").click(function(){
     				}
                    
                     $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
-                    break;
+                  
 			
                 });
                 console.log(not_published);
