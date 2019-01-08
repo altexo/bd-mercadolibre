@@ -63,6 +63,9 @@ $("#publish-button").click(function(){
                      if (data.asin == null) {
                         return 'Skip';
                     }
+                    if (data.price == "0.00"){
+                        return 'skip'
+                    }
                     $("#published-table").show();
                     var estado = "";
                 	var url = "/items";
@@ -104,6 +107,7 @@ $("#publish-button").click(function(){
                 		 pictures: picturesArrayList,
                          shipping: shippingArray,
                          attributes: attributes,
+                         seller_custom_field: data.asin
 
                 	}
                 	console.log(productObj);
@@ -116,17 +120,18 @@ $("#publish-button").click(function(){
                             estado = "Publicado";
                            if (data[0] != 201) {
                             not_published.push({product:productObj, error: data});
-                            estado = "No publicado";
+                            this.estado = "No publicado";
                            }
     					});
                         
     				} catch (e){
     					console.log('Error: ');
     					console.log(e);
-                        estado = "No Publicado";
+                        this.estado = "No Publicado";
     				}
                    
                     $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
+                    break;
 			
                 });
                 console.log(not_published);

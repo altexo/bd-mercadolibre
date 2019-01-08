@@ -189,8 +189,8 @@ class ProductsController extends Controller
             foreach ($rows as $row) {
 
                     $row = array_combine($header, $row);
-                    $title = utf8_encode($row['Nombre del Producto Mercado Libretab']);
-                    $provider_link = utf8_encode($row['Link Provedor']);
+                    $title = utf8_encode($row['title']);
+                    //$provider_link = utf8_encode($row['Link Provedor']);
                     $title = rtrim($title);
                     // $product = DB::table('products')
                     //     ->where('title', 'like', "%{$title}%")
@@ -198,10 +198,10 @@ class ProductsController extends Controller
                     $product = Products::where('title', 'like', "%{$title}%")->first();
                     if ($product != NULL) {
                         $provider_id = DB::table('provider')->insertGetId([
-                            'provider_link' => $provider_link,
-                            'asin' => $row['ASIN'],
-                            'shipping_price' => $row['Envio'],
-                            'price' => $row['Precio Provedor']
+                            //'provider_link' => $provider_link,
+                            'asin' => utf8_encode($row['asin']),
+                            //'shipping_price' => $row['Envio'],
+                            //'price' => $row['Precio Provedor']
                         ]);
 
                         $product->provider_id = $provider_id;
