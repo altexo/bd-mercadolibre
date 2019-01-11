@@ -100,6 +100,7 @@ class ScraperController extends Controller
 
     public function updateProductsPrice(){
     	 $response_array = [];
+    	 $errors = [];
     //	  $current_date =  new \DateTime();
     //    $date = $current_date->format('Y-m-d');
 
@@ -120,14 +121,17 @@ class ScraperController extends Controller
     				}
     			   
 			    	$client = new Client([
-			    		'base_uri'=> 'https://api.scrapehero.com/amaz_mx/product-details/?asin='.$asin.'&apikey=59242154b4e89e0fd599213326a2d4f78dba436eba0c70b19e33fccb'
+			    		'base_uri'=> 'https://api.scrapehero.com/amaz_mx/product-details/?asin='.$asin.'&apikey=59242154b4e89e0fd599213326a2d4f78dba436eba0c70b19e33fccb',
+			    		'http_errors' => false
 			    	//	'headers' => ['X-Mashape-Key' => 'zg0snQgYOimshgrnP0Mx5m9O3vlQp1cjQX1jsncrcfBCh3zcps', 'Accept' => 'application/json']
 			    	]); 
 					$response = $client->request('GET');
 
 					$response = $response->getBody()->getContents();
 					$res = json_decode($response, true);//Arreglo de producto mediante asin
-
+					if (empty($res)) {
+						array_push($errors, $asin);
+					}
 					//Transform price
 					$providerPrice = $res['price'];
 					//verificamos el precio no venga en null
@@ -156,7 +160,7 @@ class ScraperController extends Controller
 							$provider->price = $providerPrice;
 							$provider->save();
 							
-							return $transaction = ['ml_data'=> $ml_data, 'provider'=> $provider];
+							return $transaction = ['provider'=> $provider];
 
 						});
 					} catch (Exception $e) {
@@ -166,50 +170,28 @@ class ScraperController extends Controller
 					}
 				}
 					//$response = $products;
-    	return response()->json($response_array);
+    	return response()->json(['ok' => $response_array,'errors'=>$errors);
     		}
 
-    }
+    	public function testCall(){
+    		try {
+    				$client = new Client([
+    				   	'base_uri'=> 'https://api.scrapehero.com/amaz_mx/product-details/?asin=B000JF2W8O&apikey=59242154b4e89e0fd599213326a2d4f78dba436eba0c70b19e33fccb',
+    				   	'http_errors' => false
+			    	]); 
+					$response = $client->request('GET');
 
-// 	[
-//     {
-//         "ml_data_id": 3261,
-//         "provider_id": 3279,
-//         "title": "Replica Mini De Espada De Jon Snow´s Longclaw + Libro",
-//         "asin": "",
-//         "ml_price": "549.00",
-//         "provider_price": "0.00"
-//     },
-//     {
-//         "ml_data_id": 3311,
-//         "provider_id": 2871,
-//         "title": "Mousepad Gamer Anti-derrapante  26 Cm X 21 Cm Envío Gratis",
-//         "asin": "B075WRTJZP",
-//         "ml_price": "399.00",
-//         "provider_price": "0.00"
-//     },
-//     {
-//         "ml_data_id": 3481,
-//         "provider_id": 2588,
-//         "title": "Mochila Estilo Marinero Grande + Envío Gratis",
-//         "asin": "B01GGNW5AM",
-//         "ml_price": "899.00",
-//         "provider_price": "463.00"
-//     },
-//     {
-//         "ml_data_id": 3801,
-//         "provider_id": 2872,
-//         "title": "Juguete De Felpa Para Perro Multipet 24cm + Envío Gratuito",
-//         "asin": "B00A80X19E",
-//         "ml_price": "399.00",
-//         "provider_price": "0.00"
-//     },
-//     {
-//         "ml_data_id": 3841,
-//         "provider_id": 2624,
-//         "title": "Ecr4kids Carrito Organizador Multiusos + Envío Gratis",
-//         "asin": "B007CDOXO2",
-//         "ml_price": "1199.00",
-//         "provider_price": "762.44"
-//     }
-// ]
+					$response = $response->getBody()->getContents();
+					$res = json_decode($response, true);
+					if (empty($res)) {
+						return response()->json('empty');
+					}
+    		} catch (Exception $e) {
+    				return response()->json('err');
+    		}
+    		 	
+			 
+					return response()->json($res);
+    	}
+
+    }

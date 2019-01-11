@@ -26,3 +26,4 @@ Route::get('dummy/get', function(){
 Route::get('products','ProductsController@publishAll');
 
 Route::get('products/update', 'ScraperController@updateProductsPrice');
+Route::get('products/testcall', 'ScraperController@testCall');
