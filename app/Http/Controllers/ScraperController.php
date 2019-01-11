@@ -106,9 +106,11 @@ class ScraperController extends Controller
     		$products = Ml_data::select('ml_data.id as ml_data_id','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
     			->join('products','ml_data.id','=','products.ml_data_id')
     			->join('provider', 'products.provider_id', '=', 'provider.id')
+    			->where('products.provider_id','!=',1)
+    			->where('provider.asin','!=', "")
     			//->whereDate('ml_data.updated_at','2019-01-04')
     			->get();
-	//return response()->json($products);
+	return response()->json($products);
     		if ($products != NULL) {
 
     			foreach ($products as $product) {
@@ -150,6 +152,7 @@ class ScraperController extends Controller
 							$ml_data->save();
 
 							$provider = Provider::where('id',$product->provider_id)->first();
+							$provider->provider_link = $res['url'];
 							$provider->price = $providerPrice;
 							$provider->save();
 							
