@@ -167,10 +167,11 @@ class ScraperController extends Controller
 						$response = $e;
 					}
 					array_push($response_array, $transaction);
+					//break;
 					}
 				}
 					//$response = $products;
-    	return response()->json(['ok' => $response_array,'errors'=>$errors);
+    	return response()->json(['ok' => $response_array,'errors'=>$errors]);
     		}
 
     	public function testCall(){
