@@ -99,24 +99,28 @@ class ScraperController extends Controller
     }
 
     public function updateProductsPrice(){
-    	 $response = "";
-    	  $current_date =  new \DateTime();
-        $date = $current_date->format('Y-m-d');
+    	 $response_array = [];
+    //	  $current_date =  new \DateTime();
+    //    $date = $current_date->format('Y-m-d');
 
     		$products = Ml_data::select('ml_data.id as ml_data_id','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
     			->join('products','ml_data.id','=','products.ml_data_id')
     			->join('provider', 'products.provider_id', '=', 'provider.id')
-    			->whereDate('ml_data.updated_at','2019-01-04')
+    			//->whereDate('ml_data.updated_at','2019-01-04')
     			->get();
-	
+	//return response()->json($products);
     		if ($products != NULL) {
 
     			foreach ($products as $product) {
-    			
-    			   	$asin = $product->asin;
+    					$asin = $product->asin;
+    				if ($asin == "") {
+    					continue;
+    				}
+    			   
 			    	$client = new Client([
-			    		'base_uri'=> 'https://scrapehero-amazon-product-info-v1.p.mashape.com/product-details?asin='.$asin, 
-			    		'headers' => ['X-Mashape-Key' => 'zg0snQgYOimshgrnP0Mx5m9O3vlQp1cjQX1jsncrcfBCh3zcps', 'Accept' => 'application/json']]); 
+			    		'base_uri'=> 'https://api.scrapehero.com/amaz_mx/product-details/?asin='.$asin.'&apikey=59242154b4e89e0fd599213326a2d4f78dba436eba0c70b19e33fccb'
+			    	//	'headers' => ['X-Mashape-Key' => 'zg0snQgYOimshgrnP0Mx5m9O3vlQp1cjQX1jsncrcfBCh3zcps', 'Accept' => 'application/json']
+			    	]); 
 					$response = $client->request('GET');
 
 					$response = $response->getBody()->getContents();
@@ -125,36 +129,84 @@ class ScraperController extends Controller
 					//Transform price
 					$providerPrice = $res['price'];
 					//verificamos el precio no venga en null
-					if ( ($res['price'] == NULL) || ($res['price'] == "") ) {
+					if ( ($res['price'] == null) || ($res['price'] == "") ) {
 						continue;
 					}
+
 					//Quitamos el signo de moneda del precio
 					$providerPrice = substr($providerPrice, 1);
+					$providerPrice = str_replace(',', '', $providerPrice);
+					$providerPrice = intval($providerPrice);
 					//Convertims a peso y aumentamos el precio del producto
-					$sell_price = 1.60*($providerPrice*20);
+					$sell_price = 1.60 * $providerPrice;
+					$sell_price = round($sell_price);
+			
 					//return response()->json($res);
 					//Comienza transaccion de captura de nuevo producto 
 					try {
-						$response = DB::transaction(function() use($res, $providerPrice, $product, $sell_price){
+						$transaction = DB::transaction(function() use($res, $providerPrice, $product, $sell_price){
 							$ml_data = Ml_data::where('id',$product->ml_data_id)->first();
-							$ml_data->price = $providerPrice;
+							$ml_data->price = $sell_price;
 							$ml_data->save();
 
 							$provider = Provider::where('id',$product->provider_id)->first();
-							$provider->price = substr($res['price'],1);
+							$provider->price = $providerPrice;
 							$provider->save();
-							return $response = ['ml_data'=> $ml_data, 'provider'=> $provider];
+							
+							return $transaction = ['ml_data'=> $ml_data, 'provider'=> $provider];
 
 						});
 					} catch (Exception $e) {
 						$response = $e;
 					}
+					array_push($response_array, $transaction);
 					}
 				}
 					//$response = $products;
-    	return response()->json($response);
+    	return response()->json($response_array);
     		}
 
     }
 
-	
+// 	[
+//     {
+//         "ml_data_id": 3261,
+//         "provider_id": 3279,
+//         "title": "Replica Mini De Espada De Jon Snow´s Longclaw + Libro",
+//         "asin": "",
+//         "ml_price": "549.00",
+//         "provider_price": "0.00"
+//     },
+//     {
+//         "ml_data_id": 3311,
+//         "provider_id": 2871,
+//         "title": "Mousepad Gamer Anti-derrapante  26 Cm X 21 Cm Envío Gratis",
+//         "asin": "B075WRTJZP",
+//         "ml_price": "399.00",
+//         "provider_price": "0.00"
+//     },
+//     {
+//         "ml_data_id": 3481,
+//         "provider_id": 2588,
+//         "title": "Mochila Estilo Marinero Grande + Envío Gratis",
+//         "asin": "B01GGNW5AM",
+//         "ml_price": "899.00",
+//         "provider_price": "463.00"
+//     },
+//     {
+//         "ml_data_id": 3801,
+//         "provider_id": 2872,
+//         "title": "Juguete De Felpa Para Perro Multipet 24cm + Envío Gratuito",
+//         "asin": "B00A80X19E",
+//         "ml_price": "399.00",
+//         "provider_price": "0.00"
+//     },
+//     {
+//         "ml_data_id": 3841,
+//         "provider_id": 2624,
+//         "title": "Ecr4kids Carrito Organizador Multiusos + Envío Gratis",
+//         "asin": "B007CDOXO2",
+//         "ml_price": "1199.00",
+//         "provider_price": "762.44"
+//     }
+// ]
