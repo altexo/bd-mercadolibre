@@ -60,8 +60,8 @@ $("#update-products-prices-button").click(function(){
             console.log(response);
             $.each(response.response, function(index, data){
                 console.log(data);
-               var ml_url = '/users/315787371/items/search?sku='+data.asin;
-                MELI.get(ml_url, null, function(data) {
+               var ml_url = '/users/315787371/items/search';
+                MELI.get(ml_url, {sku:data.asin}, function(data) {
                     console.log(data);
                 });
             });
