@@ -55,10 +55,10 @@ $("#update-products-prices-button").click(function(){
         type:'GET',
         url: "https://bd-mercadolibre.herokuapp.com/api/products/update/price/ml/2019-01-11",
         success:function(response){
-            var ml_url = '/users/315787371/items/search'
+            var ml_url = '/users/315787371/items/search?sku='.data.asin;
             console.log(response);
             $.each(response.response, function(index, data){
-                MELI.get(ml_url, {sku: data.asin}, function(data) {
+                MELI.get(ml_url, null, function(data) {
                     console.log(data);
                 });
             });
