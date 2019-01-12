@@ -61,6 +61,7 @@ $("#update-products-prices-button").click(function(){
                 MELI.get(ml_url, {sku: data.asin}, function(data) {
                     console.log(data);
                 });
+            }
         },
         error:function(error){
             console.log(error);
