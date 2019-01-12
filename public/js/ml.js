@@ -49,6 +49,25 @@ $("#get-user-button").click(function(){
 
 	});
 });
+$("#update-products-prices-button").click(function(){
+    $.ajax({
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        type:'GET',
+        url: "https://bd-mercadolibre.herokuapp.com/api/products/update/price/ml/2019-01-11",
+        success:function(response){
+            var ml_url = '/users/315787371/items/search'
+            console.log(response);
+            $.each(response.response, function(index, data){
+                MELI.get(ml_url, {sku: data.asin}, function(data) {
+                    console.log(data);
+                });
+        },
+        error:function(error){
+            console.log(error);
+        }
+    });
+   
+});
 
 $("#publish-button").click(function(){
 	 $.ajax({

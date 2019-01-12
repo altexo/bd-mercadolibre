@@ -264,6 +264,27 @@ class ProductsController extends Controller
         return response()->json(['error'=> $error,'response'=> $response]);
     }
 
+
+    public function updateProductsPrices($date){
+      $response = "";
+      $error = false;
+      $response = DB::table('ml_data')
+      ->select('ml_data.*','products.title','provider.provider_link','provider.asin')
+      ->join('products', 'ml_data.id','=','products.ml_data_id')
+      //->join('pictures','pictures.ml_data_id','=','ml_data.id')
+      //->join('shipping','shipping.ml_data_id','=','ml_data.id')
+      //->join('tags','tags.ml_data_id','=','ml_data.id')
+      //->join('attributes','attributes.ml_data_id','=','ml_data.id')
+      ->join('provider', 'provider.id','=','products.provider_id')
+     // ->where('description','!=','null')
+     // ->where('attributes.attributes_details','!=','{}')
+      ->whereDate('ml_data.updated_at',$date)
+      ->take(5)
+      ->get();
+      return response()->json(['error'=>$error, 'response'=>$response]);
+    }
+
+
     public function getProductApiCall($asin)
     {
              $ch = curl_init();

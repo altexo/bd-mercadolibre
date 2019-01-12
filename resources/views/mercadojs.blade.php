@@ -21,6 +21,7 @@
 	    	{{-- <p class="card-text">Para hacerlo comienza dando click en el siguiente boton:</p> --}}
 	    	<a href="#" id="get-user-button" class="btn btn-primary">Obtener Usuario</a>
 	    	<button type="button" class="btn btn-primary" id="publish-button">Publicar productos</button>
+	    	<button type="button" class="btn btn-danger" id="update-products-prices-button">Actualizar precios en ML</button>
 	  	</div>
 	</div>
 	<table class="table table-hover hidden" id="published-table">

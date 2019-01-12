@@ -101,8 +101,7 @@ class ScraperController extends Controller
     public function updateProductsPrice(){
     	 $response_array = [];
     	 $errors = [];
-    //	  $current_date =  new \DateTime();
-    //    $date = $current_date->format('Y-m-d');
+
 
     		$products = Ml_data::select('ml_data.id as ml_data_id','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
     			->join('products','ml_data.id','=','products.ml_data_id')
@@ -111,63 +110,62 @@ class ScraperController extends Controller
     			->where('provider.asin','!=', "")
     			//->whereDate('ml_data.updated_at','2019-01-04')
     			->get();
-	//return response()->json($products);
+	
     		if ($products != NULL) {
 
     			foreach ($products as $product) {
     					$asin = $product->asin;
-    				if ($asin == "") {
-    					continue;
-    				}
-    			   
-			    	$client = new Client([
-			    		'base_uri'=> 'https://api.scrapehero.com/amaz_mx/product-details/?asin='.$asin.'&apikey=59242154b4e89e0fd599213326a2d4f78dba436eba0c70b19e33fccb',
-			    		'http_errors' => false
-			    	//	'headers' => ['X-Mashape-Key' => 'zg0snQgYOimshgrnP0Mx5m9O3vlQp1cjQX1jsncrcfBCh3zcps', 'Accept' => 'application/json']
-			    	]); 
-					$response = $client->request('GET');
+	    				if ($asin == "") {
+	    					continue;
+	    				}
+	    			   
+				    	$client = new Client([
+				    		'base_uri'=> 'https://api.scrapehero.com/amaz_mx/product-details/?asin='.$asin.'&apikey=59242154b4e89e0fd599213326a2d4f78dba436eba0c70b19e33fccb',
+				    		'http_errors' => false
+				    	//	'headers' => ['X-Mashape-Key' => 'zg0snQgYOimshgrnP0Mx5m9O3vlQp1cjQX1jsncrcfBCh3zcps', 'Accept' => 'application/json']
+				    	]); 
+						$response = $client->request('GET');
 
-					$response = $response->getBody()->getContents();
-					$res = json_decode($response, true);//Arreglo de producto mediante asin
-					if (empty($res)) {
-						array_push($errors, $asin);
-					}
-					//Transform price
-					$providerPrice = $res['price'];
-					//verificamos el precio no venga en null
-					if ( ($res['price'] == null) || ($res['price'] == "") ) {
-						continue;
-					}
+						$response = $response->getBody()->getContents();
+						//Arreglo de producto mediante asin
+						$res = json_decode($response, true);
+						if (empty($res)) {
+							array_push($errors, $asin);
+						}
+						//Transform price
+						$providerPrice = $res['price'];
+						//verificamos el precio no venga en null
+						if ( ($res['price'] == null) || ($res['price'] == "") ) {
+							continue;
+						}
 
-					//Quitamos el signo de moneda del precio
-					$providerPrice = substr($providerPrice, 1);
-					$providerPrice = str_replace(',', '', $providerPrice);
-					$providerPrice = intval($providerPrice);
-					//Convertims a peso y aumentamos el precio del producto
-					$sell_price = 1.60 * $providerPrice;
-					$sell_price = round($sell_price);
-			
-					//return response()->json($res);
-					//Comienza transaccion de captura de nuevo producto 
-					try {
-						$transaction = DB::transaction(function() use($res, $providerPrice, $product, $sell_price){
-							$ml_data = Ml_data::where('id',$product->ml_data_id)->first();
-							$ml_data->price = $sell_price;
-							$ml_data->save();
+						//Quitamos el signo de moneda del precio
+						$providerPrice = substr($providerPrice, 1);
+						$providerPrice = str_replace(',', '', $providerPrice);
+						$providerPrice = intval($providerPrice);
+						//Convertims a peso y aumentamos el precio del producto
+						$sell_price = 1.60 * $providerPrice;
+						$sell_price = round($sell_price);
+				
+						//Comienza transaccion de captura de nuevo producto 
+						try {
+							$transaction = DB::transaction(function() use($res, $providerPrice, $product, $sell_price){
+								$ml_data = Ml_data::where('id',$product->ml_data_id)->first();
+								$ml_data->price = $sell_price;
+								$ml_data->save();
 
-							$provider = Provider::where('id',$product->provider_id)->first();
-							$provider->provider_link = $res['url'];
-							$provider->price = $providerPrice;
-							$provider->save();
-							
-							return $transaction = ['provider'=> $provider];
+								$provider = Provider::where('id',$product->provider_id)->first();
+								$provider->provider_link = $res['url'];
+								$provider->price = $providerPrice;
+								$provider->save();
+								
+								return $transaction = ['provider'=> $provider];
 
-						});
-					} catch (Exception $e) {
-						$response = $e;
-					}
-					array_push($response_array, $transaction);
-					//break;
+							});
+						} catch (Exception $e) {
+							$response = $e;
+						}
+							array_push($response_array, $transaction);
 					}
 				}
 					//$response = $products;
