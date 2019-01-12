@@ -53,12 +53,14 @@ $("#update-products-prices-button").click(function(){
     $.ajax({
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         type:'GET',
+        //url: 'http://127.0.0.1:8000/api/products/update/price/ml/2019-01-11',
         url: "https://bd-mercadolibre.herokuapp.com/api/products/update/price/ml/2019-01-11",
         success:function(response){
             
             console.log(response);
             $.each(response.response, function(index, data){
-                var ml_url = '/users/315787371/items/search?sku='.data.asin;
+                console.log(data);
+               var ml_url = '/users/315787371/items/search?sku='+data.asin;
                 MELI.get(ml_url, null, function(data) {
                     console.log(data);
                 });
