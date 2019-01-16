@@ -132,13 +132,13 @@ class ScraperController extends Controller
 						if (empty($res)) {
 							array_push($errors, $asin);
 						}
-						//Transform price
-						$providerPrice = $res['price'];
+						
 						//verificamos el precio no venga en null
 						if ( ($res['price'] == null) || ($res['price'] == "") ) {
 							continue;
 						}
-
+						//Transform price
+						$providerPrice = $res['price'];
 						//Quitamos el signo de moneda del precio
 						$providerPrice = substr($providerPrice, 1);
 						$providerPrice = str_replace(',', '', $providerPrice);
