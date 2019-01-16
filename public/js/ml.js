@@ -62,7 +62,7 @@ $("#update-products-prices-button").click(function(){
                 console.log(data);
                var ml_url = '/users/315787371/items/search';
                var asin = data.asin;
-                MELI.get(ml_url, {sku:{asin}}, function(data) {
+                MELI.get(ml_url, {sku:'B000JF2W8O'}, function(data) {
                     console.log(data);
                 });
             });
