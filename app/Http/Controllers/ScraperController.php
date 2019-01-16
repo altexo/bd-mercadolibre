@@ -132,6 +132,9 @@ class ScraperController extends Controller
 						if (empty($res)) {
 							array_push($errors, $asin);
 						}
+						if ($res == null) {
+							continue;
+						}
 						//$a=array("Volvo"=>"XC90","BMW"=>"X5");
 						if (array_key_exists("price",$res))
 						{
