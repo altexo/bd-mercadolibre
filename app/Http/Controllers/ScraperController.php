@@ -109,8 +109,9 @@ class ScraperController extends Controller
     			->where('products.provider_id','!=',1)
     			->where('provider.asin','!=', "")
     			->whereDate('ml_data.updated_at','!=','2019-01-16')
+    			->whereDate('ml_data.updated_at','!=','2019-01-17')
     			->get();
-		//return response()->json($products);
+	//	return response()->json($products);
     		if ($products != NULL) {
 
     			foreach ($products as $product) {

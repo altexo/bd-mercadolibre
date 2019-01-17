@@ -50,31 +50,39 @@ $("#get-user-button").click(function(){
 	});
 });
 $("#update-products-prices-button").click(function(){
-    // $.ajax({
-    //     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-    //     type:'GET',
-        //url: 'http://127.0.0.1:8000/api/products/update/price/ml/2019-01-11',
-        // url: "https://bd-mercadolibre.herokuapp.com/api/products/update/price/ml/2019-01-11",
-        // success:function(response){
+    $.ajax({
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        type:'GET',
+     //   url: 'http://127.0.0.1:8000/api/products/update/price/ml/2019-01-11',
+       url: "https://bd-mercadolibre.herokuapp.com/api/products/update/price/ml/2019-01-11",
+        success:function(response){
             
-        //     console.log(response);
-           // $.each(response.response, function(index, data){
-              //  console.log(data);
+           // console.log(response);
+           $.each(response.response, function(index, data){
+              // console.log(data);
                var ml_url = '/users/315787371/items/search';
-               //var asin = data.asin;
-                MELI.get(ml_url, {sku:'B000JF2W8O'}, function(data) {
+               var asin = data.asin;
+               var price = data.price;
+
+                MELI.get(ml_url, {sku:asin}, function(data) {
                     console.log(data[2].results);
                     var ml_id = data[2].results;
-                    MELI.put('/items/'+ml_id[0],{'price': 879}, function(data){
-                        console.log(data);
-                    });
+                    if(isEmpty(ml_id)) {
+                        console.log('empty')
+                    } else {
+                        console.log(ml_id)
+                    }
+                    console.log(asin+' '+Math.round(price))
+                    // MELI.put('/items/'+ml_id[0],{'price': price}, function(data){
+                    //     console.log(data);
+                    // });
                 });
-            //});
-    //     },
-    //     error:function(error){
-    //         console.log(error);
-    //     }
-    // });
+            });
+        },
+        error:function(error){
+            console.log(error);
+        }
+    });
    
 });
 
