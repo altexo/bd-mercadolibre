@@ -62,21 +62,22 @@ $("#update-products-prices-button").click(function(){
               // console.log(data);
                var ml_url = '/users/315787371/items/search';
                var asin = data.asin;
-               var price = data.price;
+               var price = Math.round(data.price);
 
                 MELI.get(ml_url, {sku:asin}, function(data) {
-                    console.log(data);
+                    //console.log(data);
                     var ml_id = data[2].results;
                     if(ml_id && ml_id.length) {
                         console.log(ml_id)
-                        
+                        console.log(asin+' '+price)
+                        MELI.put('/items/'+ml_id[0],{'price': price, 'status':'active','available_quantity': 99}, function(data){
+                            console.log(data);
+                        });
                     } else {
                         console.log('empty')
                     }
-                    console.log(asin+' '+Math.round(price))
-                    // MELI.put('/items/'+ml_id[0],{'price': price}, function(data){
-                    //     console.log(data);
-                    // });
+                   
+                  
                 });
             });
         },

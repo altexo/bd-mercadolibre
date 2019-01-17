@@ -280,7 +280,7 @@ class ProductsController extends Controller
      // ->where('attributes.attributes_details','!=','{}')
       //->whereDate('ml_data.updated_at','2019-01-16')
      ->whereRaw('date(ml_data.updated_at) = "2019-01-16" or date(ml_data.updated_at) = "2019-01-17"')
-     ->take(100)
+     //->take(100)
       ->get();
       return response()->json(['error'=>$error, 'response'=>$response]);
     }
