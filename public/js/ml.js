@@ -67,10 +67,11 @@ $("#update-products-prices-button").click(function(){
                 MELI.get(ml_url, {sku:asin}, function(data) {
                     console.log(data[2].results);
                     var ml_id = data[2].results;
-                    if(isEmpty(ml_id)) {
-                        console.log('empty')
-                    } else {
+                    if(ml_id && ml_id.length) {
                         console.log(ml_id)
+                        
+                    } else {
+                        console.log('empty')
                     }
                     console.log(asin+' '+Math.round(price))
                     // MELI.put('/items/'+ml_id[0],{'price': price}, function(data){
