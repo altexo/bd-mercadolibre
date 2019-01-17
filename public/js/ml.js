@@ -65,7 +65,7 @@ $("#update-products-prices-button").click(function(){
                var price = data.price;
 
                 MELI.get(ml_url, {sku:asin}, function(data) {
-                    console.log(data[2].results);
+                    console.log(data);
                     var ml_id = data[2].results;
                     if(ml_id && ml_id.length) {
                         console.log(ml_id)
