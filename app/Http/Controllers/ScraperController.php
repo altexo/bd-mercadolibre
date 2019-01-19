@@ -103,15 +103,18 @@ class ScraperController extends Controller
     	 $errors = [];
 
 
-    		$products = Ml_data::select('ml_data.id as ml_data_id','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
+    		$products = Ml_data::select('ml_data.id as ml_data_id','ml_data.updated_at','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
     			->join('products','ml_data.id','=','products.ml_data_id')
     			->join('provider', 'products.provider_id', '=', 'provider.id')
     			->where('products.provider_id','!=',1)
-    			->where('provider.asin','!=', "")
+    			//->where('provider.asin','!=', "")
     			->whereDate('ml_data.updated_at','!=','2019-01-16')
     			->whereDate('ml_data.updated_at','!=','2019-01-17')
+    			->whereDate('ml_data.updated_at','!=','2019-01-19')
+    			//->take(20)
     			->get();
-	//	return response()->json($products);
+//     		$count = count($products);
+// return response()->json(['count'=> $count ,'p'=> $products]);
     		if ($products != NULL) {
 
     			foreach ($products as $product) {
@@ -131,9 +134,10 @@ class ScraperController extends Controller
 						//Arreglo de producto mediante asin
 						$res = json_decode($response, true);
 						if (empty($res)) {
-							array_push($errors, $asin);
+							array_push($errors, ['title'=>$product->title,'empty_res'=>$asin]);
 						}
 						if ($res == null) {
+							array_push($errors, ['title'=>$product->title,'null_res'=>$asin]);
 							continue;
 						}
 						//$a=array("Volvo"=>"XC90","BMW"=>"X5");
@@ -143,10 +147,12 @@ class ScraperController extends Controller
 						}
 						else
 						{
+							array_push($errors, ['title'=>$product->title, 'price_not_found'=>$asin]);
 						  	continue;
 						}
 						//verificamos el precio no venga en null
 						if ( ($res['price'] == null) || ($res['price'] == "") ) {
+							array_push($errors, ['title'=>$product->title,'price_nullOrEmpty'=>$asin]);
 							continue;
 						}
 						//Transform price
@@ -164,6 +170,7 @@ class ScraperController extends Controller
 							$transaction = DB::transaction(function() use($res, $providerPrice, $product, $sell_price){
 								$ml_data = Ml_data::where('id',$product->ml_data_id)->first();
 								$ml_data->price = $sell_price;
+								$ml_data->available_quantity = 99;
 								$ml_data->save();
 
 								$provider = Provider::where('id',$product->provider_id)->first();
@@ -171,7 +178,7 @@ class ScraperController extends Controller
 								$provider->price = $providerPrice;
 								$provider->save();
 								
-								return $transaction = ['provider'=> $provider];
+								return $transaction = ['provider'=> $provider, 'ml_data'=> $ml_data->title];
 
 							});
 						} catch (Exception $e) {
