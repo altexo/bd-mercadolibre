@@ -23,10 +23,14 @@ route::get('/scrap/get-by-asin', 'ScraperController@index');
 Route::get('/ml', 'HomeController@index')->name('home');
 Auth::routes();
 // Route::get('/register', 'HomeController@index');
-Route::post('import/asin', 'ProductsController@importProducts')->name('import.products');
-Route::get('/home', 'HomeController@index')->name('home');
+//Imports
 Route::get('/import', function(){
 	return view('importProducts');
 });
+Route::post('import/asin', 'ProductsController@importProducts')->name('import.products');
+Route::post('import/update/asin','importsController@importAsinUpdate')->name('import.update.asins');
+//End imports
+Route::get('/home', 'HomeController@index')->name('home');
+
 
 Route::get('/scrapper', 'ScrapperController@index')->name('scrap');
