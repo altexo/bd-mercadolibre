@@ -23,11 +23,11 @@ $( document ).ready(function() {
     //  price = price.slice(0,-3);
     //  console.log(price);
     //  console.log(newP);
-    //  var prod = "Exploding Kittens Card Game";
-    // var cat = "MLM1132";
-    // $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+prod+'&category_from='+cat, function(data){
-    //     console.log(data);
-    // });
+     var prod = "Guante del Artista con 2 Dedos para Tabletas Graficas y Pantallas de Tablet";
+    var cat = "MLM1499";
+    $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+prod+'&category_from='+cat, function(data){
+        console.log(data);
+    });
  });
 
 //Login ML click Event
@@ -185,7 +185,7 @@ $("#publish-new-button").click(function(){
      $.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             type:'GET',
-            //url: 'http://127.0.0.1:8000/api/new-products',
+           // url: 'http://127.0.0.1:8000/api/new-products',
             url: "https://bd-mercadolibre.herokuapp.com/api/new-products",
             success:function(response){
                 var not_published = [];
@@ -225,10 +225,13 @@ $("#publish-new-button").click(function(){
                     var desc_array = new Array();
                     desc_array['plain_text'] = data.description;
                     var cat = "";
-                    $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+title+'&category_from='+category_id, function(data){
-                       cat = data.id;
-                       console.log(cat)
-                       var productObj = {
+                     $.ajax({
+                        //headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        type:'GET',
+                        url: 'https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+title+'&category_from='+category_id,
+                        success:function(response_cat){
+                             cat = response_cat.id;
+                                      var productObj = {
                          title: title,
                          category_id: cat,
                          price: price,
@@ -250,26 +253,30 @@ $("#publish-new-button").click(function(){
                     console.log(productObj);
 
                     //Publicar a ML
-                    try{
-                        MELI.post(url, productObj, function(data) {
-                            console.log("ML response: ")
-                            console.log(data);
-                            estado = "Publicado";
-                           if (data[0] != 201) {
-                            not_published.push({product:productObj, error: data});
-                            this.estado = "No publicado";
-                           }
-                        });
+                        try{
+                            MELI.post(url, productObj, function(data) {
+                                console.log("ML response: ")
+                                console.log(data);
+                                estado = "Publicado";
+                                if (data[0] != 201) {
+                                    not_published.push({product:productObj, error: data});
+                                    this.estado = "No publicado";
+                                }
+                            });
                         
-                    } catch (e){
+                        } catch (e){
                         console.log('Error: ');
                         console.log(e);
                         this.estado = "No Publicado";
-                    }
+                        }
                    
-                    $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
-                  });
-            
+                            $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
+                  
+                        },
+                         error:function(response){
+                            console.log(response)
+                        }
+                    });
                 });
                 console.log(not_published);
             },
