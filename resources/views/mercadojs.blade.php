@@ -22,6 +22,7 @@
 	    	<a href="#" id="get-user-button" class="btn btn-primary">Obtener Usuario</a>
 	    	<button type="button" class="btn btn-primary" id="publish-button">Publicar productos</button>
 	    	<button type="button" class="btn btn-danger" id="update-products-prices-button">Actualizar precios en ML</button>
+	    	<button type="button" class="btn btn-warning" id="publish-new-button">Publicar nuevos productos</button>
 	  	</div>
 	</div>
 	<table class="table table-hover hidden" id="published-table">

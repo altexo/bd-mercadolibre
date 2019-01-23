@@ -263,6 +263,23 @@ class ProductsController extends Controller
         }
         return response()->json(['error'=> $error,'response'=> $response]);
     }
+        public function publishNew(){
+        $response = "";
+        $error = false;
+      $response = DB::table('ml_data')
+      ->select('ml_data.*','products.title','provider.provider_status_id','pictures.*','shipping.*','tags.*')
+      ->join('products', 'ml_data.id','=','products.ml_data_id')
+      ->join('pictures','pictures.ml_data_id','=','ml_data.id')
+      ->join('shipping','shipping.ml_data_id','=','ml_data.id')
+      ->join('tags','tags.ml_data_id','=','ml_data.id')
+      //->join('attributes','attributes.ml_data_id','=','ml_data.id')
+      ->join('provider', 'provider.id','=','products.provider_id')
+      ->where('products.provider_id','!=',1)
+      ->where('provider.provider_status_id','=',3)
+      ->get();
+
+        return response()->json(['error'=> $error,'response'=> $response]);
+    }
 
 
     public function updateProductsPrices($date){
