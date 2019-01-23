@@ -107,7 +107,7 @@ class ScraperController extends Controller
     			->join('products','ml_data.id','=','products.ml_data_id')
     			->join('provider', 'products.provider_id', '=', 'provider.id')
     			->where('products.provider_id','!=',1)
-    			->where('provider.status','=',NULL)
+    			->where('provider.provider_status_id','=',1)
     			//->where('provider.asin','!=', "")
     	
     		//	->take(20)

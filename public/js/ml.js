@@ -24,10 +24,10 @@ $( document ).ready(function() {
     //  console.log(price);
     //  console.log(newP);
     // var prod = "Exploding Kittens Card Game";
-    // var cat = "MLM1132";
-    // $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+prod+'&category_from='+cat, function(data){
-    //     console.log(data);
-    // });
+    var cat = "MLM1132";
+    $.get('https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+prod+'&category_from='+cat, function(data){
+        console.log(data);
+    });
  });
 
 //Login ML click Event
