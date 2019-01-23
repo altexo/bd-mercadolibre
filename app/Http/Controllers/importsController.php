@@ -22,7 +22,7 @@ class importsController extends Controller
             //dd($csvData);
             $rows = array_map("str_getcsv", explode("\r\n", $csvData));
             $header = array_shift($rows);
-            //return dd($header);
+          //  return dd($header);
            //return dd($rows);
           //  $rows = array_map("utf8_encode", $rows );
 
@@ -34,10 +34,16 @@ class importsController extends Controller
            			// echo "yes";
             	 // }
             				 $row = array_combine($header, $row);
-            		//echo $row['asin'];
-                    
-                    
-                    $provider = Provider::where('id', '=', $row['asin'])->first();
+            	
+   					if ($row['asin'] == 'R') {
+   						$provider = Provider::where('id', '=', $row['provider_id'])->first();
+                    	$provider->state = 0;
+                    	$provider->save();
+                    	array_push($not_found, $row);
+                    	continue;
+                    }
+                    $provider = Provider::where('asin', '=', $row['asin'])->first();
+                  
                     if ($provider != NULL) {
 
                         $provider->asin = $row['asin'];

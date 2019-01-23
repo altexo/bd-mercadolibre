@@ -107,14 +107,13 @@ class ScraperController extends Controller
     			->join('products','ml_data.id','=','products.ml_data_id')
     			->join('provider', 'products.provider_id', '=', 'provider.id')
     			->where('products.provider_id','!=',1)
+    			->where('provider.status','=',NULL)
     			//->where('provider.asin','!=', "")
-    			->whereDate('ml_data.updated_at','!=','2019-01-16')
-    			->whereDate('ml_data.updated_at','!=','2019-01-17')
-    			->whereDate('ml_data.updated_at','!=','2019-01-19')
-    			//->take(20)
+    	
+    		//	->take(20)
     			->get();
-//     		$count = count($products);
-// return response()->json(['count'=> $count ,'p'=> $products]);
+ //    		$count = count($products);
+ // return response()->json(['count'=> $count ,'p'=> $products]);
     		if ($products != NULL) {
 
     			foreach ($products as $product) {
@@ -162,7 +161,7 @@ class ScraperController extends Controller
 						$providerPrice = str_replace(',', '', $providerPrice);
 						$providerPrice = intval($providerPrice);
 						//Convertims a peso y aumentamos el precio del producto
-						$sell_price = 1.60 * $providerPrice;
+						$sell_price = 1.40 * $providerPrice;
 						$sell_price = round($sell_price);
 				
 						//Comienza transaccion de captura de nuevo producto 
