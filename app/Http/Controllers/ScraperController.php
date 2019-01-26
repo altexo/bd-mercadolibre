@@ -107,7 +107,7 @@ class ScraperController extends Controller
     			->join('products','ml_data.id','=','products.ml_data_id')
     			->join('provider', 'products.provider_id', '=', 'provider.id')
     			->where('products.provider_id','!=',1)
-    			->where('provider.provider_status_id','=',1)
+    			//->where('provider.provider_status_id','=',1)
     			//->where('provider.asin','!=', "")
     	
     		//	->take(20)
@@ -133,9 +133,11 @@ class ScraperController extends Controller
 						//Arreglo de producto mediante asin
 						$res = json_decode($response, true);
 						if (empty($res)) {
+							$this->updateProductStatus($product->provider_id);
 							array_push($errors, ['title'=>$product->title,'empty_res'=>$asin]);
 						}
 						if ($res == null) {
+							$this->updateProductStatus($product->provider_id);
 							array_push($errors, ['title'=>$product->title,'null_res'=>$asin]);
 							continue;
 						}
@@ -146,11 +148,13 @@ class ScraperController extends Controller
 						}
 						else
 						{
+							$this->updateProductStatus($product->provider_id);
 							array_push($errors, ['title'=>$product->title, 'price_not_found'=>$asin]);
 						  	continue;
 						}
 						//verificamos el precio no venga en null
 						if ( ($res['price'] == null) || ($res['price'] == "") ) {
+							$this->updateProductStatus($product->provider_id);
 							array_push($errors, ['title'=>$product->title,'price_nullOrEmpty'=>$asin]);
 							continue;
 						}
@@ -163,10 +167,16 @@ class ScraperController extends Controller
 						//Convertims a peso y aumentamos el precio del producto
 						$sell_price = 1.40 * $providerPrice;
 						$sell_price = round($sell_price);
-				
+						
+						$pictures_array = [];
+						 foreach ($res['images'] as $img) {        
+				            array_push($pictures_array, ['source' => $img]);
+				         }    
+				         //Codificamos el arreglo de imagenes a json 
+        				$pictures_array = json_encode($pictures_array);
 						//Comienza transaccion de captura de nuevo producto 
 						try {
-							$transaction = DB::transaction(function() use($res, $providerPrice, $product, $sell_price){
+							$transaction = DB::transaction(function() use($res, $providerPrice, $product, $sell_price, $pictures_array){
 								$ml_data = Ml_data::where('id',$product->ml_data_id)->first();
 								$ml_data->price = $sell_price;
 								$ml_data->available_quantity = 99;
@@ -175,7 +185,12 @@ class ScraperController extends Controller
 								$provider = Provider::where('id',$product->provider_id)->first();
 								$provider->provider_link = $res['url'];
 								$provider->price = $providerPrice;
+								$provider->provider_status_id = 1;
 								$provider->save();
+
+								$pictures = Pictures::where('ml_data_id', $product->ml_data_id)->first();
+								$pictures->url = $pictures_array;
+								$pictures->save();
 								
 								return $transaction = ['provider'=> $provider, 'ml_data'=> $ml_data->title];
 
@@ -190,6 +205,12 @@ class ScraperController extends Controller
     	return response()->json(['ok' => $response_array,'errors'=>$errors]);
     		}
 
+    	private function updateProductStatus($id){
+    		$provider = Provider::where('id',$id)->first();
+			$provider->provider_status_id = 2;
+			$provider->save();
+
+    	}
     	public function testCall(){
     		try {
     				$client = new Client([

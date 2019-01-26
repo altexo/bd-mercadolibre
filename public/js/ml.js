@@ -53,24 +53,28 @@ $("#update-products-prices-button").click(function(){
     $.ajax({
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         type:'GET',
-     //   url: 'http://127.0.0.1:8000/api/products/update/price/ml/2019-01-11',
+       // url: 'http://127.0.0.1:8000/api/products/update/price/ml/2019-01-11',
        url: "https://bd-mercadolibre.herokuapp.com/api/products/update/price/ml/2019-01-11",
         success:function(response){
             
-           // console.log(response);
+            console.log(response);
            $.each(response.response, function(index, data){
               // console.log(data);
                var ml_url = '/users/315787371/items/search';
                var asin = data.asin;
                var price = Math.round(data.price);
+               var picturesArray = JSON.parse(data.url);
+               var picturesArrayList = [];
+               $.each(picturesArray,function(index, pic) {
+                        picturesArrayList.push(pic);
+                });
 
                 MELI.get(ml_url, {sku:asin}, function(data) {
-                    //console.log(data);
                     var ml_id = data[2].results;
                     if(ml_id && ml_id.length) {
                         console.log(ml_id)
                         console.log(asin+' '+price)
-                        MELI.put('/items/'+ml_id[0],{'price': price, 'status':'active','available_quantity': 99}, function(data){
+                        MELI.put('/items/'+ml_id[0],{'price': price, 'status':'active','available_quantity': 99, 'pictures': picturesArrayList}, function(data){
                             console.log(data);
                         });
                     } else {
@@ -80,6 +84,7 @@ $("#update-products-prices-button").click(function(){
                   
                 });
             });
+
         },
         error:function(error){
             console.log(error);
@@ -231,7 +236,7 @@ $("#publish-new-button").click(function(){
                         url: 'https://api.mercadolibre.com/sites/MLM/category_predictor/predict?title='+title+'&category_from='+category_id,
                         success:function(response_cat){
                              cat = response_cat.id;
-                                      var productObj = {
+                        var productObj = {
                          title: title,
                          category_id: cat,
                          price: price,

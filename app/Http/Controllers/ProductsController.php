@@ -286,9 +286,9 @@ class ProductsController extends Controller
       $response = "";
       $error = false;
       $response = DB::table('ml_data')
-      ->select('ml_data.*','products.title','provider.provider_link','provider.asin')
+      ->select('ml_data.*','products.title','provider.provider_link','provider.asin', 'provider.provider_status_id', 'pictures.url')
       ->join('products', 'ml_data.id','=','products.ml_data_id')
-      //->join('pictures','pictures.ml_data_id','=','ml_data.id')
+      ->join('pictures','pictures.ml_data_id','=','ml_data.id')
       //->join('shipping','shipping.ml_data_id','=','ml_data.id')
       //->join('tags','tags.ml_data_id','=','ml_data.id')
       //->join('attributes','attributes.ml_data_id','=','ml_data.id')
@@ -297,8 +297,8 @@ class ProductsController extends Controller
      // ->where('attributes.attributes_details','!=','{}')
       //->whereDate('ml_data.updated_at','2019-01-16')
       ->where('products.provider_id','!=',1)
-      ->where('provider.status','=',NULL)
-     ->whereRaw('date(ml_data.updated_at) ="2019-01-22" or date(ml_data.updated_at) ="2019-01-23"')
+      ->where('provider.provider_status_id','=',1)
+    // ->whereRaw('date(ml_data.updated_at) = "2019-01-26"')
      //->take(100)
       ->get();
       $count = 0;
