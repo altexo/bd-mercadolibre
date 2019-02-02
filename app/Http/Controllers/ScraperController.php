@@ -179,10 +179,15 @@ class ScraperController extends Controller
 						$sell_price = round($sell_price);
 						
 						$pictures_array = [];
-						 foreach ($res['images'] as $img) {        
-						 		if (exif_imagetype($img) != IMAGETYPE_JPEG) {
+						 foreach ($res['images'] as $img) {  
+						 try {
+						       	if (exif_imagetype($img) != IMAGETYPE_JPEG) {
 								    continue;
 								}
+						    } catch (Exception $e) {
+						       	continue;
+						    }      
+						 		
 				            array_push($pictures_array, ['source' => $img]);
 				         }    
 				         //Codificamos el arreglo de imagenes a json 
