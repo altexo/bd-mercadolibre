@@ -20,6 +20,7 @@ Route::get('/', function () {
 route::get('/scrap/get-by-asin', 'ScraperController@index');
 
 //Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/products/edit' 'ProductsBFController@index')->name('products.edit');
 Route::get('/ml', 'HomeController@index')->name('home');
 Auth::routes();
 // Route::get('/register', 'HomeController@index');

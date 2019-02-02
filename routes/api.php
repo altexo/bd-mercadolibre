@@ -29,3 +29,6 @@ Route::get('new-products','ProductsController@publishNew');
 Route::get('products/update', 'ScraperController@updateProductsPrice');
 Route::get('products/testcall', 'ScraperController@testCall');
 Route::get('products/update/price/ml/{date}','ProductsController@updateProductsPrices');
+
+
+Route::get('products/test', 'ScraperController@index');

@@ -16,19 +16,25 @@ use Date;
 class ScraperController extends Controller
 {
     public function index(){
-    	$asin = 'B07BDKQWCK';
+    	$asin = 'B00K5NBQGO';
     	$client = new Client([
-    		'base_uri'=> 'https://scrapehero-amazon-product-info-v1.p.mashape.com/product-details?asin='.$asin, 
-    		'headers' => ['X-Mashape-Key' => 'zg0snQgYOimshgrnP0Mx5m9O3vlQp1cjQX1jsncrcfBCh3zcps', 'Accept' => 'application/json']]); 
+			'base_uri'=> 'https://api.scrapehero.com/amaz_mx/product-details/?asin='.$asin.'&apikey=59242154b4e89e0fd599213326a2d4f78dba436eba0c70b19e33fccb',
+			'http_errors' => false
+    	]); 
 		$response = $client->request('GET');
+
 		//$body = $client->getBody();
 		//$response = new R;
 		$response = $response->getBody()->getContents();
 		$res = json_decode($response, true);//Arreglo de producto mediante asin
 
 		//Convertimos las imagenes en una lista de arreglos
+	//	$png_img = "";
 		$pictures_array = [];
 		 foreach ($res['images'] as $img) {        
+		 	if (exif_imagetype($img) != IMAGETYPE_JPEG) {
+			    continue;
+			}
             array_push($pictures_array, ['source' => $img]);
          }                           
         //Codificamos el arreglo de imagenes a json 
@@ -39,7 +45,11 @@ class ScraperController extends Controller
 		$providerPrice = substr($providerPrice, 1);
 		//Convertims a peso y aumentamos el precio del producto
 		$providerPrice = 1.60*($providerPrice*20);
-		
+
+		//Test Line
+		return response()->json(['Nothing found' => $pictures_array ]);
+		//End test line
+
 		//Comienza transaccion de captura de nuevo producto 
 		try {
 			DB::transaction(function () use($providerPrice, $res, $pictures_array, $asin) {
@@ -107,13 +117,13 @@ class ScraperController extends Controller
     			->join('products','ml_data.id','=','products.ml_data_id')
     			->join('provider', 'products.provider_id', '=', 'provider.id')
     			->where('products.provider_id','!=',1)
-    			//->where('provider.provider_status_id','=',1)
+    			->where('provider.provider_status_id','=',1)
     			//->where('provider.asin','!=', "")
-    	
-    		//	->take(20)
+    			->whereRaw('date(ml_data.updated_at) != "2019-02-01" AND date(ml_data.updated_at) != "2019-02-02" ')
+    			//->take(20)
     			->get();
- //    		$count = count($products);
- // return response()->json(['count'=> $count ,'p'=> $products]);
+  //    		$count = count($products);
+  // return response()->json(['count'=> $count ,'p'=> $products]);
     		if ($products != NULL) {
 
     			foreach ($products as $product) {
@@ -165,11 +175,14 @@ class ScraperController extends Controller
 						$providerPrice = str_replace(',', '', $providerPrice);
 						$providerPrice = intval($providerPrice);
 						//Convertims a peso y aumentamos el precio del producto
-						$sell_price = 1.40 * $providerPrice;
+						$sell_price = 1.60 * $providerPrice;
 						$sell_price = round($sell_price);
 						
 						$pictures_array = [];
 						 foreach ($res['images'] as $img) {        
+						 		if (exif_imagetype($img) != IMAGETYPE_JPEG) {
+								    continue;
+								}
 				            array_push($pictures_array, ['source' => $img]);
 				         }    
 				         //Codificamos el arreglo de imagenes a json 
