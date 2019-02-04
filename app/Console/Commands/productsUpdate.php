@@ -158,7 +158,7 @@ class productsUpdate extends Command
         //             //$response = $products;
         // return response()->json(['ok' => $response_array,'errors'=>$errors]);
                // print_r($response_array);
-            return echo "Update products complete"."<br>";
+            return "Update products complete"."<br>";
         }
 
     private function updateProductStatus($id){
