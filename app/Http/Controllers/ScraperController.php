@@ -123,7 +123,7 @@ class ScraperController extends Controller
     			->join('provider', 'products.provider_id', '=', 'provider.id')
     			->where('products.provider_id','!=',1)
     			//->where('provider.provider_status_id','=',1)
-    			->where('provider.asin','!=', "")
+    			//->where('provider.asin','!=', "")
     			// ->whereRaw('date(ml_data.updated_at) != "2019-02-01" AND date(ml_data.updated_at) != "2019-02-02" ')
     			//->take(20)
     			->get();

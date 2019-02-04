@@ -50,7 +50,7 @@ class productsUpdate extends Command
     {
         // $current_date =  new \DateTime();
         // $product = Products::join('provider', 'products.provider_id', '=', 'provider.id')->where('provider.asin', '')
-        echo "Update command called";
+        echo "Update command called"."<br>";
         $response_array = [];
         $errors = [];
 
@@ -158,6 +158,7 @@ class productsUpdate extends Command
         //             //$response = $products;
         // return response()->json(['ok' => $response_array,'errors'=>$errors]);
                // print_r($response_array);
+            return echo "Update products complete"."<br>";
         }
 
     private function updateProductStatus($id){
