@@ -13,7 +13,7 @@ use Date;
 class Ml_data extends Model
 {
     protected $table = "ml_data";
-    public $timestamps = false;
+   // public $timestamps = false;
     public function pictures(){
     	return $this->hasMany(Pictures::class);
     }

@@ -32,9 +32,14 @@ class ScraperController extends Controller
 	//	$png_img = "";
 		$pictures_array = [];
 		 foreach ($res['images'] as $img) {        
-		 	if (exif_imagetype($img) != IMAGETYPE_JPEG) {
-			    continue;
+		 // 	if (exif_imagetype($img) != IMAGETYPE_JPEG) {
+			//     continue;
+			// }
+			$img_format = substr($img, -3);
+			if ($img_format == "png") {
+				continue;
 			}
+			// return response()->json(['string']);
             array_push($pictures_array, ['source' => $img]);
          }                           
         //Codificamos el arreglo de imagenes a json 
@@ -117,9 +122,9 @@ class ScraperController extends Controller
     			->join('products','ml_data.id','=','products.ml_data_id')
     			->join('provider', 'products.provider_id', '=', 'provider.id')
     			->where('products.provider_id','!=',1)
-    			->where('provider.provider_status_id','=',1)
-    			//->where('provider.asin','!=', "")
-    			->whereRaw('date(ml_data.updated_at) != "2019-02-01" AND date(ml_data.updated_at) != "2019-02-02" ')
+    			//->where('provider.provider_status_id','=',1)
+    			->where('provider.asin','!=', "")
+    			// ->whereRaw('date(ml_data.updated_at) != "2019-02-01" AND date(ml_data.updated_at) != "2019-02-02" ')
     			//->take(20)
     			->get();
   //    		$count = count($products);
@@ -180,14 +185,10 @@ class ScraperController extends Controller
 						
 						$pictures_array = [];
 						 foreach ($res['images'] as $img) {  
-						 try {
-						       	if (exif_imagetype($img) != IMAGETYPE_JPEG) {
-								    continue;
-								}
-						    } catch (Exception $e) {
-						       	continue;
-						    }      
-						 		
+					  		$img_format = substr($img, -3);
+							if ($img_format == "png") {
+								continue;
+							}
 				            array_push($pictures_array, ['source' => $img]);
 				         }    
 				         //Codificamos el arreglo de imagenes a json 
