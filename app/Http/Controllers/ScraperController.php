@@ -125,10 +125,10 @@ class ScraperController extends Controller
     			//->where('provider.provider_status_id','=',1)
     			//->where('provider.asin','!=', "")
     			// ->whereRaw('date(ml_data.updated_at) != "2019-02-01" AND date(ml_data.updated_at) != "2019-02-02" ')
-    			//->take(20)
+    			->take(3)
     			->get();
   //    		$count = count($products);
-  // return response()->json(['count'=> $count ,'p'=> $products]);
+   //return response()->json($products);
     		if ($products != NULL) {
 
     			foreach ($products as $product) {
@@ -138,7 +138,8 @@ class ScraperController extends Controller
 	    				}
 	    			   
 				    	$client = new Client([
-				    		'base_uri'=> 'https://api.scrapehero.com/amaz_mx/product-details/?asin='.$asin.'&apikey=59242154b4e89e0fd599213326a2d4f78dba436eba0c70b19e33fccb',
+								'base_uri' => 'https://api.keepa.com/product?key=d8ukh5gnd7qfrsl3n7s6s9e9lj8k9v7k2bq3f8l9hgpamve59rnov65j4co73ko2&domain=11&asin='.$asin.'&stats=24&history=0',
+				    		//'base_uri'=> 'https://api.scrapehero.com/amaz_mx/product-details/?asin='.$asin.'&apikey=59242154b4e89e0fd599213326a2d4f78dba436eba0c70b19e33fccb',
 				    		'http_errors' => false
 				    	//	'headers' => ['X-Mashape-Key' => 'zg0snQgYOimshgrnP0Mx5m9O3vlQp1cjQX1jsncrcfBCh3zcps', 'Accept' => 'application/json']
 				    	]); 
@@ -147,77 +148,84 @@ class ScraperController extends Controller
 						$response = $response->getBody()->getContents();
 						//Arreglo de producto mediante asin
 						$res = json_decode($response, true);
-						if (empty($res)) {
-							$this->updateProductStatus($product->provider_id);
-							array_push($errors, ['title'=>$product->title,'empty_res'=>$asin]);
-						}
-						if ($res == null) {
-							$this->updateProductStatus($product->provider_id);
-							array_push($errors, ['title'=>$product->title,'null_res'=>$asin]);
-							continue;
-						}
-						//$a=array("Volvo"=>"XC90","BMW"=>"X5");
-						if (array_key_exists("price",$res))
-						{
-						  //echo "Key exists!";
-						}
-						else
-						{
-							$this->updateProductStatus($product->provider_id);
-							array_push($errors, ['title'=>$product->title, 'price_not_found'=>$asin]);
-						  	continue;
-						}
+						$stats = $res['products'];
+						$price = $stats[0]['stats']['current'][0];
+					//	$current = $stats->current;
+			
+
+						//array_push($response_array, ['price' => $price, 'asin' => $asin, 'mlid' => $product->ml_data_id]);
+					
+					//	continue;
+						// if (empty($res)) {
+						// 	$this->updateProductStatus($product->provider_id);
+						// 	array_push($errors, ['title'=>$product->title,'empty_res'=>$asin]);
+						// }
+						// if ($res == null) {
+						// 	$this->updateProductStatus($product->provider_id);
+						// 	array_push($errors, ['title'=>$product->title,'null_res'=>$asin]);
+						// 	continue;
+						// }
+				
+						// if (array_key_exists("price",$res))
+						// {
+						 
+						// }
+						// else
+						// {
+						// 	$this->updateProductStatus($product->provider_id);
+						// 	array_push($errors, ['title'=>$product->title, 'price_not_found'=>$asin]);
+						//   	continue;
+						// }
 						//verificamos el precio no venga en null
-						if ( ($res['price'] == null) || ($res['price'] == "") ) {
+						if ($price == -1) {
 							$this->updateProductStatus($product->provider_id);
-							array_push($errors, ['title'=>$product->title,'price_nullOrEmpty'=>$asin]);
+							array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
 							continue;
 						}
 						//Transform price
-						$providerPrice = $res['price'];
+						$decimalPrice = sprintf('%.2f', $price / 100);
+						$providerPrice = $decimalPrice;
 						//Quitamos el signo de moneda del precio
-						$providerPrice = substr($providerPrice, 1);
-						$providerPrice = str_replace(',', '', $providerPrice);
-						$providerPrice = intval($providerPrice);
+						//$providerPrice = substr($providerPrice, 1);
+					//	$providerPrice = str_replace(',', '', $providerPrice);
+						//$providerPrice = intval($providerPrice);
 						//Convertims a peso y aumentamos el precio del producto
 						$sell_price = 1.60 * $providerPrice;
 						$sell_price = round($sell_price);
 						
-						$pictures_array = [];
-						 foreach ($res['images'] as $img) {  
-					  		$img_format = substr($img, -3);
-							if ($img_format == "png") {
-								continue;
-							}
-				            array_push($pictures_array, ['source' => $img]);
-				         }    
-				         //Codificamos el arreglo de imagenes a json 
-        				$pictures_array = json_encode($pictures_array);
+						// $pictures_array = [];
+						//  foreach ($res['images'] as $img) {  
+						// 	//https://images-na.ssl-images-amazon.com/images/I/
+				    //         array_push($pictures_array, ['source' => $img]);
+				    //      }    
+				    //      //Codificamos el arreglo de imagenes a json 
+        		// 		$pictures_array = json_encode($pictures_array);
 						//Comienza transaccion de captura de nuevo producto 
 						try {
-							$transaction = DB::transaction(function() use($res, $providerPrice, $product, $sell_price, $pictures_array){
+							$transaction = DB::transaction(function() use($providerPrice, $product, $sell_price){
 								$ml_data = Ml_data::where('id',$product->ml_data_id)->first();
 								$ml_data->price = $sell_price;
 								$ml_data->available_quantity = 99;
 								$ml_data->save();
 
 								$provider = Provider::where('id',$product->provider_id)->first();
-								$provider->provider_link = $res['url'];
+								//$provider->provider_link = $res['url'];
 								$provider->price = $providerPrice;
 								$provider->provider_status_id = 1;
 								$provider->save();
 
-								$pictures = Pictures::where('ml_data_id', $product->ml_data_id)->first();
-								$pictures->url = $pictures_array;
-								$pictures->save();
+								// $pictures = Pictures::where('ml_data_id', $product->ml_data_id)->first();
+								// $pictures->url = $pictures_array;
+								// $pictures->save();
 								
-								return $transaction = ['provider'=> $provider, 'ml_data'=> $ml_data->title];
+								return $transaction = ['provider'=> $provider, 'ml_data'=> $ml_data->id];
 
 							});
 						} catch (Exception $e) {
 							$response = $e;
 						}
 							array_push($response_array, $transaction);
+							sleep(65);
 					}
 				}
 					//$response = $products;
