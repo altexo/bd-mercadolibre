@@ -49,7 +49,7 @@ class productsUpdate extends Command
     public function handle()
     {
 
-        echo "Update command called"."<br>";
+        echo "Update command called\n";
         $response_array = [];
         $errors = [];
 
@@ -118,7 +118,7 @@ class productsUpdate extends Command
             
         }
 
-            return "Update products complete"."<br>";
+            return "Update products complete\n";
         }
 
     private function updateProductStatus($id){
