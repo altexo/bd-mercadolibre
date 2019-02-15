@@ -48,8 +48,7 @@ class productsUpdate extends Command
      */
     public function handle()
     {
-        // $current_date =  new \DateTime();
-        // $product = Products::join('provider', 'products.provider_id', '=', 'provider.id')->where('provider.asin', '')
+
         echo "Update command called"."<br>";
         $response_array = [];
         $errors = [];
@@ -60,104 +59,65 @@ class productsUpdate extends Command
             ->join('provider', 'products.provider_id', '=', 'provider.id')
             ->where('products.provider_id','!=',1)
             ->where('provider.asin','!=', "")
-            //->take(2)
+            ->take(2)
             ->get();
-           // return print_r($products);
         if ($products != NULL) {
 
-                foreach ($products as $product) {
-                  //  re$product->asin;
-                        $asin = $product->asin;
-                        if ($asin == "") {
-                            continue;
-                        }
-                       
-                        $client = new Client([
-                            'base_uri'=> 'https://api.scrapehero.com/amaz_mx/product-details/?asin='.$asin.'&apikey=59242154b4e89e0fd599213326a2d4f78dba436eba0c70b19e33fccb',
-                            'http_errors' => false
-                        ]); 
-
-                        $response = $client->request('GET');
-
-                        $response = $response->getBody()->getContents();
-                        //Arreglo de producto mediante asin
-                        $res = json_decode($response, true);
-                        if (empty($res)) {
-                            $this->updateProductStatus($product->provider_id);
-                            array_push($errors, ['title'=>$product->title,'empty_res'=>$asin]);
-                        }
-                        if ($res == null) {
-                            $this->updateProductStatus($product->provider_id);
-                            array_push($errors, ['title'=>$product->title,'null_res'=>$asin]);
-                            continue;
-                        }
-                        //$a=array("Volvo"=>"XC90","BMW"=>"X5");
-                        if (array_key_exists("price",$res))
-                        {
-                          //echo "Key exists!";
-                        }
-                        else
-                        {
-                            $this->updateProductStatus($product->provider_id);
-                            array_push($errors, ['title'=>$product->title, 'price_not_found'=>$asin]);
-                            continue;
-                        }
-                        //verificamos el precio no venga en null
-                        if ( ($res['price'] == null) || ($res['price'] == "") ) {
-                            $this->updateProductStatus($product->provider_id);
-                            array_push($errors, ['title'=>$product->title,'price_nullOrEmpty'=>$asin]);
-                            continue;
-                        }
-                        //Transform price
-                        $providerPrice = $res['price'];
-                        //Quitamos el signo de moneda del precio
-                        $providerPrice = substr($providerPrice, 1);
-                        $providerPrice = str_replace(',', '', $providerPrice);
-                        $providerPrice = intval($providerPrice);
-                        //Convertims a peso y aumentamos el precio del producto
-                        $sell_price = 1.60 * $providerPrice;
-                        $sell_price = round($sell_price);
-                        
-                        $pictures_array = [];
-                         foreach ($res['images'] as $img) {  
-                            $img_format = substr($img, -3);
-                            if ($img_format == "png") {
-                                continue;
-                            }
-                            array_push($pictures_array, ['source' => $img]);
-                         }    
-                         //Codificamos el arreglo de imagenes a json 
-                        $pictures_array = json_encode($pictures_array);
-                        //Comienza transaccion de captura de nuevo producto 
-                        try {
-                            $transaction = DB::transaction(function() use($res, $providerPrice, $product, $sell_price, $pictures_array){
-                                $ml_data = Ml_data::where('id',$product->ml_data_id)->first();
-                                $ml_data->price = $sell_price;
-                                $ml_data->available_quantity = 99;
-                                $ml_data->save();
-
-                                $provider = Provider::where('id',$product->provider_id)->first();
-                                $provider->provider_link = $res['url'];
-                                $provider->price = $providerPrice;
-                                $provider->provider_status_id = 1;
-                                $provider->save();
-
-                                $pictures = Pictures::where('ml_data_id', $product->ml_data_id)->first();
-                                $pictures->url = $pictures_array;
-                                $pictures->save();
-                                
-                                return $transaction = ['provider'=> $provider, 'ml_data'=> $ml_data->title];
-
-                            });
-                        } catch (Exception $e) {
-                            $response = $e;
-                        }
-                            array_push($response_array, $transaction);
-                    }
+            foreach ($products as $product) {
+                $asin = $product->asin;
+                if ($asin == "") {
+                    continue;
                 }
-        //             //$response = $products;
-        // return response()->json(['ok' => $response_array,'errors'=>$errors]);
-               // print_r($response_array);
+               
+                $client = new Client([
+                    'base_uri' => 'https://api.keepa.com/product?key=d8ukh5gnd7qfrsl3n7s6s9e9lj8k9v7k2bq3f8l9hgpamve59rnov65j4co73ko2&domain=11&asin='.$asin.'&stats=24&history=0',
+                    'http_errors' => false
+                   
+                ]); 
+                $response = $client->request('GET');
+
+                $response = $response->getBody()->getContents();
+                //Arreglo de producto mediante asin
+                $res = json_decode($response, true);
+                $stats = $res['products'];
+                $price = $stats[0]['stats']['current'][0];
+
+                if ($price == -1) {
+                    $this->updateProductStatus($product->provider_id);
+                    array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
+                    continue;
+                }
+                //Transform price
+                $decimalPrice = sprintf('%.2f', $price / 100);
+                $providerPrice = $decimalPrice;
+                $sell_price = 1.60 * $providerPrice;
+                $sell_price = round($sell_price);
+                
+
+                try {
+                    $transaction = DB::transaction(function() use($providerPrice, $product, $sell_price){
+                        $ml_data = Ml_data::where('id',$product->ml_data_id)->first();
+                        $ml_data->price = $sell_price;
+                        $ml_data->available_quantity = 99;
+                        $ml_data->save();
+
+                        $provider = Provider::where('id',$product->provider_id)->first();
+                        $provider->price = $providerPrice;
+                        $provider->provider_status_id = 1;
+                        $provider->save();
+
+                        return $transaction = ['provider'=> $provider, 'ml_data'=> $ml_data->id];
+
+                    });
+                } catch (Exception $e) {
+                    $response = $e;
+                }
+                    array_push($response_array, $transaction);
+                    sleep(65);
+            }
+            
+        }
+
             return "Update products complete"."<br>";
         }
 
