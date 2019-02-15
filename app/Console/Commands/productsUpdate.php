@@ -59,7 +59,7 @@ class productsUpdate extends Command
             ->join('provider', 'products.provider_id', '=', 'provider.id')
             ->where('products.provider_id','!=',1)
             ->where('provider.asin','!=', "")
-            ->take(2)
+            //->take(2)
             ->get();
         if ($products != NULL) {
 
