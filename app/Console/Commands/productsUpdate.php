@@ -106,12 +106,13 @@ class productsUpdate extends Command
                         $provider->provider_status_id = 1;
                         $provider->save();
 
-                        return $transaction = ['provider'=> $provider, 'ml_data'=> $ml_data->id];
+                        return $transaction = $ml_data->id;//['provider'=> $provider, 'ml_data'=> $ml_data->id];
 
                     });
                 } catch (Exception $e) {
                     $response = $e;
                 }
+                    echo $transaction."\n";
                     array_push($response_array, $transaction);
                     sleep(65);
             }
