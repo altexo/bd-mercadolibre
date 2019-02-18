@@ -125,10 +125,10 @@ class ScraperController extends Controller
     			//->where('provider.provider_status_id','=',1)
     			//->where('provider.asin','!=', "")
     			// ->whereRaw('date(ml_data.updated_at) != "2019-02-01" AND date(ml_data.updated_at) != "2019-02-02" ')
-    			->take(3)
+    			//->take(3)
     			->get();
-  //    		$count = count($products);
-   //return response()->json($products);
+     		$count = count($products);
+   return response()->json($count);
     		if ($products != NULL) {
 
     			foreach ($products as $product) {

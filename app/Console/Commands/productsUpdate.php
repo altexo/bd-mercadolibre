@@ -61,6 +61,9 @@ class productsUpdate extends Command
             ->where('provider.asin','!=', "")
             //->take(2)
             ->get();
+            
+            // $count = count($products);
+            // return response()->json($count);
         if ($products != NULL) {
 
             foreach ($products as $product) {
@@ -85,6 +88,8 @@ class productsUpdate extends Command
                 if ($price == -1) {
                     $this->updateProductStatus($product->provider_id);
                     array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
+                    echo $asin." No disponible en stock \n";
+                    sleep(65);
                     continue;
                 }
                 //Transform price
