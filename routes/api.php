@@ -32,3 +32,5 @@ Route::get('products/update/price/ml/{date}','ProductsController@updateProductsP
 
 
 Route::get('products/test', 'ScraperController@index');
+
+Route::post('/test/iot', 'IotController@storeData');

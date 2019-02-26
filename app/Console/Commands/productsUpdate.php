@@ -89,7 +89,7 @@ class productsUpdate extends Command
                     $this->updateProductStatus($product->provider_id);
                     array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
                     echo $asin." No disponible en stock \n";
-                    sleep(65);
+                   // sleep(65);
                     continue;
                 }
                 //Transform price
