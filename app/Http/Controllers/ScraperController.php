@@ -342,10 +342,10 @@ class ScraperController extends Controller
 			   //Arreglo de producto mediante asin
 			   $res = json_decode($response, true);
 			  
-			   $stats = $res['products'];
-						
+			   $stats = $res['products'][0];
+				 return response()->json($stats);		
 				 $imgs = $stats['imagesCSV'];
-				 return response()->json($imgs);
+				 
 			   $imgs = explode(",", $imgs);
 				$pictures_array = [];
 				 foreach ($imgs as $img) {  
