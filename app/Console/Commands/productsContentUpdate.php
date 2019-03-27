@@ -105,7 +105,7 @@ class productsContentUpdate extends Command
                 $providerPrice = $decimalPrice;
                 $sell_price = 1.60 * $providerPrice;
                 $sell_price = round($sell_price);
-                
+                $pictures_array = json_encode($pictures_array);
 
                 try {
                     $transaction = DB::transaction(function() use($providerPrice, $product, $sell_price, $pictures_array, $title){
