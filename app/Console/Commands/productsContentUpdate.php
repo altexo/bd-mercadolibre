@@ -3,6 +3,16 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use DateTime;
+use Illuminate\Http\Request;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
+use App\Ml_data;
+use App\Provider;
+use App\Products;
+use App\Pictures;
+use DB;
+use Date;
 
 class productsContentUpdate extends Command
 {
@@ -62,7 +72,7 @@ class productsContentUpdate extends Command
                 }
                
                 $client = new Client([
-                    'base_uri' => 'https://api.keepa.com/product?key=d8ukh5gnd7qfrsl3n7s6s9e9lj8k9v7k2bq3f8l9hgpamve59rnov65j4co73ko2&domain=11&asin='.$asin.'&stats=24&history=0',
+                    'base_uri' => 'https://api.keepa.com/product?key='.ENV('KEEPA_TOKEN').'&domain=11&asin='.$asin.'&stats=24&history=0',
                     'http_errors' => false
                    
                 ]); 
@@ -81,6 +91,15 @@ class productsContentUpdate extends Command
                    // sleep(65);
                     continue;
                 }
+                $imgs = $res['products'][0];
+                $title = $imgs['title'];
+                $imgs = $imgs['imagesCSV'];
+                $imgs = explode(",", $imgs);
+                $pictures_array = [];
+                foreach ($imgs as $img) {     
+                    $image = 'https://images-na.ssl-images-amazon.com/images/I/'.$img;
+                    array_push($pictures_array, ['source' => $image]);
+                 }  
                 //Transform price
                 $decimalPrice = sprintf('%.2f', $price / 100);
                 $providerPrice = $decimalPrice;
@@ -89,7 +108,7 @@ class productsContentUpdate extends Command
                 
 
                 try {
-                    $transaction = DB::transaction(function() use($providerPrice, $product, $sell_price){
+                    $transaction = DB::transaction(function() use($providerPrice, $product, $sell_price, $pictures_array, $title){
                         $ml_data = Ml_data::where('id',$product->ml_data_id)->first();
                         $ml_data->price = $sell_price;
                         $ml_data->available_quantity = 99;
@@ -100,13 +119,20 @@ class productsContentUpdate extends Command
                         $provider->provider_status_id = 1;
                         $provider->save();
 
+                        $products = Products::where('id', $product->ml_data_id)->first();
+                        $products->title = $title;
+                        $products->save();
+
+                        $pictures = Pictures::where('ml_data_id', $product->ml_data_id)->first();
+					    $pictures->url = $pictures_array;
+						$pictures->save();
                         return $transaction = $ml_data->id;//['provider'=> $provider, 'ml_data'=> $ml_data->id];
 
                     });
                 } catch (Exception $e) {
                     $response = $e;
                 }
-                    echo $transaction."\n";
+                    echo 'ACTUALIZADO ID: '.$transaction.' ASIN: '.$asin."\n";
                     array_push($response_array, $transaction);
                     sleep(65);
             }
