@@ -344,7 +344,7 @@ class ScraperController extends Controller
 			  
 			   $stats = $res['products'];
 				
-			   $imgs = $stats['imagesCSV'];
+			   $imgs = $stats->imagesCSV;
 			   $imgs = explode(",", $imgs);
 				$pictures_array = [];
 				 foreach ($imgs as $img) {  
