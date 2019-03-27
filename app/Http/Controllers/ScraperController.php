@@ -343,7 +343,7 @@ class ScraperController extends Controller
 			   $res = json_decode($response, true);
 			  
 			   $stats = $res['products'];
-				
+						return response()->json($stats);
 			   $imgs = $stats->imagesCSV;
 			   $imgs = explode(",", $imgs);
 				$pictures_array = [];
@@ -361,4 +361,6 @@ class ScraperController extends Controller
 			return response()->json($pictures_array);
     	}
 
-    }
+		}
+		
+		
