@@ -231,7 +231,97 @@ class ScraperController extends Controller
 					//$response = $products;
     	return response()->json(['ok' => $response_array,'errors'=>$errors]);
     		}
-
+	public function updateProductsContent(){
+				$response_array = [];
+				$errors = [];
+	   
+	   
+				   $products = Ml_data::select('ml_data.id as ml_data_id','ml_data.updated_at','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
+					   ->join('products','ml_data.id','=','products.ml_data_id')
+					   ->join('provider', 'products.provider_id', '=', 'provider.id')
+					   ->where('products.provider_id','!=',1)
+					   //->where('provider.provider_status_id','=',1)
+					   //->where('provider.asin','!=', "")
+					   // ->whereRaw('date(ml_data.updated_at) != "2019-02-01" AND date(ml_data.updated_at) != "2019-02-02" ')
+					   ->take(3)
+					   ->get();
+					//$count = count($products);
+		  //return response()->json($count);
+				   if ($products != NULL) {
+	   
+					   foreach ($products as $product) {
+							   $asin = $product->asin;
+							   if ($asin == "") {
+								   continue;
+							   }
+							  
+							   $client = new Client([
+									'base_uri' => 'https://api.keepa.com/product?key=5p9iqnjcbrjj6a7avab554mn9ok6khrjtb5qie8r7e2b6e9fki8gc4i9c9lrkm5s&domain=11&asin='.$asin.'&stats=24&history=0',
+								   	'http_errors' => false
+							   ]); 
+							   $response = $client->request('GET');
+	   
+							   $response = $response->getBody()->getContents();
+							   //Arreglo de producto mediante asin
+							   $res = json_decode($response, true);
+							  
+							   $stats = $res['products'];
+							   $price = $stats[0]['stats']['current'][0];
+							   //verificamos el precio no venga en null
+							   if ($price == -1) {
+								   $this->updateProductStatus($product->provider_id);
+								   array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
+								   continue;
+							   }
+							   //Transform price
+							   $decimalPrice = sprintf('%.2f', $price / 100);
+							   $providerPrice = $decimalPrice;
+							   $sell_price = 1.60 * $providerPrice;
+							   $sell_price = round($sell_price);
+							   
+							   $imgs = $stats['imagesCSV'];
+							   $imgs = explode(",", $imgs);
+							    $pictures_array = [];
+							     foreach ($imgs as $img) {  
+									
+									$image = 'https://images-na.ssl-images-amazon.com/images/I/'.$img;
+						          	array_push($pictures_array, ['source' => $image]);
+						      	}    
+						   //      //Codificamos el arreglo de imagenes a json 
+								$pictures_array = json_encode($pictures_array);
+								return response()->json($pictures_array);
+							   //Comienza transaccion de captura de nuevo producto 
+							   try {
+								   $transaction = DB::transaction(function() use($providerPrice, $product, $sell_price){
+									   $ml_data = Ml_data::where('id',$product->ml_data_id)->first();
+									   $ml_data->price = $sell_price;
+									   $ml_data->available_quantity = 99;
+									   $ml_data->save();
+	   
+									   $provider = Provider::where('id',$product->provider_id)->first();
+									   //$provider->provider_link = $res['url'];
+									   $provider->price = $providerPrice;
+									   $provider->provider_status_id = 1;
+									   $provider->save();
+	   
+									   // $pictures = Pictures::where('ml_data_id', $product->ml_data_id)->first();
+									   // $pictures->url = $pictures_array;
+									   // $pictures->save();
+									   
+									   return $transaction = ['provider'=> $provider, 'ml_data'=> $ml_data->id];
+	   
+								   });
+							   } catch (Exception $e) {
+								   $response = $e;
+							   }
+								   array_push($response_array, $transaction);
+								   sleep(65);
+						   }
+					   }
+						   //$response = $products;
+			   return response()->json(['ok' => $response_array,'errors'=>$errors]);
+				   }
+	   
     	private function updateProductStatus($id){
     		$provider = Provider::where('id',$id)->first();
 			$provider->provider_status_id = 2;
@@ -239,24 +329,36 @@ class ScraperController extends Controller
 
     	}
     	public function testCall(){
+				$asin = 'B009163BO6';
     		try {
-    				$client = new Client([
-    				   	'base_uri'=> 'https://api.scrapehero.com/amaz_mx/product-details/?asin=B000JF2W8O&apikey=59242154b4e89e0fd599213326a2d4f78dba436eba0c70b19e33fccb',
-    				   	'http_errors' => false
-			    	]); 
-					$response = $client->request('GET');
-
-					$response = $response->getBody()->getContents();
-					$res = json_decode($response, true);
-					if (empty($res)) {
-						return response()->json('empty');
-					}
+    			$client = new Client([
+					//	'verify' => 'C:\Users\SECSASERVER\Documents\dev\drop-shipping\bd-mercadolibre',
+					'base_uri' => 'https://api.keepa.com/product?key=5p9iqnjcbrjj6a7avab554mn9ok6khrjtb5qie8r7e2b6e9fki8gc4i9c9lrkm5s&domain=11&asin='.$asin.'&stats=24&history=0',
+					   'http_errors' => false
+			   ]); 
+			   $response = $client->request('GET');
+	   
+			   $response = $response->getBody()->getContents();
+			   //Arreglo de producto mediante asin
+			   $res = json_decode($response, true);
+			  
+			   $stats = $res['products'];
+				
+			   $imgs = $stats['imagesCSV'];
+			   $imgs = explode(",", $imgs);
+				$pictures_array = [];
+				 foreach ($imgs as $img) {  
+					
+					$image = 'https://images-na.ssl-images-amazon.com/images/I/'.$img;
+					  array_push($pictures_array, ['source' => $image]);
+				  }  
     		} catch (Exception $e) {
     				return response()->json('err');
     		}
     		 	
 			 
-					return response()->json($res);
+		//	$pictures_array = $pictures_array;
+			return response()->json($pictures_array);
     	}
 
     }
