@@ -21,7 +21,7 @@ class productsContentUpdate extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'products:updateWithContent';
 
     /**
      * The console command description.
