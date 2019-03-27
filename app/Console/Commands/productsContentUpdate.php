@@ -138,8 +138,8 @@ class productsContentUpdate extends Command
             }
             
         }
-
-            return "Update products complete\n";
+            echo "Update products complete\n";
+            return "Done";
         }
 
     private function updateProductStatus($id){
