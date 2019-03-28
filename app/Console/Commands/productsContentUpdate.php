@@ -47,7 +47,7 @@ class productsContentUpdate extends Command
      */
     public function handle()
     {
-    
+    $count = 0;
         echo "Update command called\n";
         $response_array = [];
         $errors = [];
@@ -58,7 +58,6 @@ class productsContentUpdate extends Command
             ->join('provider', 'products.provider_id', '=', 'provider.id')
             ->where('products.provider_id','!=',1)
             ->where('provider.asin','!=', "")
-            ->take(2)
             ->get();
             
             // $count = count($products);
@@ -134,11 +133,12 @@ class productsContentUpdate extends Command
                 }
                     echo 'ACTUALIZADO ID: '.$transaction.' ASIN: '.$asin."\n";
                     array_push($response_array, $transaction);
+                    $count++;
                     sleep(65);
             }
             
         }
-            echo "Update products complete\n";
+            echo "Se completo la actualizacion de productos\n Productos Actualizados: ".$count;
             return "Done";
         }
 
