@@ -118,7 +118,7 @@ class productsContentUpdate extends Command
                         $provider->provider_status_id = 1;
                         $provider->save();
 
-                        $products = Products::where('id', $product->ml_data_id)->first();
+                        $products = Products::where('ml_data_id', $product->ml_data_id)->first();
                         $products->title = $title;
                         $products->save();
 
