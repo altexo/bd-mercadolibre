@@ -298,7 +298,9 @@ class ProductsController extends Controller
       //->whereDate('ml_data.updated_at','2019-01-16')
       ->where('products.provider_id','!=',1)
       ->where('provider.provider_status_id','=',1)
-      ->whereRaw('date(ml_data.updated_at) = "2019-02-04"')
+      ->OrwhereRaw('date(ml_data.updated_at) = "2019-03-30"')
+      ->OrwhereRaw('date(ml_data.updated_at) = "2019-03-31"')
+      ->OrwhereRaw('date(ml_data.updated_at) = "2019-04-01"')
      //->take(100)
       ->get();
       $count = 0;

@@ -53,7 +53,7 @@ $("#update-products-prices-button").click(function(){
     $.ajax({
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         type:'GET',
-       // url: 'http://127.0.0.1:8000/api/products/update/price/ml/2019-01-11',
+      //  url: 'http://127.0.0.1:8000/api/products/update/price/ml/2019-01-11',
        url: "https://bd-mercadolibre.herokuapp.com/api/products/update/price/ml/2019-01-11",
         success:function(response){
             
@@ -63,18 +63,21 @@ $("#update-products-prices-button").click(function(){
                var ml_url = '/users/315787371/items/search';
                var asin = data.asin;
                var price = Math.round(data.price);
+               var title = data.title;
+               var description = data.description;
                var picturesArray = JSON.parse(data.url);
                var picturesArrayList = [];
                $.each(picturesArray,function(index, pic) {
                         picturesArrayList.push(pic);
                 });
+                
 
                 MELI.get(ml_url, {sku:asin}, function(data) {
                     var ml_id = data[2].results;
                     if(ml_id && ml_id.length) {
                         console.log(ml_id)
                         console.log(asin+' '+price)
-                        MELI.put('/items/'+ml_id[0],{'price': price, 'status':'active','available_quantity': 99, 'pictures': picturesArrayList}, function(data){
+                        MELI.put('/items/'+ml_id[0],{'price': price, 'status':'active','available_quantity': 99, 'pictures': picturesArrayList, 'title': title, 'description': description}, function(data){
                             console.log(data);
                         });
                     } else {
