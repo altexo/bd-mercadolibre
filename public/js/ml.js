@@ -53,6 +53,8 @@ $("#update-products-prices-button").click(function(){
     $.ajax({
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         type:'GET',
+        crossDomain: true,
+        dataType: 'jsonp',
       //  url: 'http://127.0.0.1:8000/api/products/update/price/ml/2019-01-11',
        url: "https://bd-mercadolibre.herokuapp.com/api/products/update/price/ml/2019-01-11",
         success:function(response){
