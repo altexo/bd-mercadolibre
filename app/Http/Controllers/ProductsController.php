@@ -282,7 +282,7 @@ class ProductsController extends Controller
     }
 
 
-    public function updateProductsPrices($date){
+    public function updateProductsPrices(){
       $response = "";
       $error = false;
       $response = DB::table('ml_data')
