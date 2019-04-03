@@ -79,7 +79,7 @@ $("#update-products-prices-button").click(function(){
                     if(ml_id && ml_id.length) {
                         console.log(ml_id)
                         console.log(asin+' '+price)
-                        MELI.put('/items/'+ml_id[0],{'price': price, 'status':'active','available_quantity': 99, 'pictures': picturesArrayList, 'title': title}, function(data){
+                        MELI.put('/items/'+ml_id[0],{'price': price, 'status':'active','available_quantity': 99,'title': title}, function(data){
                             console.log(data);
 
                         });
