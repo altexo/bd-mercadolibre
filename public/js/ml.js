@@ -59,7 +59,7 @@ $("#update-products-prices-button").click(function(){
        url: "https://bd-mercadolibre.herokuapp.com/api/products/update/price/ml/2019-01-11",
         success:function(response){
             
-            console.log(response);
+           // console.log(response);
            $.each(response.response, function(index, data){
               // console.log(data);
                var ml_url = '/users/315787371/items/search';
