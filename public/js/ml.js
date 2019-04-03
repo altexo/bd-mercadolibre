@@ -56,7 +56,7 @@ $("#update-products-prices-button").click(function(){
         //crossDomain: true,
         //dataType: 'jsonp',
         //url: 'http://127.0.0.1:8000/api/products/update/price/ml/2019-01-11',
-       url: "https://bd-mercadolibre.herokuapp.com/products/update/price/ml/",
+       url: "http://bd-mercadolibre.herokuapp.com/products/update/price/ml/",
         success:function(response){
             
             console.log(response);
