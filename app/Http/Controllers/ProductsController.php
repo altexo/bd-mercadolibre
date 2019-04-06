@@ -301,7 +301,7 @@ class ProductsController extends Controller
       ->OrwhereRaw('date(ml_data.updated_at) = "2019-03-30"')
       ->OrwhereRaw('date(ml_data.updated_at) = "2019-03-31"')
       ->OrwhereRaw('date(ml_data.updated_at) = "2019-04-01"')
-     ->take(2)
+    // ->take(2)
       ->get();
       $count = 0;
       foreach ($response as $r) {

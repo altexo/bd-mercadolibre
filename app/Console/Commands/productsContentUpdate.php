@@ -82,7 +82,7 @@ class productsContentUpdate extends Command
                 $res = json_decode($response, true);
                 $stats = $res['products'];
                 $price = $stats[0]['stats']['current'][0];
-
+                
                 if ($price == -1) {
                     $this->updateProductStatus($product->provider_id);
                     array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
