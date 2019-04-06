@@ -69,7 +69,7 @@ $("#update-products-prices-button").click(function(){
                var asin = data.asin;
                var price = Math.round(data.price);
                var title = data.title;
-               var description = JSON.parse(data.description);
+              // var description = JSON.parse(data.description);
                var picturesArray = JSON.parse(data.url);
                var picturesArrayList = [];
                $.each(picturesArray,function(index, pic) {
