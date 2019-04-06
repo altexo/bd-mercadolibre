@@ -37,4 +37,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::get('/scrapper', 'ScrapperController@index')->name('scrap');
-Route::get('products/update/price/ml','ProductsController@updateProductsPrices');
+Route::get('products/update/price/ml','ProductsController@updateProductsPrices')->name('get.products');
