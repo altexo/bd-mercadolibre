@@ -82,13 +82,19 @@ class productsContentUpdate extends Command
                 $res = json_decode($response, true);
                 $stats = $res['products'];
                 $price = $stats[0]['stats']['current'][0];
-                
+                $priceThirdPartySeller = $stats[0]['stats']['current'][1];
+
                 if ($price == -1) {
-                    $this->updateProductStatus($product->provider_id);
-                    array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
-                    echo $asin." No disponible en stock \n";
-                   // sleep(65);
-                    continue;
+                    if ($priceThirdPartySeller == -1) {
+                        $this->updateProductStatus($product->provider_id);
+                        array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
+                        echo $asin." No disponible en stock \n";
+                        // sleep(65);
+                        continue;
+                    }else{
+                        $price = $priceThirdPartySeller;
+                    }
+                   
                 }
                 $imgs = $res['products'][0];
                 $title = $imgs['title'];
