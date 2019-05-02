@@ -20,7 +20,9 @@ Route::get('/', function () {
 route::get('/scrap/get-by-asin', 'ScraperController@index');
 
 //Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/products/edit', 'ProductsBFDontroller@index')->name('products.edit');
+Route::get('/products/view', 'ProductsDBController@index')->name('products.view');
+Route::get('/products/edit/{id}', 'ProductsDBController@getById')->name('products.get.product');
+Route::post('products/update', 'ProductsDBController@updateById')->name('products.update');
 Route::get('/ml', 'HomeController@index')->name('home');
 Auth::routes();
 // Route::get('/register', 'HomeController@index');

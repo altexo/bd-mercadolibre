@@ -232,6 +232,7 @@ class ProductsController extends Controller
     public function dummy(Request $r){
          return response()->json(['success'=> $r->obj], 500);
     }
+
     public static function convert_from_latin1_to_utf8_recursively($dat)
    {
         if (is_string($dat)) {
@@ -263,7 +264,8 @@ class ProductsController extends Controller
         }
         return response()->json(['error'=> $error,'response'=> $response]);
     }
-        public function publishNew(){
+
+    public function publishNew(){
         $response = "";
         $error = false;
       $response = DB::table('ml_data')
