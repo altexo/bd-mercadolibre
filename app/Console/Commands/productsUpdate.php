@@ -48,7 +48,7 @@ class productsUpdate extends Command
      */
     public function handle()
     {
-
+        $count = 0;
         echo "Update command called\n";
         $response_array = [];
         $errors = [];
@@ -59,21 +59,19 @@ class productsUpdate extends Command
             ->join('provider', 'products.provider_id', '=', 'provider.id')
             ->where('products.provider_id','!=',1)
             ->where('provider.asin','!=', "")
-            //->take(2)
             ->get();
-            
-            // $count = count($products);
-            // return response()->json($count);
-        if ($products != NULL) {
 
+        if ($products != NULL) {
+            
             foreach ($products as $product) {
+                echo "Iniciando con : ".$product->asin."\n";
                 $asin = $product->asin;
                 if ($asin == "") {
                     continue;
                 }
                
                 $client = new Client([
-                    'base_uri' => 'https://api.keepa.com/product?key=d8ukh5gnd7qfrsl3n7s6s9e9lj8k9v7k2bq3f8l9hgpamve59rnov65j4co73ko2&domain=11&asin='.$asin.'&stats=24&history=0',
+                    'base_uri' => 'https://api.keepa.com/product?key='.ENV('KEEPA_TOKEN').'&domain=11&asin='.$asin.'&stats=24&history=0',
                     'http_errors' => false
                    
                 ]); 
@@ -82,22 +80,32 @@ class productsUpdate extends Command
                 $response = $response->getBody()->getContents();
                 //Arreglo de producto mediante asin
                 $res = json_decode($response, true);
-                $stats = $res['products'];
-                $price = $stats[0]['stats']['current'][0];
-
-                if ($price == -1) {
+                if (!$res['products']) {
                     $this->updateProductStatus($product->provider_id);
-                    array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
-                    echo $asin." No disponible en stock \n";
-                   // sleep(65);
                     continue;
                 }
-                //Transform price
+                $stats = $res['products'];
+                $price = $stats[0]['stats']['current'][0];
+                $priceThirdPartySeller = $stats[0]['stats']['current'][1];
+
+                if ($price == -1) {
+                    if ($priceThirdPartySeller == -1) {
+                        $this->updateProductStatus($product->provider_id);
+                        array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
+                        echo $asin." No disponible en stock \n";
+                        // sleep(65);
+                        continue;
+                    }else{
+                        $price = $priceThirdPartySeller;
+                    }
+                   
+                }
+               
                 $decimalPrice = sprintf('%.2f', $price / 100);
                 $providerPrice = $decimalPrice;
                 $sell_price = 1.60 * $providerPrice;
                 $sell_price = round($sell_price);
-                
+               
 
                 try {
                     $transaction = DB::transaction(function() use($providerPrice, $product, $sell_price){
@@ -111,21 +119,20 @@ class productsUpdate extends Command
                         $provider->provider_status_id = 1;
                         $provider->save();
 
-                        return $transaction = $ml_data->id;//['provider'=> $provider, 'ml_data'=> $ml_data->id];
-
                     });
                 } catch (Exception $e) {
                     $response = $e;
                 }
-                    echo $transaction."\n";
+                    echo 'ACTUALIZADO ID: '.$transaction.' ASIN: '.$asin."\n";
                     array_push($response_array, $transaction);
+                    $count++;
                     sleep(65);
             }
             
         }
-
-            return "Update products complete\n";
-        }
+            echo "Se completo la actualizacion de productos\n Productos Actualizados: ".$count;
+            return "Done";
+    }
 
     private function updateProductStatus($id){
         $provider = Provider::where('id',$id)->first();
