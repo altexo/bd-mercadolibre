@@ -68,7 +68,7 @@ class importsController extends Controller
                 echo '</pre>';
         }
 
-        public function importNesAsins(Request $request){
+        public function importNewAsins(Request $request){
         	$errors = [];
         	$response_array = [];
         	        $validator = \Validator::make($request->all(), [
@@ -89,9 +89,6 @@ class importsController extends Controller
             $not_found = [];
             foreach ($rows as $row) {
             	$row = array_combine($header, $row);
-            	// echo $row['Nombre']."<br>";
-            	// echo $row['ASIN']."<br>";
-            	// echo $row['Categoria']."<br>";
         		$asin = $row['ASIN'];
         		$title = $row['Nombre'];
         		$base_category = $row['Categoria'];

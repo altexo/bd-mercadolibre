@@ -50,6 +50,7 @@ class productsUpdate extends Command
     {
         $count = 0;
         echo "Update command called\n";
+        echo "Fecha y hora de ejecucion: ".date('Y-m-d H:i:s')."\n";
         $response_array = [];
         $errors = [];
 
@@ -69,7 +70,7 @@ class productsUpdate extends Command
                 if ($asin == "") {
                     continue;
                 }
-               
+
                 $client = new Client([
                     'base_uri' => 'https://api.keepa.com/product?key='.ENV('KEEPA_TOKEN').'&domain=11&asin='.$asin.'&stats=24&history=0',
                     'http_errors' => false
@@ -80,8 +81,9 @@ class productsUpdate extends Command
                 $response = $response->getBody()->getContents();
                 //Arreglo de producto mediante asin
                 $res = json_decode($response, true);
-                if (!$res['products']) {
+                if (!array_key_exists('products', $res)) {
                     $this->updateProductStatus($product->provider_id);
+                    echo "Producto no encontrado: ".$asin."\n";
                     continue;
                 }
                 $stats = $res['products'];
