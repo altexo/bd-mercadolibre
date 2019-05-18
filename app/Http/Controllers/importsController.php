@@ -91,7 +91,7 @@ class importsController extends Controller
             $count = 0;
             $not_found = [];
             foreach ($rows as $row) {
-				break;
+			
             	$row = array_combine($header, $row);
         		$asin = $row['asin'];
         		$title = utf8_encode($row['titulo']);
@@ -225,7 +225,9 @@ class importsController extends Controller
 				}
 				echo "Se creo producto: ".$title." con asin: ".$asin."<br>";
                  array_push($response_array, $data);   
-                }
+				}
+				echo "<script>alert('Se termino de importar productos, haz clic en aceptar para ser redireccionado.');</script>";
+				return redirect()->route('products.view');
                 // echo '<pre>';
                 // print_r($response_array);
                 // echo "</pre>";
