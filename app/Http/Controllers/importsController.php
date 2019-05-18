@@ -90,7 +90,7 @@ class importsController extends Controller
             foreach ($rows as $row) {
             	$row = array_combine($header, $row);
         		$asin = $row['asin'];
-        		$title = $row['titulo'];
+        		$title = utf8_encode($row['titulo']);
         		$base_category = $row['categoria'];
 	    		if ($asin == "") {
 	    			continue;
