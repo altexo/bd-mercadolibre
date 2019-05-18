@@ -49,8 +49,9 @@ class productsUpdate extends Command
     public function handle()
     {
         $count = 0;
+        $date = date('Y-m-d H:i:s');
         echo "Update command called\n";
-        echo "Fecha y hora de ejecucion: ".date('Y-m-d H:i:s')."\n";
+        echo "Fecha y hora de ejecucion: ".$date."\n";
         $response_array = [];
         $errors = [];
 
@@ -132,6 +133,9 @@ class productsUpdate extends Command
             }
             
         }
+            $msj = "El precio de los productos fueron actualizados correctamente, Total actualizados: ".$count;
+
+            Mail::to('emmanuel_hernandez@live.com.mx')->send(new ProductsUpdatesNotification($msj));
             echo "Se completo la actualizacion de productos\n Productos Actualizados: ".$count;
             return "Done";
     }

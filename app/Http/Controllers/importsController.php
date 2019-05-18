@@ -84,10 +84,14 @@ class importsController extends Controller
             $csvData = file_get_contents($file);
             $rows = array_map("str_getcsv", explode("\r\n", $csvData));
             $header = array_shift($rows);
-
+			//Test 
+			$rows = array_filter(array_map('array_filter', $rows));
+		
+			// break;
             $count = 0;
             $not_found = [];
             foreach ($rows as $row) {
+				break;
             	$row = array_combine($header, $row);
         		$asin = $row['asin'];
         		$title = utf8_encode($row['titulo']);

@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\DB;
+use App\Mail\ProductsUpdatesNotification;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,11 +12,8 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
-Route::get('/', function () {
-	$ml = DB::table('ml_data')->get();
-	//return $ml;
-    return view('welcome', ['data' => $ml]);
-});
+ Route::get('/', 'HomeController@index');
+
 
 route::get('/scrap/get-by-asin', 'ScraperController@index');
 
@@ -40,3 +38,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/scrapper', 'ScrapperController@index')->name('scrap');
 Route::get('products/update/price/ml','ProductsController@updateProductsPrices')->name('get.products');
+
+
+//Test Route
+// Route::get('test/mail', function(){
+// 	$msj = "El precio de los productos fueron actualizados correctamente, Total actualizados: 202";
+// 	Mail::to('alejandro.riosyb@gmail.com')->send(new ProductsUpdatesNotification($msj));
+// });
