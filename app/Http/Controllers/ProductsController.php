@@ -274,10 +274,9 @@ class ProductsController extends Controller
       ->join('pictures','pictures.ml_data_id','=','ml_data.id')
       ->join('shipping','shipping.ml_data_id','=','ml_data.id')
       ->join('tags','tags.ml_data_id','=','ml_data.id')
-      //->join('attributes','attributes.ml_data_id','=','ml_data.id')
       ->join('provider', 'provider.id','=','products.provider_id')
       ->where('products.provider_id','!=',1)
-      ->where('provider.provider_status_id','=',3)
+      ->where('provider.provider_status_id','=',4)
       ->get();
 
         return response()->json(['error'=> $error,'response'=> $response]);
@@ -291,19 +290,9 @@ class ProductsController extends Controller
       ->select('ml_data.*','products.title','provider.provider_link','provider.asin', 'provider.provider_status_id', 'pictures.url')
       ->join('products', 'ml_data.id','=','products.ml_data_id')
       ->join('pictures','pictures.ml_data_id','=','ml_data.id')
-      //->join('shipping','shipping.ml_data_id','=','ml_data.id')
-      //->join('tags','tags.ml_data_id','=','ml_data.id')
-      //->join('attributes','attributes.ml_data_id','=','ml_data.id')
       ->join('provider', 'provider.id','=','products.provider_id')
-     // ->where('description','!=','null')
-     // ->where('attributes.attributes_details','!=','{}')
-      //->whereDate('ml_data.updated_at','2019-01-16')
       ->where('products.provider_id','!=',1)
       ->where('provider.provider_status_id','=',1)
-    //   ->OrwhereRaw('date(ml_data.updated_at) = "2019-03-30"')
-    //   ->OrwhereRaw('date(ml_data.updated_at) = "2019-03-31"')
-    //   ->OrwhereRaw('date(ml_data.updated_at) = "2019-04-01"')
-    // ->take(2)
       ->get();
       $count = 0;
       foreach ($response as $r) {

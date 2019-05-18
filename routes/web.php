@@ -32,7 +32,7 @@ Route::get('/import', function(){
 });
 Route::post('import/asin', 'ProductsController@importProducts')->name('import.products');
 Route::post('import/update/asin','importsController@importAsinUpdate')->name('import.update.asins');
-Route::post('import/new-asins','importsController@importNesAsins')->name('import.new.asins');
+Route::post('import/new-asins','importsController@importNewAsins')->name('import.new.asins');
 //End imports
 
 Route::get('/home', 'HomeController@index')->name('home');

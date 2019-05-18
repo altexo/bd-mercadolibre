@@ -79,7 +79,7 @@ class importsController extends Controller
                 echo "Fail :(";
                 //return redirect()->back()->withErrors($validator);
             }
-            
+			
             $file = $request->file;
             $csvData = file_get_contents($file);
             $rows = array_map("str_getcsv", explode("\r\n", $csvData));
@@ -89,68 +89,91 @@ class importsController extends Controller
             $not_found = [];
             foreach ($rows as $row) {
             	$row = array_combine($header, $row);
-        		$asin = $row['ASIN'];
-        		$title = $row['Nombre'];
-        		$base_category = $row['Categoria'];
+        		$asin = $row['asin'];
+        		$title = $row['titulo'];
+        		$base_category = $row['categoria'];
 	    		if ($asin == "") {
 	    			continue;
-	    		}
+				}
+				$provider = Provider::where('asin', $asin)->first();
+				if ($provider != null) {
+					echo "Este asin ya existe: ".$asin."<br>";
+					continue;
+				}
 	    			   
 				$client = new Client([
-					'base_uri'=> 'https://api.scrapehero.com/amaz_mx/product-details/?asin='.$asin.'&apikey=59242154b4e89e0fd599213326a2d4f78dba436eba0c70b19e33fccb',
-				   	'http_errors' => false
-				   	//	'headers' => ['X-Mashape-Key' => 'zg0snQgYOimshgrnP0Mx5m9O3vlQp1cjQX1jsncrcfBCh3zcps', 'Accept' => 'application/json']
-				]); 
-				$response = $client->request('GET');
+                    'base_uri' => 'https://api.keepa.com/product?key='.ENV('KEEPA_TOKEN').'&domain=11&asin='.$asin.'&stats=24&history=0',
+                    'http_errors' => false
+                   
+                ]); 
+                $response = $client->request('GET');
 
-				$response = $response->getBody()->getContents();
-				//Arreglo de producto mediante asin
-				$res = json_decode($response, true);
-				if (empty($res)) {
-					array_push($errors, ['title'=>$row['Nombre'],'empty_res'=>$asin]);
-				}
-				if ($res == null) {
-					array_push($errors, ['title'=>$row['Nombre'],'null_res'=>$asin]);
-					continue;
-				}
+                $response = $response->getBody()->getContents();
+                //Arreglo de producto mediante asin
+                $res = json_decode($response, true);
+                if (!array_key_exists('products', $res)) {
+                    echo "Producto no encontrado: ".$asin."<br>";
+                    continue;
+                }
+                $stats = $res['products'];
+                $price = $stats[0]['stats']['current'][0];
+                $priceThirdPartySeller = $stats[0]['stats']['current'][1];
 
-				if (array_key_exists("price",$res)){
-					//echo "Key exists!";
-				}
-				else {
-					array_push($errors, ['title'=>$row['Nombre'], 'price_not_found'=>$asin]);
-				  	continue;
-				}
-				//verificamos el precio no venga en null
-				if ( ($res['price'] == null) || ($res['price'] == "") ) {
-					array_push($errors, ['title'=>$row['Nombre'],'price_nullOrEmpty'=>$asin]);
-					continue;
-				}
-				//Convertimos las imagenes en una lista de arreglos
-				$pictures_array = [];
-				 foreach ($res['images'] as $img) {        
-		            array_push($pictures_array, ['source' => $img]);
-		         }                           
-        		//Codificamos el arreglo de imagenes a json 
-        		$pictures_array = json_encode($pictures_array);
-				//Transform price
-				$providerPrice = $res['price'];
-				//Quitamos el signo de moneda del precio
-				$providerPrice = substr($providerPrice, 1);
-				$providerPrice = str_replace(',', '', $providerPrice);
-				$providerPrice = intval($providerPrice);
-				//Convertims a peso y aumentamos el precio del producto
-				$sell_price = 1.40 * $providerPrice;
-				$sell_price = round($sell_price);
-				//Comienza transaccion de captura de nuevo producto   		
+                if ($price == -1) {
+                    if ($priceThirdPartySeller == -1) {
+                        // array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
+                        echo $asin." No disponible en stock "."<br>";
+                        // sleep(65);
+                        continue;
+                    }else{
+                        $price = $priceThirdPartySeller;
+                    }
+                   
+                }
+               
+				$imgs = $res['products'][0];
+				$descripcion = $stats[0]['description'];
+               // $title = $imgs['title'];
+                $imgs = $imgs['imagesCSV'];
+                $imgs = explode(",", $imgs);
+                $pictures_array = [];
+                foreach ($imgs as $img) {     
+                    $image = 'https://images-na.ssl-images-amazon.com/images/I/'.$img;
+                    array_push($pictures_array, ['source' => $image]);
+                 }  
+                //Transform price
+                $decimalPrice = sprintf('%.2f', $price / 100);
+                $providerPrice = $decimalPrice;
+                $sell_price = 1.60 * $providerPrice;
+                $sell_price = round($sell_price);
+                $pictures_array = json_encode($pictures_array);
+				
+				
+				/*
+					 Provider: url -- SET NULL
+					 provider: price --
+					 provider: asin --
+					 provider: status = 4
+
+					 ml_data: base category --
+					 ml_data: sell_price --
+					 ml_data: descripcion --
+
+					 product: titulo --
+
+					 pictures: array --
+
+				*/ 
+
+				// Comienza transaccion de captura de nuevo producto   		
 				try {
-					$data = DB::transaction(function () use($providerPrice, $sell_price,$res, $pictures_array, $asin, $title, $base_category) {
+					$data = DB::transaction(function () use($providerPrice, $sell_price, $pictures_array, $asin, $title, $base_category, $descripcion) {
 			    		//Create new provider object
 						$provider = new Provider;
-						$provider->provider_link = $res['url'];
-						$provider->price = substr($res['price'],1);
+						//$provider->provider_link = $res['url'];
+						$provider->price = $providerPrice;
 						$provider->asin = $asin;
-						$provider->provider_status_id = 1;
+						$provider->provider_status_id = 4;
 						$provider->save();
 
 						//Create new ml_data object
@@ -161,7 +184,7 @@ class importsController extends Controller
 						$ml_data->currency_id ='MXN';
 						$ml_data->buying_mode = 'buy_it_now';
 						$ml_data->listing_type_id = 'gold_pro';
-						$ml_data->description = $res['small_description'];
+						$ml_data->description = $descripcion;
 						$ml_data->accepts_mercadopago = 1;
 						$ml_data->save();
 
@@ -196,11 +219,11 @@ class importsController extends Controller
 				} catch (Exception $e) {
 					//dd($e);
 				}
-                  
+				echo "Se creo producto: ".$title." con asin: ".$asin."<br>";
                  array_push($response_array, $data);   
                 }
-                echo '<pre>';
-                print_r($response_array);
-                echo "</pre>";
+                // echo '<pre>';
+                // print_r($response_array);
+                // echo "</pre>";
         }
 }
