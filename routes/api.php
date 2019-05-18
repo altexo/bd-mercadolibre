@@ -31,7 +31,7 @@ Route::get('products/update/content', 'ScraperController@updateProductsContent')
 Route::get('products/testcall', 'ScraperController@testCall');
 Route::get('products/update/price/ml/{date}','ProductsController@updateProductsPrices');
 
-
+Route::post('products/state/update', 'ProductsController@updateState');
 Route::get('products/test', 'ScraperController@index');
 
 Route::post('/test/iot', 'IotController@storeData');

@@ -233,7 +233,20 @@ $("#publish-new-button").click(function(){
                         this.estado = "No Publicado";
                         }
                    
-                            $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
+                            $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+this.estado+"</td></tr>")
+                            $.ajax({
+                                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                                type:'POST',
+                                data:{id: data.provider_id},
+                                url: "https://dadasell.app/api/products/state/update",
+                                success:function(response){
+                                    console.log(response)
+                                },
+                                error:function(err){
+                                    console.log(err)
+                                }
+                                });
+
                   
                         },
                          error:function(response){

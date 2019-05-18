@@ -269,7 +269,7 @@ class ProductsController extends Controller
         $response = "";
         $error = false;
       $response = DB::table('ml_data')
-      ->select('ml_data.*','products.title','provider.provider_status_id','pictures.*','shipping.*','tags.*')
+      ->select('ml_data.*','products.title','provider.id as provider_id','provider.provider_status_id','pictures.*','shipping.*','tags.*')
       ->join('products', 'ml_data.id','=','products.ml_data_id')
       ->join('pictures','pictures.ml_data_id','=','ml_data.id')
       ->join('shipping','shipping.ml_data_id','=','ml_data.id')
@@ -301,23 +301,16 @@ class ProductsController extends Controller
       return response()->json(['count'=> $count,'error'=>$error, 'response'=>$response]);
     }
 
-
-    public function getProductApiCall($asin)
-    {
-             $ch = curl_init();
-             $url = "https://scrapehero-amazon-product-info-v1.p.mashape.com/product-details
-";
-            curl_setopt($ch, CURLOPT_URL, $url . $method_request);
-            // SSL important
-            curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, FALSE );
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-            $output = curl_exec($ch);
-            curl_close($ch);
-
-
-            $this->response['response'] = json_decode($output);
+    public function updateState(Request $request){
+        $product = Provider::find($request->id);
+        if ($product != null) {
+            $product->provider_status_id = 1;
+            $product->save();
+            return ['error'=>false, 'msj' => 'success'];
+        }
+        return ['error'=>true, 'msj' => 'Not found'];
     }
+
+
 
 }
