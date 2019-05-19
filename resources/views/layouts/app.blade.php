@@ -24,6 +24,7 @@
 <style>
 body{
     font-size: 10pt;
+    background: #f5f5f5;
 }
 
 .navbar-app{
