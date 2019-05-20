@@ -15,6 +15,7 @@ use App\Pictures;
 use App\Shipping;
 use DB;
 use Date;
+use Mail;
 class productsUpdate extends Command
 {
     /**
