@@ -16,6 +16,7 @@ use App\Shipping;
 use DB;
 use Date;
 use Mail;
+use App\Mail\ProductsUpdatesNotification;
 class productsUpdate extends Command
 {
     /**
@@ -130,14 +131,16 @@ class productsUpdate extends Command
                     echo 'ACTUALIZADO ID: '.$transaction.' ASIN: '.$asin."\n";
                     array_push($response_array, $transaction);
                     $count++;
+                   
                     sleep(65);
             }
             
         }
-            $msj = "El precio de los productos fueron actualizados correctamente, Total actualizados: ".$count;
+            $msj = "El precio de los productos fueron actualizados correctamente, Total actualizados: ".$count."\n";
 
             Mail::to('emmanuel_hernandez@live.com.mx')->send(new ProductsUpdatesNotification($msj));
-            echo "Se completo la actualizacion de productos\n Productos Actualizados: ".$count;
+            echo "Se completo la actualizacion de productos\n Productos Actualizados: ".$count."\n";
+            echo "Hora: ".date('Y-m-d H:i:s')."\n";
             return "Done";
     }
 
