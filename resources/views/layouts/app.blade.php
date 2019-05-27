@@ -61,7 +61,7 @@ body{
               <li class="nav-item active">
                 <a class="nav-link" href="{{route('home')}}">Inicio <span class="sr-only">(current)</span></a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item active">
               <a class="nav-link" href="{{route('products.view')}}">Productos</a>
               </li>
               {{-- <li class="nav-item dropdown">
@@ -86,7 +86,7 @@ body{
             </form>
 
             <div>
-              <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
+              <a href="{{ route('logout') }}" class="my-2 my-sm-0 ml-2 btn btn-outline-success" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
                   Logout
               </a>
               
