@@ -30,6 +30,14 @@ body{
 .navbar-app{
       background-color: #ffff00;
 }
+
+.btn-hide{
+      display: none;
+}
+
+.input-title{
+  width:100%;
+}
 </style>
   
 </head>

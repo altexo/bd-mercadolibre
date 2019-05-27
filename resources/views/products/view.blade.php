@@ -8,6 +8,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Asin</th>
                     <th scope="col">Titulo</th>
+                    <th scope="col">Margen</th>
                     <th scope="col">P. ML</th>
                     <th scope="col">P. Prov</th>
                     <th scope="col"></th>
@@ -17,96 +18,95 @@
                     @forelse ($products as $product)
                     <tr>
                         <th scope="row">{{$product->ml_data_id}}</th>
-                            <td>{{$product->asin}}</td>
-                            <td>{{$product->title}}</td>
-                            <td>{{$product->ml_price}}</td>
-                            <td>{{$product->provider_price}}</td>
-                    <td><a  class="btn btn-primary p-1 get-product" href="#"><input type="hidden" value="{{route('products.get.product',[$product->ml_data_id])}}"><i class="fas fa-edit"></i></a></td>
-                          </tr>
+                        <td>{{$product->asin}}</td>
+                        <td id="product-title{{$product->ml_data_id}}">{{$product->title}}</td>
+                        <td id="product-margen{{$product->ml_data_id}}">Margen</td>
+                        <td>{{$product->ml_price}}</td>
+                        <td>{{$product->provider_price}}</td>
+                        <td>
+                            <button type="button" id="edit{{$product->ml_data_id}}" class="btn btn-primary" onclick="edit_product({{$product->ml_data_id}})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" id="update{{$product->ml_data_id}}" class="btn btn-success btn-hide" onclick="update_product({{$product->ml_data_id}})">
+                                <input type="hidden" value="{{route('products.get.product',[$product->ml_data_id])}}" id="url{{$product->ml_data_id}}">
+                                <i class="fas fa-save"></i>
+                            </button>
+                            <button type="button" id="cancel{{$product->ml_data_id}}" class="btn btn-danger btn-hide" onclick="cancel({{$product->ml_data_id}})">
+                                <i class="fas fa-times"></i>
+                                <input type="hidden" value="" id="title-product{{$product->ml_data_id}}">
+                                <input type="hidden" value="" id="margen-product{{$product->ml_data_id}}">
+                            </button>
+                        </td>
+                    </tr>
                     @empty
                         <tr>
                             vacio
                         </tr>
                     @endforelse
                 
-
                 </tbody>
               </table>
               {{$products->links()}}
         </div>
     </div>
-        <div id="myModal" class="modal" tabindex="-1" role="dialog">
-            <div class="modal-md" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Modal title</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <input type="hidden" id="product_id" value="">
-                        <label for="title">Titulo de producto</label>
-                        <input id="product-title" type="text" class="form-control" id="title" aria-describedby="emailHelp" value="" >
-                    </div>
-                    <div class="form-group">
-                        <label for="margin">Margen</label>
-                        <input id="product-margin" type="number" class="form-control" id="margin"  value="" >
-                    </div>
-                    <div class="col-md-12">
-                        <p id="response-msj"></p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close-modal">Cerrar</button>
-                  <button type="button" class="btn btn-primary" id="update-product">Guardar</button>
-                </div>
-              </div>
-            </div>
-          </div>
 
 @endsection
 @section('scripts')
     <script>
-        $(".get-product").click(function(){
-            console.log('s')
-            var id = $(this).find('input').val();
-            console.log(id)
+
+        function cancel(prod_id){
+            $("#edit"+prod_id).show();
+            $("#update"+prod_id).hide();
+            $("#cancel"+prod_id).hide();
+            var title = $("#title-product"+prod_id).val();
+            document.getElementById("product-title"+prod_id).innerHTML=title;
+            var margen = $("#margen-product"+prod_id).val();
+            document.getElementById("product-margen"+prod_id).innerHTML=margen;
+        }
+
+        function edit_product(prod_id){
+            $("#edit"+prod_id).hide();
+            $("#update"+prod_id).show();
+            $("#cancel"+prod_id).show();
+            //input en titulo
+            var title=document.getElementById("product-title"+prod_id);
+            var title_data=title.innerHTML;
+            $("#title-product"+prod_id).val(title_data); //En caso de cancelar se conserva el valor inicial
+            title.innerHTML="<input type='text' class='input-title' id='product-title-text"+prod_id+"' value='"+title_data+"'>";
+            //input en margen
+            var margen=document.getElementById("product-margen"+prod_id);
+            var margen_data=margen.innerHTML;
+            $("#margen-product"+prod_id).val(margen_data); //En caso de cancelar se conserva el valor inicial
+            margen.innerHTML="<input type='text' id='product-margen-text"+prod_id+"' value='"+margen_data+"'>";
+        }
+
+        function update_product(prod_id){
+            $("#edit"+prod_id).show();
+            $("#update"+prod_id).hide();
+            $("#cancel"+prod_id).hide();
+            var title = $("#product-title-text"+prod_id).val();
+            document.getElementById("product-title"+prod_id).innerHTML=title;
+
+            var margen = $("#product-margen-text"+prod_id).val();
+            document.getElementById("product-margen"+prod_id).innerHTML=margen;
 
             $.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             type:'GET',
-            //url: 'http://127.0.0.1:8000/api/products',
-            url: id,
+            url: $("#url"+prod_id).val(),
             success:function(response){
                 console.log(response);
-                $("#product-title").val(response.title);
-                $("#product-margin").val(response.margin_price);
-                $("#product_id").val(response.id);
-                $('#myModal').modal()
+                $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type:'POST',
+                url: '{{route('products.update')}}',
+                data: {'title': title, 'product_id': response.id},
+                success:function(response){
+                    console.log(response)
+                    $("#response-msj").text(response);
+                }});
             }})
-        });
-
-        $("#update-product").click(function(){
-            var title = $("#product-title").val();
-            var id = $("#product_id").val();
-            $.ajax({
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            type:'POST',
-            //url: 'http://127.0.0.1:8000/api/products',
-            url: '{{route('products.update')}}',
-            data: {'title': title, 'product_id': id},
-            success:function(response){
-                console.log(response)
-                $("#response-msj").text(response);
-            }})
-        })
-        $("#close-modal").click(function(){
-            $("#response-msj").text('');
-        })
+        }
     </script>
-
 
 @endsection
