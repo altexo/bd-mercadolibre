@@ -123,9 +123,6 @@ $("#publish-button").click(function(){
                             not_published.push({product:productObj, error: ml_response});
                             this.estado = "No publicado";
                            }
-                           MELI.put(url+'/'+ml_response[2].id, {"seller_custom_field": data.asin}, function(response_sku){
-                                console.log('Sku',response_sku);
-                           });
     					});
                         
     				} catch (e){
@@ -223,7 +220,7 @@ $("#publish-new-button").click(function(){
                             MELI.post(url, productObj, function(data) {
                                 console.log("ML response: ")
                                 console.log(data);
-                                estado = "Publicado";
+                                this.estado = "Publicado";
                                 if (data[0] != 201) {
                                     not_published.push({product:productObj, error: data});
                                     this.estado = "No publicado";
