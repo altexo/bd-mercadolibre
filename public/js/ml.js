@@ -124,7 +124,7 @@ $("#publish-button").click(function(){
                             this.estado = "No publicado";
                            }
                            MELI.put(url+'/'+ml_response[2].id, {"seller_custom_field": data.asin}, function(response_sku){
-                                console.log(response_sku);
+                                console.log('Sku',response_sku);
                            });
     					});
                         
