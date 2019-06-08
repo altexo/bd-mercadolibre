@@ -24,10 +24,19 @@
 <style>
 body{
     font-size: 10pt;
+    background: #f5f5f5;
 }
 
 .navbar-app{
       background-color: #ffff00;
+}
+
+.btn-hide{
+      display: none;
+}
+
+.input-title{
+  width:100%;
 }
 </style>
   
@@ -50,9 +59,9 @@ body{
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item active">
-                <a class="nav-link" href="#">Inicio <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="{{route('home')}}">Inicio <span class="sr-only">(current)</span></a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item active">
               <a class="nav-link" href="{{route('products.view')}}">Productos</a>
               </li>
               {{-- <li class="nav-item dropdown">
@@ -71,29 +80,27 @@ body{
               </li> --}}
             </ul>
             <form class="form-inline my-2 my-lg-0">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              <input class="form-control mr-sm-2" type="search" 
+              aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
             </form>
-          
-            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
-                Logout
-            </a>
-            
-            <form id="frm-logout" action="{{ route('logout') }}" method="POST" style="display: none;">
-                {{ csrf_field() }}
-            </form>
+
+            <div>
+              <a href="{{ route('logout') }}" class="my-2 my-sm-0 ml-2 btn btn-outline-success" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
+                  Logout
+              </a>
+              
+              <form id="frm-logout" action="{{ route('logout') }}" method="POST" style="display: none;">
+                  {{ csrf_field() }}
+              </form>
+            </div>
+        
           </div>
         @endif
       </nav>
       <div class="container">
             @yield('content')
       </div>
-     
-
-       
-  
-
- 
 </body>
   
    <footer>
