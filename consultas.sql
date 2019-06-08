@@ -1,0 +1,2 @@
+--Obten lista de asins pro fecha
+SELECT p.title, pr.asin, pr.created_at FROM products p INNER JOIN provider pr on p.provider_id = pr.id WHERE date(pr.created_at) = '2019-06-05' ORDER BY pr.created_at DESC

@@ -115,14 +115,17 @@ $("#publish-button").click(function(){
 
                 	//Publicar a ML
                 	try{
-    	            	MELI.post(url, productObj, function(data) {
+    	            	MELI.post(url, productObj, function(ml_response) {
     	            		console.log("ML response: ")
-    						console.log(data);
+    						console.log(ml_response+' id'+ml_response[2].id);
                             estado = "Publicado";
-                           if (data[0] != 201) {
-                            not_published.push({product:productObj, error: data});
+                           if (ml_response[0] != 201) {
+                            not_published.push({product:productObj, error: ml_response});
                             this.estado = "No publicado";
                            }
+                           MELI.put(url+'/'+ml_response[2].id, {"seller_custom_field": data.asin}, function(response_sku){
+                                console.log(response_sku);
+                           });
     					});
                         
     				} catch (e){
