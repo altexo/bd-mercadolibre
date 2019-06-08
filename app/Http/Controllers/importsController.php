@@ -148,28 +148,11 @@ class importsController extends Controller
                 //Transform price
                 $decimalPrice = sprintf('%.2f', $price / 100);
                 $providerPrice = $decimalPrice;
-                $sell_price = 1.60 * $providerPrice;
+                $sell_price = 1.40 * $providerPrice;
                 $sell_price = round($sell_price);
                 $pictures_array = json_encode($pictures_array);
 				
-				
-				/*
-					 Provider: url -- SET NULL
-					 provider: price --
-					 provider: asin --
-					 provider: status = 4
-
-					 ml_data: base category --
-					 ml_data: sell_price --
-					 ml_data: descripcion --
-
-					 product: titulo --
-
-					 pictures: array --
-
-				*/ 
-
-				// Comienza transaccion de captura de nuevo producto   		
+						
 				try {
 					$data = DB::transaction(function () use($providerPrice, $sell_price, $pictures_array, $asin, $title, $base_category, $descripcion) {
 			    		//Create new provider object
@@ -226,8 +209,12 @@ class importsController extends Controller
 				echo "Se creo producto: ".$title." con asin: ".$asin."<br>";
                  array_push($response_array, $data);   
 				}
-				echo "<script>alert('Se termino de importar productos, haz clic en aceptar para ser redireccionado.');</script>";
-				return redirect()->route('products.view');
+			
+			    echo "<script type='text/javascript'>";
+                echo "alert('Se termino de importar productos, haz clic en aceptar para ser redireccionado.')";
+                echo "window.location.href =".route('products.view');
+                echo "</script>";
+                //return redirect()->route('products.view');
                 // echo '<pre>';
                 // print_r($response_array);
                 // echo "</pre>";

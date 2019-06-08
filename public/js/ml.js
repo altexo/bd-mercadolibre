@@ -171,7 +171,7 @@ $("#publish-new-button").click(function(){
                     var title = data.title;
                     var category_id = data.category_id;
                     var price = data.price;
-                    price = Math.round(price*1.90);
+                    price = Math.round(price);
                    // price = 
                    // price = price.slice(0,-3);
                     var currency_id = data.currency_id;
