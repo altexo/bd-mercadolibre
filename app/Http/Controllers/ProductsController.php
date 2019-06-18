@@ -293,7 +293,7 @@ class ProductsController extends Controller
       ->join('provider', 'provider.id','=','products.provider_id')
       ->where('products.provider_id','!=',1)
       ->where('provider.provider_status_id','=',1)
-      ->where('provider.provider_status_id','=',2)
+      ->Orwhere('provider.provider_status_id','=',2)
       ->get();
       $count = 0;
       foreach ($response as $r) {
