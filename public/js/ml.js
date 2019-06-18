@@ -223,6 +223,18 @@ $("#publish-new-button").click(function(){
                                 this.estado = "Publicado";
                                 if (data[0] != 201) {
                                     not_published.push({product:productObj, error: data});
+                                    $.ajax({
+                                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                                        type:'POST',
+                                        data:{id: data.provider_id},
+                                        url: "https://dadasell.app/api/products/state/update",
+                                        success:function(response){
+                                            console.log(response)
+                                        },
+                                        error:function(err){
+                                            console.log(err)
+                                        }
+                                        });
                                     this.estado = "No publicado";
                                 }
                             });
@@ -234,18 +246,7 @@ $("#publish-new-button").click(function(){
                         }
                    
                             $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+this.estado+"</td></tr>")
-                            $.ajax({
-                                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                                type:'POST',
-                                data:{id: data.provider_id},
-                                url: "https://dadasell.app/api/products/state/update",
-                                success:function(response){
-                                    console.log(response)
-                                },
-                                error:function(err){
-                                    console.log(err)
-                                }
-                                });
+                      
 
                   
                         },

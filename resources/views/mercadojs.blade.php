@@ -69,12 +69,14 @@ $("#update-products-prices-button").click(function(){
                var asin = data.asin;
                var price = Math.round(data.price);
                var title = data.title;
+               var status = data.provider_status_id;
+               if (status != 1) {
+                  status = 'paused';
+               }else{
+                  status = 'active';
+               }
               // var description = JSON.parse(data.description);
-               var picturesArray = JSON.parse(data.url);
-               var picturesArrayList = [];
-               $.each(picturesArray,function(index, pic) {
-                        picturesArrayList.push(pic);
-                });
+
                 
 
                 MELI.get(ml_url, {sku:asin}, function(data) {
@@ -82,7 +84,7 @@ $("#update-products-prices-button").click(function(){
                     if(ml_id && ml_id.length) {
                         console.log(ml_id)
                         console.log(asin+' '+price)
-                        MELI.put('/items/'+ml_id[0],{'price': price, 'status':'active', 'pictures': picturesArrayList, 'title': title}, function(data){
+                        MELI.put('/items/'+ml_id[0],{'price': price, 'status':status}, function(data){
                             console.log(data);
 
                         });
