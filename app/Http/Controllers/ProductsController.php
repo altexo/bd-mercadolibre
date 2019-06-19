@@ -269,7 +269,7 @@ class ProductsController extends Controller
         $response = "";
         $error = false;
       $response = DB::table('ml_data')
-      ->select('ml_data.*','products.title','provider.id as provider_id','provider.provider_status_id','provider.asin','pictures.*','shipping.*','tags.*')
+      ->select('ml_data.*','products.title', 'products.margin_sale','provider.id as provider_id','provider.provider_status_id','provider.asin','pictures.*','shipping.*','tags.*')
       ->join('products', 'ml_data.id','=','products.ml_data_id')
       ->join('pictures','pictures.ml_data_id','=','ml_data.id')
       ->join('shipping','shipping.ml_data_id','=','ml_data.id')
@@ -287,7 +287,7 @@ class ProductsController extends Controller
       $response = "";
       $error = false;
       $response = DB::table('ml_data')
-      ->select('ml_data.*','products.title','provider.provider_link','provider.asin', 'provider.provider_status_id', 'pictures.url')
+      ->select('ml_data.*','products.title', 'products.margin_sale','provider.provider_link','provider.asin', 'provider.provider_status_id', 'pictures.url')
       ->join('products', 'ml_data.id','=','products.ml_data_id')
       ->join('pictures','pictures.ml_data_id','=','ml_data.id')
       ->join('provider', 'provider.id','=','products.provider_id')

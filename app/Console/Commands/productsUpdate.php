@@ -108,8 +108,8 @@ class productsUpdate extends Command
                
                 $decimalPrice = sprintf('%.2f', $price / 100);
                 $providerPrice = $decimalPrice;
-                $sell_price = 1.60 * $providerPrice;
-                $sell_price = round($sell_price);
+                // $sell_price = 1.60 * $providerPrice;
+                $sell_price = round($providerPrice);
                
 
                 try {

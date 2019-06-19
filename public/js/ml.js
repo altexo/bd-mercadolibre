@@ -170,7 +170,12 @@ $("#publish-new-button").click(function(){
 
                     var title = data.title;
                     var category_id = data.category_id;
-                    var price = data.price;
+                    var margin = data.margin_sale;
+                    if (margin != null) {
+                     var price = Math.round(data.price*margin);
+                    }else{
+                     var price = Math.round(data.price*1.40);
+                    }
                     price = Math.round(price);
                    // price = 
                    // price = price.slice(0,-3);

@@ -67,7 +67,14 @@ $("#update-products-prices-button").click(function(){
               // console.log(data);
                var ml_url = '/users/315787371/items/search';
                var asin = data.asin;
-               var price = Math.round(data.price);
+               var margin = data.margin_sale;
+               if (margin != null) {
+                var price = Math.round(data.price*margin);
+               }else{
+                var price = Math.round(data.price*1.40);
+               }
+               
+               console.log(price);
                var title = data.title;
                var status = data.provider_status_id;
                if (status != 1) {

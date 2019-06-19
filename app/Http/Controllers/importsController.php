@@ -95,10 +95,14 @@ class importsController extends Controller
             	$row = array_combine($header, $row);
         		$asin = $row['asin'];
         		$title = utf8_encode($row['titulo']);
-        		$base_category = $row['categoria'];
+                $base_category = $row['categoria'];
+                $margin_sale = $row['margen'];
 	    		if ($asin == "") {
 	    			continue;
-				}
+                }
+                if ($margin_sale == "") {
+                    $margin_sale = null;
+                }
 				$provider = Provider::where('asin', $asin)->first();
 				if ($provider != null) {
 					echo "Este asin ya existe: ".$asin."<br>";
@@ -148,13 +152,13 @@ class importsController extends Controller
                 //Transform price
                 $decimalPrice = sprintf('%.2f', $price / 100);
                 $providerPrice = $decimalPrice;
-                $sell_price = 1.40 * $providerPrice;
-                $sell_price = round($sell_price);
+                //$sell_price = 1.40 * $providerPrice;
+                $sell_price = round($providerPrice);
                 $pictures_array = json_encode($pictures_array);
 				
 						
 				try {
-					$data = DB::transaction(function () use($providerPrice, $sell_price, $pictures_array, $asin, $title, $base_category, $descripcion) {
+					$data = DB::transaction(function () use($margin_sale, $providerPrice, $sell_price, $pictures_array, $asin, $title, $base_category, $descripcion) {
 			    		//Create new provider object
 						$provider = new Provider;
 						//$provider->provider_link = $res['url'];
@@ -178,7 +182,8 @@ class importsController extends Controller
 						//Create new producs object
 						$products = new Products;
 						$products->title = $title;
-						$products->type_id = 1;
+                        $products->type_id = 1;
+                        $products->margin_sale = $margin_sale;
 						$products->provider_id = $provider->id;
 						$products->ml_data_id = $ml_data->id;
 						$products->save();
