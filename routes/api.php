@@ -35,3 +35,5 @@ Route::post('products/state/update', 'ProductsController@updateState');
 Route::get('products/test', 'ScraperController@index');
 
 Route::post('/test/iot', 'IotController@storeData');
+
+Route::post('products/margin/update', 'ProductsController@updateMargin');
