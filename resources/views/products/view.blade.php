@@ -20,7 +20,7 @@
                         <th scope="row">{{$product->ml_data_id}}</th>
                         <td>{{$product->asin}}</td>
                         <td id="product-title{{$product->ml_data_id}}">{{$product->title}}</td>
-                        <td id="product-margen{{$product->ml_data_id}}">Margen</td>
+                        <td id="product-margen{{$product->ml_data_id}}">{{$product->margin_sale}}</td>
                         <td>{{$product->ml_price}}</td>
                         <td>{{$product->provider_price}}</td>
                         <td>
@@ -100,7 +100,7 @@
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 type:'POST',
                 url: '{{route('products.update')}}',
-                data: {'title': title, 'product_id': response.id},
+                data: {'title': title, margin_sale: margen, 'product_id': response.id},
                 success:function(response){
                     console.log(response)
                     $("#response-msj").text(response);
