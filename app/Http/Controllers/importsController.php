@@ -90,19 +90,23 @@ class importsController extends Controller
 			// break;
             $count = 0;
             $not_found = [];
+            // dump($rows);
+            
+          
             foreach ($rows as $row) {
-			
-            	$row = array_combine($header, $row);
+             
+                $row = array_combine($header, $row);
+                
         		$asin = $row['asin'];
         		$title = utf8_encode($row['titulo']);
                 $base_category = $row['categoria'];
-                $margin_sale = $row['margen'];
+                $margin_sale = 1.40;//$row['margen'];
 	    		if ($asin == "") {
 	    			continue;
                 }
-                if ($margin_sale == "") {
-                    $margin_sale = null;
-                }
+                // if ($margin_sale == "") {
+                //     $margin_sale = null;
+                // }
 				$provider = Provider::where('asin', $asin)->first();
 				if ($provider != null) {
 					echo "Este asin ya existe: ".$asin."<br>";
