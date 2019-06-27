@@ -71,7 +71,7 @@ $("#update-products-prices-button").click(function(){
                if (margin != null) {
                 var price = Math.round(data.price*margin);
                }else{
-                var price = Math.round(data.price*1.40);
+                var price = Math.round(data.price*1.30);
                }
                
                console.log(price);
