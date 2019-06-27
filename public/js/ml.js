@@ -174,7 +174,7 @@ $("#publish-new-button").click(function(){
                     if (margin != null) {
                      var price = Math.round(data.price*margin);
                     }else{
-                     var price = Math.round(data.price*1.40);
+                     var price = Math.round(data.price*1.30);
                     }
                     price = Math.round(price);
                    // price = 
