@@ -304,8 +304,9 @@ class ProductsController extends Controller
 
     public function updateState(Request $request){
         $product = Provider::find($request->id);
+        $state = $request->state;
         if ($product != null) {
-            $product->provider_status_id = 1;
+            $product->provider_status_id = $state;
             $product->save();
             return ['error'=>false, 'msj' => 'success'];
         }

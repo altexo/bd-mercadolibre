@@ -226,12 +226,14 @@ $("#publish-new-button").click(function(){
                                 console.log("ML response: ")
                                 console.log(data);
                                 this.estado = "Publicado";
+                                var state = 1;
                                 if (data[0] != 201) {
+                                    state = 2;
                                     not_published.push({product:productObj, error: data});
                                     $.ajax({
                                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                                         type:'POST',
-                                        data:{id: data.provider_id},
+                                        data:{id: data.provider_id, state: state},
                                         url: "https://dadasell.app/api/products/state/update",
                                         success:function(response){
                                             console.log(response)
@@ -242,6 +244,17 @@ $("#publish-new-button").click(function(){
                                         });
                                     this.estado = "No publicado";
                                 }
+                                $.ajax({
+                                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                                    type:'POST',
+                                    data:{id: data.provider_id, state: state},
+                                    url: "https://dadasell.app/api/products/state/update",
+                                    success:function(response){
+                                        console.log(response)
+                                    },
+                                    error:function(err){
+                                        console.log(err)
+                                    }
                             });
                         
                         } catch (e){
