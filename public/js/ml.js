@@ -148,8 +148,8 @@ $("#publish-new-button").click(function(){
      $.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             type:'GET',
-            url: 'http://127.0.0.1:8000/api/new-products',
-            //url: "https://dadasell.app/api/new-products",
+            //url: 'http://127.0.0.1:8000/api/new-products',
+            url: "https://dadasell.app/api/new-products",
             success:function(response){
                 var not_published = [];
                 console.log(response);
