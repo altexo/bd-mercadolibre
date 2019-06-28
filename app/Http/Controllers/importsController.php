@@ -100,7 +100,7 @@ class importsController extends Controller
         		$asin = $row['asin'];
         		$title = utf8_encode($row['titulo']);
                 $base_category = $row['categoria'];
-                $margin_sale = 1.40;//$row['margen'];
+                //$margin_sale = 1.40;//$row['margen'];
 	    		if ($asin == "") {
 	    			continue;
                 }
@@ -162,7 +162,7 @@ class importsController extends Controller
 				
 						
 				try {
-					$data = DB::transaction(function () use($margin_sale, $providerPrice, $sell_price, $pictures_array, $asin, $title, $base_category, $descripcion) {
+					$data = DB::transaction(function () use($providerPrice, $sell_price, $pictures_array, $asin, $title, $base_category, $descripcion) {
 			    		//Create new provider object
 						$provider = new Provider;
 						//$provider->provider_link = $res['url'];
@@ -187,7 +187,7 @@ class importsController extends Controller
 						$products = new Products;
 						$products->title = $title;
                         $products->type_id = 1;
-                        $products->margin_sale = $margin_sale;
+                        $products->margin_sale = null;
 						$products->provider_id = $provider->id;
 						$products->ml_data_id = $ml_data->id;
 						$products->save();
