@@ -223,7 +223,7 @@ $("#publish-new-button").click(function(){
 
                     //Publicar a ML
                         try{
-                            MELI.post(url, provider_id,productObj, function(data) {
+                            MELI.post(url,productObj, function(data) {
                                 console.log("ML response: ")
                                 console.log(data);
                                 this.estado = "Publicado";
