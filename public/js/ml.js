@@ -217,12 +217,12 @@ $("#publish-new-button").click(function(){
 
                     }
                     
-                    
+                    var provider_id = data.provider_id;
                     console.log(productObj);
 
                     //Publicar a ML
                         try{
-                            MELI.post(url, productObj, function(data) {
+                            MELI.post(url, provider_id,productObj, function(data) {
                                 console.log("ML response: ")
                                 console.log(data);
                                 this.estado = "Publicado";
@@ -233,7 +233,7 @@ $("#publish-new-button").click(function(){
                                     $.ajax({
                                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                                         type:'POST',
-                                        data:{id: data.provider_id, state: state},
+                                        data:{id: provider_id, state: state},
                                         url: "https://dadasell.app/api/products/state/update",
                                         success:function(response){
                                             console.log(response)
@@ -247,7 +247,7 @@ $("#publish-new-button").click(function(){
                                 $.ajax({
                                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                                     type:'POST',
-                                    data:{id: data.provider_id, state: state},
+                                    data:{id: provider_id, state: state},
                                     url: "https://dadasell.app/api/products/state/update",
                                     success:function(response){
                                         console.log(response)
