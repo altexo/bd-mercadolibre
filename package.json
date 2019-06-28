@@ -19,6 +19,8 @@
         "vue": "^2.5.7"
     },
     "dependencies": {
+        "dotenv": "^8.0.0",
+        "laravel-elixir-env": "^1.0.0",
         "node-sass": "^4.10.0"
     }
 }

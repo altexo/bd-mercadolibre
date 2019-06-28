@@ -1,4 +1,5 @@
 $( document ).ready(function() {
+    //console.log(process.env.MIX_SENTRY_DSN_PUBLIC)
 	 $("#auth").show();
     console.log( "ready!" );
     //window.myVar = '{{ env('MY_VAR') }}';
@@ -51,97 +52,97 @@ $("#get-user-button").click(function(){
 });
 
 
-$("#publish-button").click(function(){
-	 $.ajax({
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            type:'GET',
-            //url: 'http://127.0.0.1:8000/api/products',
-            url: "https://bd-mercadolibre.herokuapp.com/api/products",
-            success:function(response){
-                var not_published = [];
-                console.log(response);
-                $.each(response.response, function(index, data){
-                     if (data.asin == null) {
-                        return 'Skip';
-                    }
-                    if (data.price == "0.00"){
-                        return 'skip'
-                    }
-                    $("#published-table").show();
-                    var estado = "";
-                	var url = "/items";
-                	//var data = data.response[0];
-                	var picturesArray = JSON.parse(data.pictures[0].url);
-                	var tagsArray = JSON.parse(data.tags[0].tags_object);
-                	var shippingArray = JSON.parse(data.shipping[0].full_atts);
+// $("#publish-button").click(function(){
+// 	 $.ajax({
+//             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//             type:'GET',
+//             //url: 'http://127.0.0.1:8000/api/products',
+//             url: "https://bd-mercadolibre.herokuapp.com/api/products",
+//             success:function(response){
+//                 var not_published = [];
+//                 console.log(response);
+//                 $.each(response.response, function(index, data){
+//                      if (data.asin == null) {
+//                         return 'Skip';
+//                     }
+//                     if (data.price == "0.00"){
+//                         return 'skip'
+//                     }
+//                     $("#published-table").show();
+//                     var estado = "";
+//                 	var url = "/items";
+//                 	//var data = data.response[0];
+//                 	var picturesArray = JSON.parse(data.pictures[0].url);
+//                 	var tagsArray = JSON.parse(data.tags[0].tags_object);
+//                 	var shippingArray = JSON.parse(data.shipping[0].full_atts);
 
-                	var title = data.products[0].title;
-                	var category_id = data.category_id;
-                	var price = data.price;
-                    price = Math.round(price);
-                   // price = 
-                   // price = price.slice(0,-3);
-                	var currency_id = data.currency_id;
-                	var available_quantity = data.available_quantity;
-                	var buying_mode = data.buying_mode;
-                	var listing_type_id = data.listing_type_id;
-                	var condition = "new";
-                	//Preparar lista de imagenes
-                    var attributes = JSON.parse(data.attributes[0].attributes_details);
-                	var picturesArrayList = [];
-                	$.each(picturesArray,function(index, pic) {
-                		picturesArrayList.push(pic);
-                	});
-                    var desc_array = new Array();
-                    desc_array['plain_text'] = data.description;
-                	var productObj = {
-                		 title: title,
-                		 category_id: category_id,
-                		 price: price,
-                		 currency_id: currency_id,
-                		 available_quantity: available_quantity,
-                		 buying_mode: buying_mode,
-                		 listing_type_id: listing_type_id,
-                		 condition: condition,
-                         description: {plain_text: "**Envío GRATIS pregunte por los tiempos de entrega.\n"+data.description+"\n\n ASIN: ****"+data.asin+"****"},
-                		 tags: tagsArray,
-                		 pictures: picturesArrayList,
-                         shipping: shippingArray,
-                         attributes: attributes,
-                         seller_custom_field: data.asin
+//                 	var title = data.products[0].title;
+//                 	var category_id = data.category_id;
+//                 	var price = data.price;
+//                     price = Math.round(price);
+//                    // price = 
+//                    // price = price.slice(0,-3);
+//                 	var currency_id = data.currency_id;
+//                 	var available_quantity = data.available_quantity;
+//                 	var buying_mode = data.buying_mode;
+//                 	var listing_type_id = data.listing_type_id;
+//                 	var condition = "new";
+//                 	//Preparar lista de imagenes
+//                     var attributes = JSON.parse(data.attributes[0].attributes_details);
+//                 	var picturesArrayList = [];
+//                 	$.each(picturesArray,function(index, pic) {
+//                 		picturesArrayList.push(pic);
+//                 	});
+//                     var desc_array = new Array();
+//                     desc_array['plain_text'] = data.description;
+//                 	var productObj = {
+//                 		 title: title,
+//                 		 category_id: category_id,
+//                 		 price: price,
+//                 		 currency_id: currency_id,
+//                 		 available_quantity: available_quantity,
+//                 		 buying_mode: buying_mode,
+//                 		 listing_type_id: listing_type_id,
+//                 		 condition: condition,
+//                          description: {plain_text: "**Envío GRATIS pregunte por los tiempos de entrega.\n"+data.description+"\n\n ASIN: ****"+data.asin+"****"},
+//                 		 tags: tagsArray,
+//                 		 pictures: picturesArrayList,
+//                          shipping: shippingArray,
+//                          attributes: attributes,
+//                          seller_custom_field: data.asin
 
-                	}
-                	console.log(productObj);
+//                 	}
+//                 	console.log(productObj);
 
-                	//Publicar a ML
-                	try{
-    	            	MELI.post(url, productObj, function(ml_response) {
-    	            		console.log("ML response: ")
-    						console.log(ml_response+' id'+ml_response[2].id);
-                            estado = "Publicado";
-                           if (ml_response[0] != 201) {
-                            not_published.push({product:productObj, error: ml_response});
-                            this.estado = "No publicado";
-                           }
-    					});
+//                 	//Publicar a ML
+//                 	try{
+//     	            	MELI.post(url, productObj, function(ml_response) {
+//     	            		console.log("ML response: ")
+//     						console.log(ml_response+' id'+ml_response[2].id);
+//                             estado = "Publicado";
+//                            if (ml_response[0] != 201) {
+//                             not_published.push({product:productObj, error: ml_response});
+//                             this.estado = "No publicado";
+//                            }
+//     					});
                         
-    				} catch (e){
-    					console.log('Error: ');
-    					console.log(e);
-                        this.estado = "No Publicado";
-    				}
+//     				} catch (e){
+//     					console.log('Error: ');
+//     					console.log(e);
+//                         this.estado = "No Publicado";
+//     				}
                    
-                    $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
+//                     $("#table-rows").append("<tr style='font-size: 10pt'><td>"+data.id+"</td><td>"+title+"</td><td>"+price+"</td><td>"+estado+"</td></tr>")
                   
 			
-                });
-                console.log(not_published);
-            },
-            error:function(response){
+//                 });
+//                 console.log(not_published);
+//             },
+//             error:function(response){
 
-            }
-        });
-});
+//             }
+//         });
+// });
 
 
 $("#publish-new-button").click(function(){
@@ -149,7 +150,9 @@ $("#publish-new-button").click(function(){
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             type:'GET',
             //url: 'http://127.0.0.1:8000/api/new-products',
-            url: "https://dadasell.app/api/new-products",
+            //url: "https://pbshop.online/api/new-products",
+            url: "https://pbshop.online/api/new-products",
+            
             success:function(response){
                 var not_published = [];
                 console.log(response);
@@ -235,7 +238,7 @@ $("#publish-new-button").click(function(){
                                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                                         type:'POST',
                                         data:{id: provider_id, state: state},
-                                        url: "https://dadasell.app/api/products/state/update",
+                                        url: "https://pbshop.online/api/products/state/update",
                                         success:function(response){
                                             console.log(response)
                                         },
@@ -249,7 +252,7 @@ $("#publish-new-button").click(function(){
                                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                                     type:'POST',
                                     data:{id: provider_id, state: state},
-                                    url: "https://dadasell.app/api/products/state/update",
+                                    url: "https://pbshop.online/api/products/state/update",
                                     success:function(response){
                                         console.log(response)
                                     },
