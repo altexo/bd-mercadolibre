@@ -256,8 +256,8 @@ $("#publish-new-button").click(function(){
                                         console.log(err)
                                     }
                             });
-                        
-                        } catch (e){
+                            })
+                        }catch (e){
                         console.log('Error: ');
                         console.log(e);
                         this.estado = "No Publicado";
