@@ -208,7 +208,7 @@ $("#publish-new-button").click(function(){
                          buying_mode: buying_mode,
                          listing_type_id: listing_type_id,
                          condition: condition,
-                         description: {plain_text: "**Envío GRATIS pregunte por los tiempos de entrega y la disponibilidad del producto ANTES de ofertar.\n "+data.description},
+                         description: {plain_text: "**Envío GRATIS pregunte por los tiempos de entrega y la disponibilidad del producto ANTES de ofertar.\n\n\n "+data.description},
                          tags: tagsArray,
                          pictures: picturesArrayList,
                          shipping: shippingArray,
