@@ -41,7 +41,7 @@ Route::get('products/update/price/ml','ProductsController@updateProductsPrices')
 
 Route::post('scraper/by-seller', 'ScraperController@getProductsBySeller')->name('getProductsBySeller');
 
-route::get('scraper/view', 'ScraperController@getView');
+route::get('scraper/view', 'ScraperController@getView')->name('scrap.seller');
 
 //Test Route
 // Route::get('test/mail', function(){
