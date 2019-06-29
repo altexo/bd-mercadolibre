@@ -39,6 +39,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/scrapper', 'ScrapperController@index')->name('scrap');
 Route::get('products/update/price/ml','ProductsController@updateProductsPrices')->name('get.products');
 
+Route::post('scraper/by-seller', 'ScraperController@getProductsBySeller')->name('getProductsBySeller');
+
+route::get('scraper/view', 'ScraperController@getView');
 
 //Test Route
 // Route::get('test/mail', function(){

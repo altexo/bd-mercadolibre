@@ -28,7 +28,7 @@ body{
 }
 
 .navbar-app{
-      background-color: #ffff00;
+      background-color: #232f3e;
 }
 
 .btn-hide{
@@ -50,7 +50,7 @@ body{
     </nav> --}}
 
     <nav class="navbar navbar-expand-lg navbar-light navbar-app mb-2">
-        <a class="navbar-brand" href="#">DadaSell</a>
+        <a class="navbar-brand text-white" href="#">DadaSell</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -59,10 +59,10 @@ body{
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item active">
-                <a class="nav-link" href="{{route('home')}}">Inicio <span class="sr-only">(current)</span></a>
+                <a class="nav-link text-white" href="{{route('home')}}">Inicio <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item active">
-              <a class="nav-link" href="{{route('products.view')}}">Productos</a>
+              <a class="nav-link text-white" href="{{route('products.view')}}">Productos</a>
               </li>
               {{-- <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -82,11 +82,11 @@ body{
             <form class="form-inline my-2 my-lg-0">
               <input class="form-control mr-sm-2" type="search" 
               aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+              <button class="btn btn-outline-default my-2 my-sm-0" type="submit">Buscar</button>
             </form>
 
             <div>
-              <a href="{{ route('logout') }}" class="my-2 my-sm-0 ml-2 btn btn-outline-success" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
+              <a href="{{ route('logout') }}" class="my-2 my-sm-0 ml-2 btn btn-outline-default text-white" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
                   Logout
               </a>
               
