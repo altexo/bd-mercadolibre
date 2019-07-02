@@ -4,7 +4,7 @@ $( document ).ready(function() {
     console.log( "ready!" );
     //window.myVar = '{{ env('MY_VAR') }}';
     MELI.init({ 
-    	client_id: 3946071598469716, 
+    	client_id: 7842023519454578, 
     	xauth_protocol: "https://",
   		xauth_domain: "secure.mlstatic.com",
   		xd_url: "/org-img/sdk/xd-1.0.4.html"
