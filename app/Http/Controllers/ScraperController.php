@@ -39,16 +39,27 @@ class ScraperController extends Controller
 				
 			}
 			$asinList = $res['sellers'][$r->seller]['asinList'];
+			echo "Cantidad de asins: ".count($asinList);
+			echo "<br>";
 			$this->parseProducts($asinList);
 
 		}
 		
 		private function parseProducts($asins_array){
+			echo "<table>";
+				echo "<tr>";
+				echo "<th>Asin</th>";
+				echo "<th>Titulo</th>";
+				echo "</tr>";
+			$n = 0;	
 			foreach ($asins_array as $asin) {
+				$n++;
 				$errors = [];
 				$response_array = [];
 
 	    		if ($asin == "") {
+					
+					echo "<td>".$asin."</td><td>No se encontro asin..</td>";
 	    			continue;
 				}
 				
@@ -70,7 +81,7 @@ class ScraperController extends Controller
                 $res = json_decode($response, true);
                 if (!array_key_exists('products', $res)) {
 					echo "Producto no encontrado o falta de token: ".$asin."<br>";
-					sleep(9);
+					sleep(60);
                     continue;
                 }
                 $stats = $res['products'];
@@ -80,7 +91,8 @@ class ScraperController extends Controller
                 if ($price == -1) {
                     if ($priceThirdPartySeller == -1) {
                         // array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
-                        echo $asin." No disponible en stock "."<br>";
+						//echo $asin." No disponible en stock "."<br>";
+						echo "<td>".$asin."</td><td>No disponible</td>";
                         // sleep(65);
                         continue;
                     }else{
@@ -163,10 +175,16 @@ class ScraperController extends Controller
 				} catch (Exception $e) {
 					//dd($e);
 				}
-				echo "Se creo producto: ".$title." con asin: ".$asin."<br>";
+				
+				
+				echo "<tr>";
+				echo "<td>".$asin."</td><td>".$title."</td>";
+			
 				 array_push($response_array, $data);   
-				 sleep(9);
+				 sleep(3);
 				}
+				echo "</table>";
+				echo "Total de asins obtenidos: ".$n;
 		}
 
 		private function predictCategoryML($title){
