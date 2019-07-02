@@ -50,6 +50,7 @@ class ScraperController extends Controller
 				echo "<tr>";
 				echo "<th>Asin</th>";
 				echo "<th>Titulo</th>";
+				echo "<th>Categoria</th>";
 				echo "</tr>";
 			$n = 0;	
 			foreach ($asins_array as $asin) {
@@ -103,7 +104,7 @@ class ScraperController extends Controller
 			   	$title = $res['products'][0]['title'];
 			   	$title = substr($title,0,60);
 				$base_category = $this->predictCategoryML($title);
-			
+				echo "<td>".$base_category."</td>";
 				$imgs = $res['products'][0];
 				$descripcion = $stats[0]['description'];
                // $title = $imgs['title'];
@@ -183,11 +184,13 @@ class ScraperController extends Controller
 				 array_push($response_array, $data);   
 				 sleep(3);
 				}
-				echo "</table>";
+				echo "</table><br>";
 				echo "Total de asins obtenidos: ".$n;
 		}
 
 		private function predictCategoryML($title){
+			//echo "<td>Cat: ";
+			$title = utf8_encode (  $title );
 			$client = new Client(); //GuzzleHttp\Client
 			$result = $client->post('https://api.mercadolibre.com/sites/MLM/category_predictor/predict', [
 				GuzzleHttp\RequestOptions::JSON => [['title' => $title]]
