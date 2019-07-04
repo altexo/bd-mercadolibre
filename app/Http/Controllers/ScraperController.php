@@ -82,7 +82,7 @@ class ScraperController extends Controller
                 $res = json_decode($response, true);
                 if (!array_key_exists('products', $res)) {
 					echo "Producto no encontrado o falta de token: ".$asin."<br>";
-					sleep(60);
+					//sleep(60);
                     continue;
                 }
                 $stats = $res['products'];
@@ -124,6 +124,7 @@ class ScraperController extends Controller
 						
 				try {
 					$data = DB::transaction(function () use($providerPrice, $sell_price, $pictures_array, $asin, $title, $base_category, $descripcion) {
+						$title = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $title);
 			    		//Create new provider object
 						$provider = new Provider;
 						//$provider->provider_link = $res['url'];
@@ -152,6 +153,9 @@ class ScraperController extends Controller
 						$products->provider_id = $provider->id;
 						$products->ml_data_id = $ml_data->id;
 						$products->save();
+						// $products = DB::table('products')->insert(
+						// 	array('title' => $title, 'type_id' => 1, 'margin_sale' => null, 'provider_id' => $provider->id, 'ml_data_id' => $ml_data->id)
+						// );
 
 						//Create pictures object
 						$pictures = new Pictures;
@@ -189,16 +193,22 @@ class ScraperController extends Controller
 		}
 
 		private function predictCategoryML($title){
-			//echo "<td>Cat: ";
-			$title = utf8_encode (  $title );
+			$response = "";
+
 			$client = new Client(); //GuzzleHttp\Client
-			$result = $client->post('https://api.mercadolibre.com/sites/MLM/category_predictor/predict', [
-				GuzzleHttp\RequestOptions::JSON => [['title' => $title]]
-			]);
-			$response = $result->getBody()->getContents();
-			$response = json_decode($response, true);
-	
-			return $response[0]["path_from_root"][0]["id"];
+			try {
+				$result = $client->post('https://api.mercadolibre.com/sites/MLM/category_predictor/predict', [
+					GuzzleHttp\RequestOptions::JSON => [['title' => $title]]
+				]);
+				$response = $result->getBody()->getContents();
+				$response = json_decode($response, true);
+		
+				$response = $response[0]["path_from_root"][0]["id"];
+			} catch (\Throwable $th) {
+				$response = null;
+
+			}
+			return $response;
 		}
 
     	private function updateProductStatus($id){
