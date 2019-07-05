@@ -43,8 +43,13 @@ class HomeController extends Controller
         echo "<pre>";
         print_r($refresh);
         echo "</pre>";
-        // $u = User::find($user->id);
+      
+        $u = User::find($user->id);
+        $u->ml_token = $refresh['body']->access_token;
+        $u->r_token = $refresh['body']->refresh_token;
+        $u->save();
 
+        
               
                 // Now we create the sessions with the authenticated user
              
