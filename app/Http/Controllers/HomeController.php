@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Attributes;
+use App\Http\AppServices\Meli;
 class HomeController extends Controller
 {
     /**
@@ -23,7 +24,23 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('mercadojs');
+        $user = Auth::user();
+        
+        echo "Token actual <br>";
+        echo $user->ml_token;
+        echo "================== <br>";
+        echo "Intentando refrescar... <br>";
+
+        $appId = ENV('APP_ID');
+        $secretKey = ENV('SECRET_KEY');
+        $meli = new Meli($appId, $secretKey);
+        $refresh = $meli->refreshAccessToken();
+
+        echo "<pre>";
+        print_r($refresh);
+        echo "</pre>";
+
+        //return view('mercadojs');
     }
 
  
