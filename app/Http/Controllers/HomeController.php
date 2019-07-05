@@ -25,23 +25,23 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
+        // $user = Auth::user();
         
-        echo "Token actual <br>";
-        echo $user->ml_token;
-        echo "================== <br>";
-        echo "Intentando refrescar... <br>";
+        // echo "Token actual <br>";
+        // echo $user->ml_token;
+        // echo "================== <br>";
+        // echo "Intentando refrescar... <br>";
 
-        $appId = ENV('APP_ID');
-        $secretKey = ENV('SECRET_KEY');
-        $meli = new Meli($appId, $secretKey, $user->ml_token) ;
-        $refresh = $meli->refreshAccessToken();
+        // $appId = ENV('APP_ID');
+        // $secretKey = ENV('SECRET_KEY');
+        // $meli = new Meli($appId, $secretKey, $user->ml_token) ;
+        // $refresh = $meli->refreshAccessToken();
 
-        echo "<pre>";
-        print_r($refresh);
-        echo "</pre>";
+        // echo "<pre>";
+        // print_r($refresh);
+        // echo "</pre>";
 
-       // return view('mercadojs');
+        return view('mercadojs');
     }
 
  
