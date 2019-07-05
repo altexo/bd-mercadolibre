@@ -7,6 +7,7 @@ use App\Pictures;
 use App\tags;
 use App\Shipping;
 use GuzzleHttp\Client;
+use GuzzleHttp;
 use DB;
 class GetProductKeepa{
   
@@ -48,6 +49,9 @@ class GetProductKeepa{
         $title = $res['products'][0]['title'];
 		$title = substr($title,0,60);
 		$base_category = $this->predictCategoryML($title);
+		if ($base_category == null) {
+			return ['error'=> true, 'msj'=> 'No se predijo categoria: '.$title ];
+		}
 		$imgs = $res['products'][0];
 		$descripcion = $stats[0]['description'];
         $imgs = $imgs['imagesCSV'];
@@ -115,7 +119,7 @@ class GetProductKeepa{
 				} catch (Exception $e) {
 					//dd($e);
 				}
-				return ['error'=> false, 'msj'=> 'El producto fue creado correctamente <3'];
+				return ['error'=> false, 'msj'=> 'El producto fue creado correctamente :D'];
             }
                 
 		private function predictCategoryML($title){
@@ -130,6 +134,8 @@ class GetProductKeepa{
 		
 				$response = $response[0]["path_from_root"][0]["id"];
 			} catch (\Throwable $th) {
+				//throw $th;
+				
 				$response = null;
 			}
 			return $response;
