@@ -50,9 +50,9 @@ class HomeController extends Controller
         echo '<p><a alt="Login using MercadoLibre oAuth 2.0" class="btn" href="' . $meli->getAuthUrl($redirectURI, Meli::$AUTH_URL[$siteId]) . '">Authenticate</a></p>';
         if (isset($_GET['code'])) {
             $user = $meli->authorize($_GET['code'], $redirectURI);
-            echo $user['body']->access_token;
-            echo time() + $user['body']->expires_in;
-            echo $user['body']->refresh_token;
+            echo $user['body']->access_token."<br>";
+            echo time() + $user['body']->expires_in."<br>";
+            echo $user['body']->refresh_token."<br>";
         }
       
 
