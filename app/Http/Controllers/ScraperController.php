@@ -80,13 +80,13 @@ class ScraperController extends Controller
                 $response = $response->getBody()->getContents();
                 //Arreglo de producto mediante asin
                 $res = json_decode($response, true);
-                if (!array_key_exists('products', $res)) {
-					echo "Producto no encontrado o falta de token: ".$asin."<br>";
-					//sleep(60);
-                    continue;
-                }
-                $stats = $res['products'];
-                $price = $stats[0]['stats']['current'][0];
+				$validation = $this->validateKeepaResponse($res);
+				if ($validation == false) {
+					echo "Error al obtener producto de Keppa: ".$asin."<br>";
+					continue;
+				}
+				$price = $validation;
+
                 $priceThirdPartySeller = $stats[0]['stats']['current'][1];
 
                 if ($price == -1) {
@@ -210,7 +210,33 @@ class ScraperController extends Controller
 			}
 			return $response;
 		}
+		private function validateKeepaResponse($res){
+			$validation = true;
+			if (!array_key_exists('products', $res)) {
+				return $validation = false;
+			}
+			$stats = $res['products'];
+			//$price = $stats[0]['stats']['current'][0];
+			if (!array_key_exists(0, $stats)) {
+				return $validation = false;
+			}
+			$stats = $stats[0];
+			if (!array_key_exists('stats', $stats)) {
+				return $validation = false;
+			}
+			$stats = $stats['stats'];
+			if (!array_key_exists('current', $stats)) {
+				return $validation = false;
+			}
+			$stats = $stats['current'];
+			if (!array_key_exists(0, $stats)) {
+				return $validation = false;
+			}
+			
+			$validation = $stats[0];
+			return $validation;
 
+		}
     	private function updateProductStatus($id){
     		$provider = Provider::where('id',$id)->first();
 			$provider->provider_status_id = 2;
