@@ -20,7 +20,7 @@ class ProductsDBController extends Controller
     	->where('products.provider_id','!=',1)
     	->where('provider.provider_status_id','=',1)
 		->paginate(20);
-
+		//return $products;
 		// $products = DB::select("SELECT count(ml.id) FROM ml_data ml
 		// INNER JOIN products pr on pr.ml_data_id = ml.id
 		// INNER JOIN provider p on pr.provider_id = p.id

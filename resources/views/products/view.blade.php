@@ -1,5 +1,16 @@
 @extends('layouts.app')
+@section('head')
+<style>
+    .edit-icon{
+        padding: 0px 3px 0px;
+    }
+</style>
+
+@endsection
 @section('content')
+<div class="col-md-12 mt-4 mb-4">
+<a href="{{route('proucts.addNew')}}" class="btn btn-primary btn-sm">Añadir nuevo producto</a>
+</div>
     <div class="col-md-12 mt-4 card">
         <div class="card">
             <table class="table">
@@ -24,8 +35,13 @@
                         <td>{{$product->ml_price}}</td>
                         <td>{{$product->provider_price}}</td>
                         <td>
-                            <button type="button" id="edit{{$product->ml_data_id}}" class="btn btn-primary" onclick="edit_product({{$product->ml_data_id}})">
-                                <i class="fas fa-edit"></i>
+                            <button style="padding: 2px;" id="edit{{$product->ml_data_id}}" class="btn btn-primary" onclick="edit_product({{$product->ml_data_id}})">
+                                <i class="fas fa-edit  edit-icon"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm delete-product" >
+                               
+                                <i class="fas fa-trash"> <input type="hidden" value="{{$product->provider_id}}">
+                                    <input type="hidden" value="{{$product->ml_data_id}}"></i>
                             </button>
                             <button type="button" id="update{{$product->ml_data_id}}" class="btn btn-success btn-hide" onclick="update_product({{$product->ml_data_id}})">
                                 <input type="hidden" value="{{route('products.get.product',[$product->ml_data_id])}}" id="url{{$product->ml_data_id}}">
@@ -107,6 +123,28 @@
                 }});
             }})
         }
+        $("body").on("click", ".delete-product", function(){
+            var provider_id = $(this).find('input').val();
+            var ml_id = $(this).find('input').next().val();
+            if (confirm('Seguro quieres borrar este producto?')) {
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    type:'POST',
+                    url: '{{route('products.delete')}}',
+                    data: {'provider_id': provider_id, 'ml_id': ml_id},
+                    success:function(response){
+                        alert(response.msj)
+
+                        console.log(response);
+                    },
+                    error:function(response){
+                        alert(response.msj)
+                        console.log(response)
+                    }
+                })
+            }
+        });
+        
     </script>
 
 @endsection

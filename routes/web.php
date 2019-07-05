@@ -32,7 +32,9 @@ Route::post('import/asin', 'ProductsController@importProducts')->name('import.pr
 Route::post('import/update/asin','importsController@importAsinUpdate')->name('import.update.asins');
 Route::post('import/new-asins','importsController@importNewAsins')->name('import.new.asins');
 //End imports
-
+Route::post('products/delete', 'ProductsController@deleteProduct')->name('products.delete');
+Route::get('products/new', 'ProductsController@newProductview')->name('proucts.addNew');
+Route::post('products/new/create', 'ProductsController@create')->name('proucts.create');
 Route::get('/home', 'HomeController@index')->name('home');
 
 

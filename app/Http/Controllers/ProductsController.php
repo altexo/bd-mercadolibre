@@ -8,6 +8,7 @@ use App\Pictures;
 use App\Products;
 use App\Attributes;
 use App\Provider;
+use App\Http\AppServices\GetProductKeepa;
 class ProductsController extends Controller
 {
     /**
@@ -19,7 +20,10 @@ class ProductsController extends Controller
     {
         return response()->json(['success'=> 'done men'], 500);
     }
-
+    public function newProductview()
+    {
+        return view('products.addNew');
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -27,86 +31,16 @@ class ProductsController extends Controller
      */
     public function create(Request $request)
     {
-         
-    // if (!$request->category_id) {
-    //     return response()->json(['fail'=> 'Ok', 'posted' => $request], 500);
-    // }
-        $response = '';
-        $r = $this->convert_from_latin1_to_utf8_recursively($request);
-        $atts = $r->request;
-     //return response()->json(['fail'=> 'Ok', 'posted' => $atts->attributes], 500);
-    $atts = $r->request;
-    $json_attributes = json_encode($atts->attributes);
-     $ml_data = Ml_data::where('ml_id',$r->ml_id)->first();
-        if ($ml_data != NULL) {
-            $ml_attributes = Attributes::where('ml_data_id', $ml_data->id)->first();
-            $ml_attributes->attributes_details = $json_attributes;
-            $ml_attributes->save();
-            $response = "Updated";
+       // return $request;
+        $getProduct = new GetProductKeepa();
+        $getProduct = $getProduct->scrapProduct($request->asin);
+        if ($getProduct['error'] == true) {
+            return redirect()->back()->with('error', $getProduct['msj']);
         }
-        else{    
-            try{
-                DB::transaction(function () use($r, $json_attributes) {
-                  //  $atts = $r->request;
-
-                    $ml_data_id = DB::table('ml_data')->insertGetId(
-                        [   'ml_id' => $r->ml_id,
-                            'category_id' => $r->category_id, 
-                            'price' => $r->price,
-                            'currency_id' => $r->currency_id,
-                            'available_quantity' => $r->available_quantity,
-                            'buying_mode' => $r->buying_mode,
-                            'listing_type_id' => $r->listing_type_id,
-                            'description' => $r->description['plain_text'],
-                            'accepts_mercadopago' => $r->accepts_mercadopago,
-                        ]
-                    );
-
-                    $json_pictures = json_encode($r->pictures);
-
-                    DB::table('pictures')->insert(['ml_data_id' => $ml_data_id, 'url'=> $json_pictures]);
-                    $json_shipping = json_encode($r->shipping);
-                    $shipping_id = DB::table('shipping')->insertGetId(
-                        [
-
-                            'ml_data_id' => $ml_data_id,
-                            'full_atts' => $json_shipping
-                        ]
-                    );
-
-
-            
-                    
-                  
-                            DB::table('attributes')->insert(
-                                [
-                                    'attributes_details' => $json_attributes,
-                                    'ml_data_id' => $ml_data_id,
-                                ]
-                        );
-
-                    $json_tags = json_encode($r->tags);
-                    DB::table('tags')->insert([
-                        'tags_object' => $json_tags,
-                        'ml_data_id' => $ml_data_id
-                    ]);
-                    
-                    DB::table('products')->insert([
-                        'title' => $r->title,
-                        'type_id' => 1,
-                        'ml_data_id' => $ml_data_id,
-                        'provider_id' => 1
-                    ]);
-                    $response = 'Created';
-                });
-            }catch( PDOException $e ){
-                return response()->json(['err PDO'=> $e],500);
-            }catch (\Exception $e){
-                return response()->json(['err '=> new \Illuminate\Support\MessageBag(['catch_exception'=>$e])],500);
-            }
+        else {
+            return redirect()->back()->with('success', $getProduct['msj']);
         }
-
-        return response()->json(['success'=> $response], 500);
+       
     }
 
 
@@ -302,6 +236,20 @@ class ProductsController extends Controller
       return response()->json(['count'=> $count,'error'=>$error, 'response'=>$response]);
     }
 
+    public function deleteProduct(Request $r){
+        $response = true;
+        $msj = "";
+        try {
+            Provider::destroy($r->provider_id);
+            Ml_data::destroy($r->ml_id);
+            $msj = "Se elimino correctamente";
+        } catch (\Exception $e) {
+            $msj = "Error al eliminiar".$e;
+            $response = false;
+        }
+        
+        return response()->json(['msj'=> $msj, 'response'=>$response]);
+    }
     public function updateState(Request $request){
         $product = Provider::find($request->id);
         $state = $request->state;

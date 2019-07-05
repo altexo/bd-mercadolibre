@@ -314,7 +314,8 @@ class ScraperController extends Controller
 			 
 		//	$pictures_array = $pictures_array;
 			return response()->json($pictures_array);
-    	}
+		}
+
 
 		}
 		
