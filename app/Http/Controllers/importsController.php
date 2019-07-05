@@ -127,9 +127,14 @@ class importsController extends Controller
                     echo "Producto no encontrado: ".$asin."<br>";
                     continue;
                 }
-                $stats = $res['products'];
-                $price = $stats[0]['stats']['current'][0];
-                $priceThirdPartySeller = $stats[0]['stats']['current'][1];
+                $validation = $this->validateKeepaResponse($res);
+				if ($validation == false) {
+					echo "Error al obtener producto de Keppa: ".$asin."<br>";
+					continue;
+				}
+				$stats = $validation;
+                $price = $stats[0];
+                $priceThirdPartySeller = $stats[1];
 
                 if ($price == -1) {
                     if ($priceThirdPartySeller == -1) {
@@ -228,4 +233,31 @@ class importsController extends Controller
                 // print_r($response_array);
                 // echo "</pre>";
         }
+        private function validateKeepaResponse($res){
+			$validation = true;
+			if (!array_key_exists('products', $res)) {
+				return $validation = false;
+			}
+			$stats = $res['products'];
+			//$price = $stats[0]['stats']['current'][0];
+			if (!array_key_exists(0, $stats)) {
+				return $validation = false;
+			}
+			$stats = $stats[0];
+			if (!array_key_exists('stats', $stats)) {
+				return $validation = false;
+			}
+			$stats = $stats['stats'];
+			if (!array_key_exists('current', $stats)) {
+				return $validation = false;
+			}
+			$stats = $stats['current'];
+			if (!array_key_exists(0, $stats)) {
+				return $validation = false;
+			}
+			
+			$validation = $stats;
+			return $validation;
+
+		}
 }
