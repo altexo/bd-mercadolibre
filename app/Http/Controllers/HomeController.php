@@ -26,30 +26,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        
-        echo "Token actual <br>";
-        echo $user->ml_token."<br>";
-        echo "================== <br>";
-        echo "Intentando refrescar... <br> <br>";
-
-        $appId = ENV('APP_ID');
-        $secretKey = ENV('SECRET_KEY');
-        $redirectURI = ENV('REDIRECT_URI');
-        $siteId = ENV('SITE_ID');
-         $meli = new Meli($appId, $secretKey, $user->ml_token, $user->r_token) ;
-        $refresh = $meli->refreshAccessToken();
-        echo "Token refrescado... <br>";
-        echo "<pre>";
-        print_r($refresh);
-        echo "</pre>";
       
-        $u = User::find($user->id);
-        $u->ml_token = $refresh['body']->access_token;
-        $u->r_token = $refresh['body']->refresh_token;
-        $u->save();
 
-        
+
               
                 // Now we create the sessions with the authenticated user
              
@@ -64,7 +43,7 @@ class HomeController extends Controller
       
 
         
-        //return view('mercadojs');
+        return view('mercadojs');
     }
 
  
