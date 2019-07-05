@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Attributes;
 use App\Http\AppServices\Meli;
+use Auth;
 class HomeController extends Controller
 {
     /**
