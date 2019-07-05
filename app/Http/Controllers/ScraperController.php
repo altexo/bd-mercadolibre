@@ -85,9 +85,9 @@ class ScraperController extends Controller
 					echo "Error al obtener producto de Keppa: ".$asin."<br>";
 					continue;
 				}
-				$price = $validation;
-
-                $priceThirdPartySeller = $stats[0]['stats']['current'][1];
+				$stats = $validation;
+				$price = $stats[0];
+                $priceThirdPartySeller = $stats[1];
 
                 if ($price == -1) {
                     if ($priceThirdPartySeller == -1) {
@@ -233,7 +233,7 @@ class ScraperController extends Controller
 				return $validation = false;
 			}
 			
-			$validation = $stats[0];
+			$validation = $stats;
 			return $validation;
 
 		}
