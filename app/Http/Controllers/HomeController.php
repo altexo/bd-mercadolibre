@@ -44,7 +44,7 @@ class HomeController extends Controller
         //     echo $user['body']->refresh_token."<br>";
         // }
         $getProduct = new UpdateInML();
-        $getProduct = $getProduct->updatePrice("B000KBNTM0", 1000);
+        $getProduct = $getProduct->updatePrice("B000KBNTM0", 1000, 'active');
 
         echo "<pre>";
         print_r($getProduct);

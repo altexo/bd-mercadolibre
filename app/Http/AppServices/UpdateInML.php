@@ -12,7 +12,7 @@ class UpdateInML{
         $token = User::find(11);
         return $token->ml_token;
     }
-    public function updatePrice($asin, $price){
+    public function updatePrice($asin, $price, $status){
         
         $appId = ENV('APP_ID');
         $secretKey = ENV('SECRET_KEY');
@@ -22,7 +22,23 @@ class UpdateInML{
 
         $params = array('sku' => $asin,'access_token' => $token);
 
-        $result = $meli->get('/users/'.ENV('SELLER_ID').'/items/search', $params, true);
+        try {
+            $result = $meli->get('/users/'.ENV('SELLER_ID').'/items/search', $params, true);
+            $ml_id = $result['body']['results'][0];
+            try {
+                $params = ['access_token' => $token, 'price' => $price, 'status' => $status];
+                $result = $meli->put('/items/'.$ml_id, $params, true);
+                return $result;
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+            echo "Error retriving From ML, SKU: ".$asin."\n";
+        }
+        
+
+       
 
 
         return $result;
