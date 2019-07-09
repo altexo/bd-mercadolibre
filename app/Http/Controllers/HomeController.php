@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Attributes;
-use App\Http\AppServices\Meli;
+use App\Http\AppServices;
 use Auth;
 use App\User;
+use App\Http\AppServices\GetProductKeepa;
+
 class HomeController extends Controller
 {
     /**
@@ -40,10 +42,13 @@ class HomeController extends Controller
         //     echo time() + $user['body']->expires_in."<br>";
         //     echo $user['body']->refresh_token."<br>";
         // }
-      
-
+        $getProduct = GetProductKeepa("B000KBNTM0");
+        echo "<pre>";
+        print_r($getProduct);
+        echo "</pre>";
         
-        return view('mercadojs');
+        
+      //  return view('mercadojs');
     }
 
  

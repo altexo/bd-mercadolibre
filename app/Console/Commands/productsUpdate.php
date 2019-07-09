@@ -84,14 +84,15 @@ class productsUpdate extends Command
                 $response = $response->getBody()->getContents();
                 //Arreglo de producto mediante asin
                 $res = json_decode($response, true);
-                if (!array_key_exists('products', $res)) {
-                    $this->updateProductStatus($product->provider_id);
-                    echo "Producto no encontrado: ".$asin."\n";
-                    continue;
+          
+                $validation = $this->validateKeepaResponse($res);
+                if ($validation == false) {
+                    echo 'Error al consultar en Keepa!: '.$asin."\n";
                 }
-                $stats = $res['products'];
-                $price = $stats[0]['stats']['current'][0];
-                $priceThirdPartySeller = $stats[0]['stats']['current'][1];
+                
+                $stats = $validation;
+                $price = $stats[0];
+                $priceThirdPartySeller = $stats[1];
 
                 if ($price == -1) {
                     if ($priceThirdPartySeller == -1) {
@@ -132,7 +133,7 @@ class productsUpdate extends Command
                     array_push($response_array, $transaction);
                     $count++;
                    
-                    sleep(65);
+                    //sleep(65);
             }
             
         }
@@ -148,6 +149,33 @@ class productsUpdate extends Command
         $provider = Provider::where('id',$id)->first();
         $provider->provider_status_id = 2;
         $provider->save();
+    }
+
+    private function validateKeepaResponse($res){
+        $validation = true;
+        if (!array_key_exists('products', $res)) {
+            return $validation = false;
+        }
+        $stats = $res['products'];
+        //$price = $stats[0]['stats']['current'][0];
+        if (!array_key_exists(0, $stats)) {
+            return $validation = false;
+        }
+        $stats = $stats[0];
+        if (!array_key_exists('stats', $stats)) {
+            return $validation = false;
+        }
+        $stats = $stats['stats'];
+        if (!array_key_exists('current', $stats)) {
+            return $validation = false;
+        }
+        $stats = $stats['current'];
+        if (!array_key_exists(0, $stats)) {
+            return $validation = false;
+        }
+        
+        $validation = $stats;
+        return $validation;
     }
 
 
