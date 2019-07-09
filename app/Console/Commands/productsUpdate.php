@@ -16,6 +16,7 @@ use App\Shipping;
 use DB;
 use Date;
 use Mail;
+use App\Http\AppServices\UpdateInML;
 use App\Mail\ProductsUpdatesNotification;
 class productsUpdate extends Command
 {
@@ -97,6 +98,7 @@ class productsUpdate extends Command
                 if ($price == -1) {
                     if ($priceThirdPartySeller == -1) {
                         $this->updateProductStatus($product->provider_id);
+                        $this->disableInML($asin);
                         array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
                         echo $asin." No disponible en stock \n";
                         // sleep(65);
@@ -130,6 +132,9 @@ class productsUpdate extends Command
                     $response = $e;
                 }
                     echo 'ACTUALIZADO ID: '.$transaction.' ASIN: '.$asin."\n";
+                    echo "Iniciando actualización en Mercadolibre.. \n";
+                    $updateInMl = new UpdateInML();
+                    $updateInMl = $updateInMl->updatePrice($asin, $providerPrice, 'active');
                     array_push($response_array, $transaction);
                     $count++;
                    
@@ -151,6 +156,11 @@ class productsUpdate extends Command
         $provider->save();
     }
 
+    private function disableInML($asin){
+        $updateInMl = new UpdateInML();
+        $updateInMl->disableProduct($asin);
+    }
+    
     private function validateKeepaResponse($res){
         $validation = true;
         if (!array_key_exists('products', $res)) {
