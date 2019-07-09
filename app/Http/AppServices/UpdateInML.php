@@ -18,13 +18,13 @@ class UpdateInML{
         $secretKey = ENV('SECRET_KEY');
 
         $meli = new Meli($appId, $secretKey);
-        $token = getToken();
+        $token = $this->getToken();
 
         $params = array('sku' => $asin,'access_token' => $token);
 
         $result = $meli->get('/users/'.ENV('SELLER_ID').'/items/search', $params, true);
 
-        
+
         return $result;
 
     //     var ml_id = data[2].results;
