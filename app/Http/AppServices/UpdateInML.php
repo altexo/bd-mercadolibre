@@ -26,8 +26,9 @@ class UpdateInML{
             $result = $meli->get('/users/'.ENV('SELLER_ID').'/items/search', $params, true);
             $ml_id = $result['body']['results'][0];
             try {
-                $params = ['access_token' => $token, 'price' => $price, 'status' => $status];
-                $result = $meli->put('/items/'.$ml_id, $params, true);
+                $params = ['access_token' => $token ];
+                $body = ['price' => $price, 'status' => $status];
+                $result = $meli->put('/items/'.$ml_id, $body,$params);
                 return $result;
             } catch (\Throwable $th) {
                 throw $th;
