@@ -43,15 +43,15 @@ class HomeController extends Controller
         //     echo time() + $user['body']->expires_in."<br>";
         //     echo $user['body']->refresh_token."<br>";
         // }
-        $getProduct = new UpdateInML();
-        $getProduct = $getProduct-> disableProduct("B000KBNTM0");
+        // $getProduct = new UpdateInML();
+        // $getProduct = $getProduct->disableProduct("B000KBNTM0");
 
-        echo "<pre>";
-        print_r($getProduct);
-        echo "</pre>";
+        // echo "<pre>";
+        // print_r($getProduct);
+        // echo "</pre>";
         
         
-      //  return view('mercadojs');
+        return view('mercadojs');
     }
 
  

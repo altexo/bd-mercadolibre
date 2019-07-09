@@ -12,6 +12,7 @@ class UpdateInML{
         $token = User::find(11);
         return $token->ml_token;
     }
+
     public function updatePrice($asin, $price, $status){
         
         $appId = ENV('APP_ID');
@@ -21,6 +22,8 @@ class UpdateInML{
         $token = $this->getToken();
 
         $params = array('sku' => $asin,'access_token' => $token);
+        $price = 1.30 * $price;
+        $price = round($price);
 
         try {
             $result = $meli->get('/users/'.ENV('SELLER_ID').'/items/search', $params, true);

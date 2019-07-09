@@ -52,6 +52,8 @@ class productsUpdate extends Command
     public function handle()
     {
         $count = 0;
+        //$ml_updated = 0;
+
         $date = date('Y-m-d H:i:s');
         echo "Update command called\n";
         echo "Fecha y hora de ejecucion: ".$date."\n";
@@ -134,7 +136,12 @@ class productsUpdate extends Command
                     echo 'ACTUALIZADO ID: '.$transaction.' ASIN: '.$asin."\n";
                     echo "Iniciando actualización en Mercadolibre.. \n";
                     $updateInMl = new UpdateInML();
-                    $updateInMl = $updateInMl->updatePrice($asin, $providerPrice, 'active');
+                    $updateInMl = $updateInMl->updatePrice($asin, $sell_price, 'active');
+                    if ($updateInMl == true) {
+                        echo "OK \n";
+                    }else{
+                        echo "No actualizado en ML \n";
+                    }
                     array_push($response_array, $transaction);
                     $count++;
                    
@@ -160,7 +167,7 @@ class productsUpdate extends Command
         $updateInMl = new UpdateInML();
         $updateInMl->disableProduct($asin);
     }
-    
+
     private function validateKeepaResponse($res){
         $validation = true;
         if (!array_key_exists('products', $res)) {
