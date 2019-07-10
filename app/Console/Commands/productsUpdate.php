@@ -16,6 +16,7 @@ use App\Shipping;
 use DB;
 use Date;
 use Mail;
+use App\Http\AppServices\UpdateInML;
 use App\Mail\ProductsUpdatesNotification;
 class productsUpdate extends Command
 {
@@ -51,6 +52,8 @@ class productsUpdate extends Command
     public function handle()
     {
         $count = 0;
+        //$ml_updated = 0;
+
         $date = date('Y-m-d H:i:s');
         echo "Update command called\n";
         echo "Fecha y hora de ejecucion: ".$date."\n";
@@ -84,21 +87,23 @@ class productsUpdate extends Command
                 $response = $response->getBody()->getContents();
                 //Arreglo de producto mediante asin
                 $res = json_decode($response, true);
-                if (!array_key_exists('products', $res)) {
-                    $this->updateProductStatus($product->provider_id);
-                    echo "Producto no encontrado: ".$asin."\n";
-                    continue;
+          
+                $validation = $this->validateKeepaResponse($res);
+                if ($validation == false) {
+                    echo 'Error al consultar en Keepa!: '.$asin."\n";
                 }
-                $stats = $res['products'];
-                $price = $stats[0]['stats']['current'][0];
-                $priceThirdPartySeller = $stats[0]['stats']['current'][1];
+                
+                $stats = $validation;
+                $price = $stats[0];
+                $priceThirdPartySeller = $stats[1];
 
                 if ($price == -1) {
                     if ($priceThirdPartySeller == -1) {
                         $this->updateProductStatus($product->provider_id);
+                        $this->disableInML($asin);
                         array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
                         echo $asin." No disponible en stock \n";
-                         sleep(10);
+                        // sleep(65);
                         continue;
                     }else{
                         $price = $priceThirdPartySeller;
@@ -129,10 +134,18 @@ class productsUpdate extends Command
                     $response = $e;
                 }
                     echo 'ACTUALIZADO ID: '.$transaction.' ASIN: '.$asin."\n";
+                    echo "Iniciando actualización en Mercadolibre.. \n";
+                    $updateInMl = new UpdateInML();
+                    $updateInMl = $updateInMl->updatePrice($asin, $sell_price, 'active');
+                    if ($updateInMl == true) {
+                        echo "OK \n";
+                    }else{
+                        echo "No actualizado en ML \n";
+                    }
                     array_push($response_array, $transaction);
                     $count++;
                    
-             sleep(10);
+                    //sleep(65);
             }
             
         }
@@ -148,6 +161,38 @@ class productsUpdate extends Command
         $provider = Provider::where('id',$id)->first();
         $provider->provider_status_id = 2;
         $provider->save();
+    }
+
+    private function disableInML($asin){
+        $updateInMl = new UpdateInML();
+        $updateInMl->disableProduct($asin);
+    }
+
+    private function validateKeepaResponse($res){
+        $validation = true;
+        if (!array_key_exists('products', $res)) {
+            return $validation = false;
+        }
+        $stats = $res['products'];
+        //$price = $stats[0]['stats']['current'][0];
+        if (!array_key_exists(0, $stats)) {
+            return $validation = false;
+        }
+        $stats = $stats[0];
+        if (!array_key_exists('stats', $stats)) {
+            return $validation = false;
+        }
+        $stats = $stats['stats'];
+        if (!array_key_exists('current', $stats)) {
+            return $validation = false;
+        }
+        $stats = $stats['current'];
+        if (!array_key_exists(0, $stats)) {
+            return $validation = false;
+        }
+        
+        $validation = $stats;
+        return $validation;
     }
 
 
