@@ -186,7 +186,7 @@ class ScraperController extends Controller
 				echo "<td>".$asin."</td><td>".$title."</td>";
 			
 				 array_push($response_array, $data);   
-				 sleep(3);
+				 sleep(1);
 				}
 				echo "</table><br>";
 				echo "Total de asins obtenidos: ".$n;
