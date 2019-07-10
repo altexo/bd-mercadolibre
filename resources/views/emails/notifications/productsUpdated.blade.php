@@ -4,7 +4,7 @@
 {{$msj}}
 
 @component('mail::button', ['url' => 'https://pbshop.online/ml'])
-Ir a Dadasell
+Ir a PBShop
 @endcomponent
 
 Gracias,<br>
