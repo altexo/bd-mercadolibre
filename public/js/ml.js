@@ -56,7 +56,7 @@ $("#publish-button").click(function(){
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             type:'GET',
             //url: 'http://127.0.0.1:8000/api/products',
-            url: "https://bd-mercadolibre.herokuapp.com/api/products",
+            url: "https://dadasell.app/api/products",
             success:function(response){
                 var not_published = [];
                 console.log(response);

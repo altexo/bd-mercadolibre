@@ -22,7 +22,7 @@ class UpdateInML{
         $token = $this->getToken();
 
         $params = array('sku' => $asin,'access_token' => $token);
-        $price = 1.30 * $price;
+        $price = 1.40 * $price;
         $price = round($price);
 
         try {
