@@ -27,7 +27,7 @@ Auth::routes();
 //Imports
 Route::get('/import', function(){
 	return view('importProducts');
-});
+})->name('import.products.view');
 Route::post('import/asin', 'ProductsController@importProducts')->name('import.products');
 Route::post('import/update/asin','importsController@importAsinUpdate')->name('import.update.asins');
 Route::post('import/new-asins','importsController@importNewAsins')->name('import.new.asins');

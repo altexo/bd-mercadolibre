@@ -135,7 +135,7 @@ class importsController extends Controller
 				$stats = $validation;
                 $price = $stats[0];
                 $priceThirdPartySeller = $stats[1];
-
+               
                 if ($price == -1) {
                     if ($priceThirdPartySeller == -1) {
                         // array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
@@ -163,6 +163,10 @@ class importsController extends Controller
                 $providerPrice = $decimalPrice;
                 //$sell_price = 1.40 * $providerPrice;
                 $sell_price = round($providerPrice);
+                if ($sell_price == 0.00) {
+                    echo "Keepa devolvio el producto con asin ".$asin." con precio en ".$sell_price." Saltando guardado.. <br>";
+                    continue;
+                }
                 $pictures_array = json_encode($pictures_array);
 				
 						
@@ -226,7 +230,7 @@ class importsController extends Controller
 			
 			    echo "<script type='text/javascript'>";
                 echo "alert('Se termino de importar productos, haz clic en aceptar para ser redireccionado.')";
-                echo "window.location.href =".route('products.view');
+                // echo "window.location.href =".route('products.view');
                 echo "</script>";
                 //return redirect()->route('products.view');
                 // echo '<pre>';
