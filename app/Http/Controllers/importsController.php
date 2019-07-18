@@ -126,10 +126,7 @@ class importsController extends Controller
                 $res = json_decode($response, true);
                 if (!array_key_exists('products', $res)) {
                     echo "Producto no encontrado: ".$asin."<br>";
-                    echo "<pre>";
-                    print_r($res);
-                    echo "</pre>";
-                    echo "=================================================";
+                    
                     continue;
                 }
                 $validation = $this->validateKeepaResponse($res);
@@ -170,6 +167,7 @@ class importsController extends Controller
                 $sell_price = round($providerPrice);
                 if ($sell_price == 0.00) {
                     echo "Keepa devolvio el producto con asin ".$asin." con precio en ".$sell_price." Saltando guardado.. <br>";
+                    sleep(60);
                     continue;
                 }
                 $pictures_array = json_encode($pictures_array);
@@ -231,6 +229,7 @@ class importsController extends Controller
 				}
 				echo "Se creo producto: ".$title." con asin: ".$asin."<br>";
                  array_push($response_array, $data);   
+                 sleep(3);
 				}
 			
 			    echo "<script type='text/javascript'>";

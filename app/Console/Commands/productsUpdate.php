@@ -145,7 +145,7 @@ class productsUpdate extends Command
                     array_push($response_array, $transaction);
                     $count++;
                    
-                    //sleep(65);
+                    sleep(3);
             }
             
         }
