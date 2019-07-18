@@ -109,7 +109,8 @@ class importsController extends Controller
                 // }
 				$provider = Provider::where('asin', $asin)->first();
 				if ($provider != null) {
-					echo "Este asin ya existe: ".$asin."<br>";
+                    echo "Este asin ya existe: ".$asin."<br>";
+                   
 					continue;
 				}
 	    			   
@@ -125,6 +126,10 @@ class importsController extends Controller
                 $res = json_decode($response, true);
                 if (!array_key_exists('products', $res)) {
                     echo "Producto no encontrado: ".$asin."<br>";
+                    echo "<pre>";
+                    print_r($res);
+                    echo "</pre>";
+                    echo "=================================================";
                     continue;
                 }
                 $validation = $this->validateKeepaResponse($res);
