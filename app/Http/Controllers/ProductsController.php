@@ -18,7 +18,43 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        return response()->json(['success'=> 'done men'], 500);
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header("Allow: GET, POST, OPTIONS, PUT, DELETE");
+        $method = $_SERVER['REQUEST_METHOD'];
+        if($method == "OPTIONS") {
+            die();
+        }
+        $products = Ml_data::select('ml_data.id as ml_data_id','products.id as product_id', 'provider_status.id as status_id', 'provider_status.status_name','products.type_id' ,'products.margin_sale','ml_data.updated_at','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
+    	->join('products','ml_data.id','=','products.ml_data_id')
+		->join('provider', 'products.provider_id', '=', 'provider.id')
+		->join('provider_status','provider.provider_status_id','=','provider_status.id')
+    	->where('products.provider_id','!=',1)
+        ->paginate(20);
+        
+
+		return response()->json($products);
+        //return response()->json(['success'=> 'done men'], 500);
+    }
+
+    public function allProducts(){
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header("Allow: GET, POST, OPTIONS, PUT, DELETE");
+        $method = $_SERVER['REQUEST_METHOD'];
+        if($method == "OPTIONS") {
+            die();
+        }
+        $products = Ml_data::select('ml_data.id as ml_data_id','products.id as product_id', 'provider_status.id as status_id', 'provider_status.status_name','products.type_id' ,'products.margin_sale','ml_data.updated_at','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
+    	->join('products','ml_data.id','=','products.ml_data_id')
+		->join('provider', 'products.provider_id', '=', 'provider.id')
+        ->join('provider_status','provider.provider_status_id','=','provider_status.id')
+        ->get();
+        
+
+		return response()->json($products);
     }
     public function newProductview()
     {

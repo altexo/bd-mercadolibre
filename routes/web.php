@@ -42,6 +42,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/scrapper', 'ScrapperController@index')->name('scrap');
 Route::get('products/update/price/ml','ProductsController@updateProductsPrices')->name('get.products');
 
+Route::get('/productos','ProductsController@index');
+Route::get('/t-productos','ProductsController@allProducts');
+
 
 //Test Route
 // Route::get('test/mail', function(){
