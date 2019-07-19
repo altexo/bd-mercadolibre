@@ -10,10 +10,25 @@ use App\Products;
 use App\Attributes;
 use App\Provider;
 use Date;
+use Nicolaslopezj\Searchable\SearchableTrait;
 class Ml_data extends Model
 {
+    use SearchableTrait;
     protected $table = "ml_data";
    // public $timestamps = false;
+    protected $searchable = [
+
+    'columns' => [
+        'products.title' => 10,
+        'ml_data.ml_id' => 5,
+        'provider.asin' => 8,
+    ],
+    'joins' => [
+        'products' => ['ml_data.id','products.ml_data_id'],
+        'provider' => ['products.provider_id', 'provider.id']
+    ],
+];
+
     public function pictures(){
     	return $this->hasMany(Pictures::class);
     }

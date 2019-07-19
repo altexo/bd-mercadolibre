@@ -4,15 +4,45 @@
     .edit-icon{
         padding: 0px 3px 0px;
     }
+    .form-control-borderless {
+    border: none;
+}
+
+.form-control-borderless:hover, .form-control-borderless:active, .form-control-borderless:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
 </style>
 
 @endsection
 @section('content')
 <div class="col-md-12 mt-4 mb-4">
-<a href="{{route('proucts.addNew')}}" class="btn btn-primary btn-sm">Añadir nuevo producto</a>
+<a href="{{route('proucts.addNew')}}" class="btn btn-primary btn-sm mb-3">Añadir nuevo producto</a>
+<div class="row justify-content-center">
+    <div class="col-12 col-md-12 col-lg-12">
+        <form class="card card-sm" method="GET" action="{{route('products.search')}}">
+            <div class="card-body row no-gutters align-items-center">
+                <div class="col-auto mr-2 mt-1">
+                    <i class="fas fa-search h5 text-body"></i>
+                </div>
+                <!--end of col-->
+                <div class="col">
+                    <input name="search" value="{{request()->search}}" class="form-control form-control-md form-control-borderless" type="search" placeholder="Buscar por título, ASIN">
+                </div>
+                <!--end of col-->
+                <div class="col-auto">
+                    <button class="btn btn-md btn-success" type="submit">Buscar</button>
+                </div>
+                <!--end of col-->
+            </div>
+        </form>
+    </div>
+    <!--end of col-->
 </div>
-    <div class="col-md-12 mt-4 card">
-        <div class="card">
+</div>
+    <div class="col-md-12 mt-4">
+        <div class="card table-responsive">
             <table class="table">
                 <thead>
                   <tr>

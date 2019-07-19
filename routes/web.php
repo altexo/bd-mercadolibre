@@ -21,6 +21,7 @@ route::get('/scrap/get-by-asin', 'ScraperController@index');
 Route::get('/products/view', 'ProductsDBController@index')->name('products.view');
 Route::get('/products/edit/{id}', 'ProductsDBController@getById')->name('products.get.product');
 Route::post('products/update', 'ProductsDBController@updateById')->name('products.update');
+Route::get('products/view/search', 'ProductsDBController@search')->name('products.search');
 Route::get('/ml', 'HomeController@index')->name('home');
 Auth::routes();
 // Route::get('/register', 'HomeController@index');
