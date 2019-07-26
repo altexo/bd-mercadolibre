@@ -13,7 +13,7 @@ class UpdateInML{
         return $token->ml_token;
     }
 
-    public function updatePrice($asin, $price, $status){
+    public function updatePrice($asin, $price, $status, $description){
         
         $appId = ENV('APP_ID');
         $secretKey = ENV('SECRET_KEY');
@@ -30,7 +30,7 @@ class UpdateInML{
             $ml_id = $result['body']['results'][0];
             try {
                 $params = ['access_token' => $token ];
-                $body = ['price' => $price, 'status' => $status];
+                $body = ['price' => $price, 'description'=> $description, 'status' => $status];
                 $result = $meli->put('/items/'.$ml_id, $body,$params);
                 if ($result['httpCode'] == 200) {
                     return true;

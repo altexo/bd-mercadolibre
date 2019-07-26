@@ -61,7 +61,7 @@ class productsUpdate extends Command
         $errors = [];
 
 
-        $products = Ml_data::select('ml_data.id as ml_data_id','ml_data.updated_at','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
+        $products = Ml_data::select('ml_data.id as ml_data_id','ml_data.updated_at', 'ml_data.description','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
             ->join('products','ml_data.id','=','products.ml_data_id')
             ->join('provider', 'products.provider_id', '=', 'provider.id')
             ->where('products.provider_id','!=',1)
@@ -72,6 +72,7 @@ class productsUpdate extends Command
             
             foreach ($products as $product) {
                 echo "Iniciando con : ".$product->asin."\n";
+                $description = "IMPORTATENTE ANTES DE OFERTAR pregunta por disponibilidad (si el producto es en varios colores o tallas es MUY importante que nos preguntes antes de ofertar), nosotros te lo mandamos directo a tu domicilio pregunta como puedes conseguir ENVÍO GRATIS o los costos de envío. Una vez echa la compra te pediremos tus datos de envío por mensaje privado de Mercado Libre, para mandarte tu producto lo antes posible! \n\n\n".$product->description;
                 $asin = $product->asin;
                 if ($asin == "") {
                     continue;
@@ -136,7 +137,7 @@ class productsUpdate extends Command
                     echo 'ACTUALIZADO ID: '.$transaction.' ASIN: '.$asin."\n";
                     echo "Iniciando actualización en Mercadolibre.. \n";
                     $updateInMl = new UpdateInML();
-                    $updateInMl = $updateInMl->updatePrice($asin, $sell_price, 'active');
+                    $updateInMl = $updateInMl->updatePrice($asin, $sell_price, 'active', $description);
                     if ($updateInMl == true) {
                         echo "OK \n";
                     }else{
@@ -145,7 +146,7 @@ class productsUpdate extends Command
                     array_push($response_array, $transaction);
                     $count++;
                    
-                    sleep(3);
+                    sleep(10);
             }
             
         }
