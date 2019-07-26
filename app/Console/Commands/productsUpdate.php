@@ -104,7 +104,7 @@ class productsUpdate extends Command
                         $this->disableInML($asin);
                         array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
                         echo $asin." No disponible en stock \n";
-                        // sleep(65);
+                         sleep(5);
                         continue;
                     }else{
                         $price = $priceThirdPartySeller;
@@ -146,7 +146,7 @@ class productsUpdate extends Command
                     array_push($response_array, $transaction);
                     $count++;
                    
-                    //sleep(65);
+                    sleep(10);
             }
             
         }
