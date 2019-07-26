@@ -14,11 +14,11 @@ class ProductsDBController extends Controller
 	}
 	
 	public function index(){
-		 $products = Ml_data::select('ml_data.id as ml_data_id','products.id as product_id' ,'products.margin_sale','ml_data.updated_at','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
+		 $products = Ml_data::select('ml_data.id as ml_data_id','products.id as product_id', 'provider_status.id as status_id', 'provider_status.status_name','products.type_id' ,'products.margin_sale','ml_data.updated_at','provider.id as provider_id','products.title', 'provider.asin', 'ml_data.price as ml_price', 'provider.price as provider_price')
     	->join('products','ml_data.id','=','products.ml_data_id')
-    	->join('provider', 'products.provider_id', '=', 'provider.id')
+		->join('provider', 'products.provider_id', '=', 'provider.id')
+		->join('provider_status','provider.provider_status_id','=','provider_status.id')
     	->where('products.provider_id','!=',1)
-    	->where('provider.provider_status_id','=',1)
 		->paginate(20);
 		//$products = Ml_data::search('multipet')->with('products')->get();
 		//return $products;

@@ -52,6 +52,7 @@
                     <th scope="col">Margen</th>
                     <th scope="col">P. ML</th>
                     <th scope="col">P. Prov</th>
+                    <th scope="col">Estado</th>
                     <th scope="col"></th>
                   </tr>
                 </thead>
@@ -64,6 +65,7 @@
                         <td id="product-margen{{$product->ml_data_id}}">{{$product->margin_sale}}</td>
                         <td>{{$product->ml_price}}</td>
                         <td>{{$product->provider_price}}</td>
+                        <td>{{$product->status_name}}</td>
                         <td>
                             <button style="padding: 2px;" id="edit{{$product->ml_data_id}}" class="btn btn-primary" onclick="edit_product({{$product->ml_data_id}})">
                                 <i class="fas fa-edit  edit-icon"></i>
@@ -73,11 +75,11 @@
                                 <i class="fas fa-trash"> <input type="hidden" value="{{$product->provider_id}}">
                                     <input type="hidden" value="{{$product->ml_data_id}}"></i>
                             </button>
-                            <button type="button" id="update{{$product->ml_data_id}}" class="btn btn-success btn-hide" onclick="update_product({{$product->ml_data_id}})">
-                                <input type="hidden" value="{{route('products.get.product',[$product->ml_data_id])}}" id="url{{$product->ml_data_id}}">
+                            <button type="button" id="update{{$product->ml_data_id}}" class="btn btn-success btn-hide btn-sm" onclick="update_product({{$product->ml_data_id}})">
                                 <i class="fas fa-save"></i>
+                                <input type="hidden" value="{{route('products.get.product',[$product->ml_data_id])}}" id="url{{$product->ml_data_id}}">
                             </button>
-                            <button type="button" id="cancel{{$product->ml_data_id}}" class="btn btn-danger btn-hide" onclick="cancel({{$product->ml_data_id}})">
+                            <button type="button" id="cancel{{$product->ml_data_id}}" class="btn btn-danger btn-hide btn-sm" onclick="cancel({{$product->ml_data_id}})">
                                 <i class="fas fa-times"></i>
                                 <input type="hidden" value="" id="title-product{{$product->ml_data_id}}">
                                 <input type="hidden" value="" id="margen-product{{$product->ml_data_id}}">
