@@ -3,18 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use DateTime;
-use Illuminate\Http\Request;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use App\Ml_data;
 use App\Provider;
-use App\Products;
-use App\tags;
-use App\Pictures;
-use App\Shipping;
 use DB;
-use Date;
 use Mail;
 use App\Http\AppServices\UpdateInML;
 use App\Mail\ProductsUpdatesNotification;
