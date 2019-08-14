@@ -85,7 +85,7 @@ class productsUpdate extends Command
                 if ($validation == false) {
                     echo 'Error al consultar en Keepa!: '.$asin."\n";
                 }
-                
+                $variants = $res['products'];
                 $stats = $validation;
                 $price = $stats[0];
                 $priceThirdPartySeller = $stats[1];
@@ -103,6 +103,23 @@ class productsUpdate extends Command
                     }
                    
                 }
+                if ($price < 100) {
+                    $this->updateProductStatus($product->provider_id);
+                    $this->disableInML($asin);
+                    array_push($errors, ['title'=>$product->title,'Precio demasiado bajo (Menor a 100 MXN)'=>$asin]);
+                    echo $asin." Precio demasiado bajo (Menor a 100 MXN): ".$price." \n";
+                     sleep(5);
+                    continue;
+                }
+                
+                if ($variants->variationCSV != null) {
+                    $this->updateProductStatus($product->provider_id);
+                    $this->disableInML($asin);
+                    array_push($errors, ['title'=>$product->title,'Este producto contiene variantes'=>$asin]);
+                    echo $asin." Este producto contiene variantes \n";
+                     sleep(5);
+                    continue;
+                }
                
                 $decimalPrice = sprintf('%.2f', $price / 100);
                 $providerPrice = $decimalPrice;
@@ -111,10 +128,11 @@ class productsUpdate extends Command
                
 
                 try {
-                    $transaction = DB::transaction(function() use($providerPrice, $product, $sell_price){
+                    $transaction = DB::transaction(function() use($providerPrice, $product, $sell_price, $description){
                         $ml_data = Ml_data::where('id',$product->ml_data_id)->first();
                         $ml_data->price = $sell_price;
                         $ml_data->available_quantity = 99;
+                        $ml_data->description = $description;
                         $ml_data->save();
 
                         $provider = Provider::where('id',$product->provider_id)->first();
