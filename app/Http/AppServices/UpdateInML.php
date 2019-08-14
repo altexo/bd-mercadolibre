@@ -39,7 +39,7 @@ class UpdateInML{
                     $body = ['plain_text' => $description];
                     $result = $meli->put('/items/'.$ml_id.'/description', $body,$params);
                     
-                    return ['status' => true, 'description' => $result];
+                    return true;
                 }else{
                     return json_decode(json_encode($result), true);
                 }
