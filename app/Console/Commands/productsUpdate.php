@@ -64,7 +64,7 @@ class productsUpdate extends Command
             
             foreach ($products as $product) {
                 echo "Iniciando con : ".$product->asin."\n";
-                $description = "IMPORTATENTE ANTES DE OFERTAR pregunta por disponibilidad (si el producto es en varios colores o tallas es MUY importante que nos preguntes antes de ofertar), nosotros te lo mandamos directo a tu domicilio pregunta como puedes conseguir ENVÍO GRATIS o los costos de envío. Una vez echa la compra te pediremos tus datos de envío por mensaje privado de Mercado Libre, para mandarte tu producto lo antes posible! \n\n\n".$product->description;
+                
                 $asin = $product->asin;
                 if ($asin == "") {
                     continue;
@@ -86,8 +86,9 @@ class productsUpdate extends Command
                     echo 'Error al consultar en Keepa!: '.$asin."\n";
                 }
                 $variants = $res['products'][0];
-               
+                $description = "IMPORTATENTE ANTES DE OFERTAR pregunta por disponibilidad (si el producto es en varios colores o tallas es MUY importante que nos preguntes antes de ofertar), nosotros te lo mandamos directo a tu domicilio pregunta como puedes conseguir ENVÍO GRATIS o los costos de envío. Una vez echa la compra te pediremos tus datos de envío por mensaje privado de Mercado Libre, para mandarte tu producto lo antes posible! \n\n\n".$variants['description'];
                 $stats = $validation;
+                
                 $price = $stats[0];
                 $priceThirdPartySeller = $stats[1];
 
