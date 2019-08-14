@@ -85,7 +85,8 @@ class productsUpdate extends Command
                 if ($validation == false) {
                     echo 'Error al consultar en Keepa!: '.$asin."\n";
                 }
-                $variants = $res['products'];
+                $variants = $res['products'][0];
+               
                 $stats = $validation;
                 $price = $stats[0];
                 $priceThirdPartySeller = $stats[1];
@@ -96,7 +97,7 @@ class productsUpdate extends Command
                         $this->disableInML($asin);
                         array_push($errors, ['title'=>$product->title,'No disponible en stock'=>$asin]);
                         echo $asin." No disponible en stock \n";
-                         sleep(5);
+                         sleep(3);
                         continue;
                     }else{
                         $price = $priceThirdPartySeller;
@@ -108,7 +109,7 @@ class productsUpdate extends Command
                     $this->disableInML($asin);
                     array_push($errors, ['title'=>$product->title,'Precio demasiado bajo (Menor a 100 MXN)'=>$asin]);
                     echo $asin." Precio demasiado bajo (Menor a 100 MXN): ".$price." \n";
-                     sleep(5);
+                     sleep(3);
                     continue;
                 }
                 
@@ -117,7 +118,7 @@ class productsUpdate extends Command
                     $this->disableInML($asin);
                     array_push($errors, ['title'=>$product->title,'Este producto contiene variantes'=>$asin]);
                     echo $asin." Este producto contiene variantes \n";
-                     sleep(5);
+                     sleep(3);
                     continue;
                 }
                
