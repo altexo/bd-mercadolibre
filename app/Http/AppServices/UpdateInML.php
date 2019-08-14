@@ -33,6 +33,9 @@ class UpdateInML{
                 $body = ['price' => $price, 'description' => $description,'status' => $status];
                 $result = $meli->put('/items/'.$ml_id, $body,$params);
                 if ($result['httpCode'] == 200) {
+                    $params = ['access_token' => $token ];
+                    $body = ['plain_text' => $description];
+                    $result = $meli->put('/items/'.$ml_id.'/description', $body,$params);
                     return true;
                 }else{
                     return json_decode(json_encode($result), true);
