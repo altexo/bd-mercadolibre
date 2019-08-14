@@ -112,7 +112,7 @@ class productsUpdate extends Command
                     continue;
                 }
                 
-                if ($variants->variationCSV != null) {
+                if ($variants['variationCSV'] != null) {
                     $this->updateProductStatus($product->provider_id);
                     $this->disableInML($asin);
                     array_push($errors, ['title'=>$product->title,'Este producto contiene variantes'=>$asin]);
