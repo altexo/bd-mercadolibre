@@ -36,8 +36,8 @@ class UpdateInML{
                     $params = ['access_token' => $token ];
                     $body = ['plain_text' => $description];
                     $result = $meli->put('/items/'.$ml_id.'/description', $body,$params);
-                    print_r($result);
-                    return true;
+                    
+                    return ['status' => true, 'description' => $result];
                 }else{
                     return json_decode(json_encode($result), true);
                 }

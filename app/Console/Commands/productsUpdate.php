@@ -149,7 +149,8 @@ class productsUpdate extends Command
                     echo "Iniciando actualización en Mercadolibre.. \n";
                     $updateInMl = new UpdateInML();
                     $updateInMl = $updateInMl->updatePrice($asin, $sell_price, 'active' ,$description);
-                    if ($updateInMl == true) {
+                    if ($updateInMl->status == true) {
+                        print_r($updateInMl);
                         echo "OK \n";
                     }else{
                         echo "No actualizado en ML \n";
