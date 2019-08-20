@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\AppServices;
-
+use App\User;
 class MLConnection
 {
   

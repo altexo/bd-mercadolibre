@@ -5,7 +5,7 @@ use App\Http\AppServices\MLToken;
 class MessagesML
 {
     private function getMLConnection(){
-        $MLToken = new MLToken();
+        $MLToken = new MLConnection();
         $conn = $MLToken->getConnection();
         return $conn;
     }
