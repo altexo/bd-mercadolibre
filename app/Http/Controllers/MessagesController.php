@@ -19,7 +19,8 @@ class MessagesController extends Controller
         $conn = $MLToken->getConnection();
         $meli = new Meli($conn->appId, $conn->secretKey);
         $params = array('access_token' => $conn->token);
-        $result = $meli->post('/test_user', $params);
+        $body = array('site_id' => 'MLM');
+        $result = $meli->post('/users/test_user', $body, $params);
         echo "<pre>";
         print_r($result);
         echo "</pre>";

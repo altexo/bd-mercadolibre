@@ -15,8 +15,7 @@ class MessagesML
         //return $mlConn->token;
         $meli = new Meli($mlConn->appId, $mlConn->secretKey);
         $params = array('access_token' => $mlConn->token);
-        $body = array('site_id' => 'MLM');
-        $result = $meli->get('/messages/pending_read', $body, $params);
+        $result = $meli->get('/messages/pending_read', $params, true);
         return $result;
 
 
