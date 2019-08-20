@@ -19,7 +19,7 @@ class MessagesController extends Controller
         $conn = $MLToken->getConnection();
         $meli = new Meli($conn->appId, $conn->secretKey);
         $params = array('access_token' => $conn->token);
-        $result = $meli->post('/test_user', $params, true);
+        $result = $meli->post('/test_user', $params);
         echo "<pre>";
         print_r($result);
         echo "</pre>";
