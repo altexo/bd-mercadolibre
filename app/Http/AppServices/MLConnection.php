@@ -10,7 +10,7 @@ class MLConnection
         $appId = ENV('APP_ID');
         $secretKey = ENV('SECRET_KEY');
 
-        $obj = array('token' => $token,'appId'=>  $appId, 'secretKey' => $secretKey);
+        $obj = array('token' => $token->ml_token,'appId'=>  $appId, 'secretKey' => $secretKey);
 
         $connection = (object) $obj;
         return $connection;

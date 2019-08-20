@@ -12,7 +12,9 @@ class MessagesML
 
     public function getMessagesList(){
         $mlConn = $this->getMLConnection();
+        //return $mlConn->token;
         $meli = new Meli($mlConn->appId, $mlConn->secretKey);
+
         $result = $meli->get('/messages/pending_read', $mlConn->token, true);
         return $result;
 
