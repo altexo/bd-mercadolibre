@@ -48,3 +48,5 @@ route::get('scraper/view', 'ScraperController@getView')->name('scrap.seller');
 // 	$msj = "El precio de los productos fueron actualizados correctamente, Total actualizados: 202";
 // 	Mail::to('alejandro.riosyb@gmail.com')->send(new ProductsUpdatesNotification($msj));
 // });
+//Msjs
+Route::get('messages/get-all-unread', 'MessagesController@index');
