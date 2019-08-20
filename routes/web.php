@@ -50,3 +50,4 @@ route::get('scraper/view', 'ScraperController@getView')->name('scrap.seller');
 // });
 //Msjs
 Route::get('messages/get-all-unread', 'MessagesController@index');
+Route::get('test/create-user','MessagesController@createTestUser');
