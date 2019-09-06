@@ -46,7 +46,12 @@ class GetProductKeepa{
             }
         }
         
-        $title = $res['products'][0]['title'];
+		$title = $res['products'][0]['title'];
+		$filter = new Filters();
+		$filter = $filter->wordsToExclude($title);
+		if ($filter == true) {
+			return ['error'=> true, 'msj'=> 'El producto contiene una o mas palabras: '.$title ];
+		}
 		$title = substr($title,0,60);
 		$base_category = $this->predictCategoryML($title);
 		if ($base_category == null) {

@@ -67,20 +67,6 @@ body{
               <li class="nav-item active">
                   <a class="nav-link text-white" href="{{route('scrap.seller')}}">Buscar por vendedor</a>
                   </li>
-              {{-- <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Dropdown
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-              </li> --}}
             </ul>
             <form class="form-inline my-2 my-lg-0">
               <input class="form-control mr-sm-2" type="search" 
@@ -89,6 +75,17 @@ body{
             </form>
 
             <div>
+                <button type="button" class="btn btn-primary">
+                    Mensajes <span class="badge badge-light">
+                        @php
+                          $msjs = new App\Http\Controllers\MessagesController();
+                          {{ echo $msjs->index(); }}
+
+                        @endphp
+                    </span>
+                    <span class="sr-only">unread messages</span>
+                  </button>
+              
               <a href="{{ route('logout') }}" class="my-2 my-sm-0 ml-2 btn btn-outline-default text-white" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
                   Logout
               </a>

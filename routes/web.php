@@ -44,9 +44,15 @@ Route::post('scraper/by-seller', 'ScraperController@getProductsBySeller')->name(
 route::get('scraper/view', 'ScraperController@getView')->name('scrap.seller');
 
 //Test Route
-// Route::get('test/mail', function(){
-// 	$msj = "El precio de los productos fueron actualizados correctamente, Total actualizados: 202";
-// 	Mail::to('alejandro.riosyb@gmail.com')->send(new ProductsUpdatesNotification($msj));
+// Route::get('test/random', function(){
+// 	$msj = "El precio de los Apple  fueron actualizados correctamente, Total actualizados: 202";
+// 	$matches = ["Apple", "Bose"];
+// 	foreach ($matches as $m) {
+// 		if(preg_match("/{$m}/i", $msj)) {
+// 			echo 'true on: '.$m." <br>";
+// 		}
+// 	}
+
 // });
 //Msjs
 Route::get('messages/get-all-unread', 'MessagesController@index');

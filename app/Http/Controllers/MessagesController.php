@@ -9,8 +9,9 @@ use App\Http\AppServices\MLConnection;
 class MessagesController extends Controller
 {
     public function index(){
+
         $messagesML = new MessagesML();
-        $msjs = $messagesML->getMessagesList();
+        $msjs = $messagesML->getPendingMessages();
         return $msjs;
     }
 
